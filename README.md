@@ -1,12 +1,13 @@
 # 画面遷移図
 
 ### 初期画面
-
-![初期画面](/desktop/yubikirigenmann/1.png)
+<img width="1436" height="699" alt="Image" src="https://github.com/user-attachments/assets/8e0d52f7-c3fe-448e-a322-1b5c62bf9292" />
 
 ### サイドバー選択時（共通）
+<img width="1431" height="700" alt="Image" src="https://github.com/user-attachments/assets/c03814d3-a71f-48fa-92c6-f40890b6187f" />
 
-###
+### これまでの評価とりんごの木のアニメーション画面
+<img width="1433" height="700" alt="Image" src="https://github.com/user-attachments/assets/ce2bda59-7218-4270-a9ef-36cd636cb5e3" />
 
 # 業務フロー
 
