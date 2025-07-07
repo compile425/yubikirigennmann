@@ -1,4 +1,12 @@
-# yubikirigennmann
+# 画面遷移図
+
+### 初期画面
+
+![初期画面](/desktop/yubikirigenmann/1.png)
+
+### サイドバー選択時（共通）
+
+###
 
 # 業務フロー
 
