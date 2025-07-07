@@ -38,8 +38,8 @@ graph TD
         S11 --> B3("完了: パートナーとして<br>利用開始")
     end
 
-    style A1 fill:#B9E6FF
-    style B3 fill:#B9E6FF
+    style A1 fill:#B9E6FF,color:#000
+    style B3 fill:#B9E6FF,color:#000
 
 ```
 ### フロー2：約束の登録から 〜 誓約
@@ -63,8 +63,8 @@ graph TD
         S3 -.-> P1["通知を受け取り、<br>内容を確認"]
     end
 
-    style A1 fill:#B9E6FF
-    style C1 fill:#B9E6FF
+    style A1 fill:#B9E6FF,color:#000
+    style C1 fill:#B9E6FF,color:#000
 ```
 ### フロー3：約束の評価
 
@@ -96,8 +96,8 @@ graph TD
         S5 -.-> E1["評価完了の通知を受け取り、<br>内容を確認"]
     end
 
-    style T1 fill:#B9E6FF
-    style C1 fill:#B9E6FF
+    style T1 fill:#B9E6FF,color:#000
+    style C1 fill:#B9E6FF,color:#000
 ```
 ### フロー4：月末の月次レポート
 
@@ -117,8 +117,8 @@ graph TD
         B5 -.-> U1["月次レポートメールを<br>受け取る"]
     end
 
-    style B1 fill:#B9E6FF
-    style C1 fill:#B9E6FF
+    style B1 fill:#B9E6FF,color:#000
+    style C1 fill:#B9E6FF,color:#000
 ```
 ### フロー5：約束の編集・削除
 
@@ -146,8 +146,8 @@ graph TD
         S4 -.-> P2["通知を受け取り、<br>約束が消えたことを確認"]
     end
 
-    style A1 fill:#B9E6FF
-    style C1 fill:#B9E6FF
+    style A1 fill:#B9E6FF,color:#000
+    style C1 fill:#B9E6FF,color:#000
 ```
 ### フロー6：「想いを伝える」フォーム
 
@@ -169,8 +169,8 @@ graph TD
         S2 -.-> R1["通知をタップし、<br>メッセージ画面へ"] --> R2["メッセージを読む"]
     end
     
-    style A1 fill:#B9E6FF
-    style C1 fill:#B9E6FF
+    style A1 fill:#B9E6FF,color:#000
+    style C1 fill:#B9E6FF,color:#000
 ```
 ### フロー7：パートナー関係の解消
 
@@ -193,6 +193,6 @@ graph TD
         S3 -.-> P1["通知を受け取る<br>ログインはできるが、<br>過去のデータは閲覧不可になる"]
     end
 
-    style A1 fill:#B9E6FF
-    style C1 fill:#B9E6FF
+    style A1 fill:#B9E6FF,color:#000
+    style C1 fill:#B9E6FF,color:#000
 ```
