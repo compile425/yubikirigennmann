@@ -1,11 +1,6 @@
 # 画面遷移図
 
-### 初期画面
-<img width="1433" height="698" alt="Image" src="https://github.com/user-attachments/assets/cb7aac63-5291-46b0-aa95-460f676768b8" />
-### サイドバー選択時（共通）
-<img width="1434" height="698" alt="Image" src="https://github.com/user-attachments/assets/dc439afc-af80-4f31-8691-2c26236c313d" />
-### これまでの評価とりんごの木のアニメーション画面
-<img width="1433" height="700" alt="Image" src="https://github.com/user-attachments/assets/dcad412c-c042-48f8-b461-f81817971292" />
+<img width="917" height="519" alt="Image" src="https://github.com/user-attachments/assets/23d5fe2d-8fbb-4256-8085-feda9abfdfe6" />
 
 # 業務フロー
 
