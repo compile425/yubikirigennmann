@@ -191,7 +191,8 @@ graph TD
 # ワイヤーフレーム
 [ゆびきりげんまん.pdf](https://github.com/user-attachments/files/21178378/default.pdf)
 # テーブル定義書（もしくは ER 図）
-erDiagram
+
+```erDiagram
     users ||--o{ partnerships : "has one"
     partnerships ||--|{ promises : "has many"
     partnerships ||--|{ notes : "has many"
@@ -241,6 +242,7 @@ erDiagram
         text content
         boolean is_read
     }
+```
 # システム構成図
 作成中です
 
