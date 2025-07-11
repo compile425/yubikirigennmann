@@ -191,7 +191,52 @@ graph TD
 # ワイヤーフレーム
 [ゆびきりげんまん.pdf](https://github.com/user-attachments/files/21178378/default.pdf)
 # テーブル定義書（もしくは ER 図）
-作成中です
+erDiagram
+    users ||--o{ partnerships : "has one"
+    partnerships ||--|{ promises : "has many"
+    partnerships ||--|{ notes : "has many"
+    users ||--o{ promises : "creates"
+    users ||--o{ evaluations : "evaluates"
+    users ||--o{ notes : "sends"
+    promises ||--|{ evaluations : "has many"
+
+    users {
+        int id PK
+        string email
+        string password_digest
+        string name
+        string profile_image_url
+    }
+    partnerships {
+        int id PK
+        string invite_token
+        string status
+    }
+    promises {
+        int id PK
+        int partnership_id FK
+        int creator_id FK
+        string title
+        text description
+        string promise_type
+        date due_date
+        string status
+    }
+    evaluations {
+        int id PK
+        int promise_id FK
+        int evaluator_id FK
+        int score
+        text comment
+        text improvement_plan
+    }
+    notes {
+        int id PK
+        int partnership_id FK
+        int sender_id FK
+        text content
+        boolean is_read
+    }
 # システム構成図
 作成中です
 
