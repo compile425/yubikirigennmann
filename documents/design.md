@@ -1,6 +1,6 @@
 # 画面遷移図
 
-<img width="917" height="519" alt="Image" src="https://github.com/user-attachments/assets/23d5fe2d-8fbb-4256-8085-feda9abfdfe6" />
+<img width="1029" height="425" alt="Image" src="https://github.com/user-attachments/assets/47b2cd26-0525-43af-a78b-5211373636a9" />
 
 # 業務フロー
 
