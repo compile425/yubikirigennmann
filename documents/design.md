@@ -193,6 +193,17 @@ graph TD
 ```
 # ワイヤーフレーム
 [ゆびきりげんまん.pdf](https://github.com/user-attachments/files/21178378/default.pdf)
+<img width="1728" height="1117" alt="Image" src="https://github.com/user-attachments/assets/35fbabbd-78be-4b2a-ace9-5e6b115059d2" />
+<img width="1728" height="1117" alt="Image" src="https://github.com/user-attachments/assets/bcead0be-f42f-4dac-a1c3-6477cf882932" />
+<img width="1728" height="1117" alt="Image" src="https://github.com/user-attachments/assets/8040c8e2-8b02-4078-93ae-a7a5ca87f128" />
+<img width="1728" height="1117" alt="Image" src="https://github.com/user-attachments/assets/51e2d4b5-aa56-4088-bdc8-64976896b698" />
+<img width="1728" height="1117" alt="Image" src="https://github.com/user-attachments/assets/dc4003ab-d2e2-41a9-abff-e16751323267" />
+<img width="1728" height="1117" alt="Image" src="https://github.com/user-attachments/assets/8a09610e-e601-4f5b-ac4a-e6964376f237" />
+<img width="1728" height="1117" alt="Image" src="https://github.com/user-attachments/assets/71a58293-75a6-4cdf-b36a-767fbaed4b5c" />
+<img width="1728" height="1117" alt="Image" src="https://github.com/user-attachments/assets/fe643607-ed89-4562-97b4-86a6ed4da1a8" />
+<img width="1728" height="1117" alt="Image" src="https://github.com/user-attachments/assets/3c2c37db-a10a-46dd-bd9c-2ad720743edf" />
+<img width="1728" height="1117" alt="Image" src="https://github.com/user-attachments/assets/09f7d637-ea76-495a-b103-82fe15dfdfd7" />
+<img width="1728" height="1117" alt="Image" src="https://github.com/user-attachments/assets/1e7a1270-2d40-485d-a01a-19aeef90e475" />
 # ER 図
 
 ```mermaid
@@ -250,5 +261,26 @@ erDiagram
     }
 ```
 # システム構成図
-作成中です
+```mermaid
+graph TD
+    subgraph "フロントエンド (React / ブラウザ)"
+        F_Router["Router<br>(画面のURL管理)"] --> F_Components["UIコンポーネント<br>(ボタン、フォーム、画面表示)"]
+        F_Components -- "操作" --> F_State["State管理<br>(状態保持)"]
+        F_State -- "API呼び出し" --> F_API["APIクライアント<br>(データ送受信)"]
+        F_API -- "状態更新" --> F_State
+        F_State -- "再描画" --> F_Components
+    end
 
+    subgraph "バックエンド (Rails API / サーバー)"
+        B_Router["Router (routes.rb)<br>(リクエストの入口)"] --> B_Controllers["コントローラー<br>(リクエストの受付・指示)"]
+        B_Controllers --> B_Services["サービスオブジェクト<br>(複雑なビジネスロジック)"]
+        B_Controllers --> B_Models["モデル<br>(データ処理・検証)"]
+        B_Services --> B_Models
+        B_Models --> B_Serializers["シリアライザー<br>(JSON整形)"]
+        B_Controllers --> B_Serializers
+        B_Controllers -.-> B_Jobs["バックグラウンドジョブ<br>(メール送信、リマインド)"]
+    end
+
+    %% フロントエンドとバックエンドの連携
+    F_API -- "HTTPリクエスト / JSONレスポンス" --> B_Router
+```
