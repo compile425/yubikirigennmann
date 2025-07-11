@@ -201,39 +201,43 @@ erDiagram
     promises ||--|{ evaluations : "has many"
 
     users {
-        int id PK
+        int id "PK"
         string email
         string password_digest
         string name
         string profile_image_url
     }
+
     partnerships {
-        int id PK
+        int id "PK"
         string invite_token
         string status
     }
+
     promises {
-        int id PK
-        int partnership_id FK
-        int creator_id FK
+        int id "PK"
+        int partnership_id "FK"
+        int creator_id "FK"
         string title
         text description
         string promise_type
         date due_date
         string status
     }
+
     evaluations {
-        int id PK
-        int promise_id FK
-        int evaluator_id FK
+        int id "PK"
+        int promise_id "FK"
+        int evaluator_id "FK"
         int score
         text comment
         text improvement_plan
     }
+
     notes {
-        int id PK
-        int partnership_id FK
-        int sender_id FK
+        int id "PK"
+        int partnership_id "FK"
+        int sender_id "FK"
         text content
         boolean is_read
     }
