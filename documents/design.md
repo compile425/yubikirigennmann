@@ -190,7 +190,7 @@ graph TD
 ```
 # ワイヤーフレーム
 [ゆびきりげんまん.pdf](https://github.com/user-attachments/files/21178378/default.pdf)
-# テーブル定義書（もしくは ER 図）
+# ER 図
 
 ```mermaid
 erDiagram
