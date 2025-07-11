@@ -189,7 +189,7 @@ graph TD
     style C1 fill:#B9E6FF,color:#000
 ```
 # ワイヤーフレーム
-作成中です
+[ゆびきりげんまん.pdf](https://github.com/user-attachments/files/21178378/default.pdf)
 # テーブル定義書（もしくは ER 図）
 作成中です
 # システム構成図
