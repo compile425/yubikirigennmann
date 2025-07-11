@@ -192,7 +192,8 @@ graph TD
 [ゆびきりげんまん.pdf](https://github.com/user-attachments/files/21178378/default.pdf)
 # テーブル定義書（もしくは ER 図）
 
-```erDiagram
+```mermaid
+erDiagram
     users ||--o{ partnerships : "has one"
     partnerships ||--|{ promises : "has many"
     partnerships ||--|{ notes : "has many"
