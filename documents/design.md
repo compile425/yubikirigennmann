@@ -194,7 +194,8 @@ graph TD
 
 ```mermaid
 erDiagram
-    users ||--o{ partnerships : "has one"
+    %% --- 関係性の定義 ---
+    partnerships ||--|{ users : "has"
     partnerships ||--|{ promises : "has many"
     partnerships ||--|{ notes : "has many"
     users ||--o{ promises : "creates"
@@ -202,12 +203,14 @@ erDiagram
     users ||--o{ notes : "sends"
     promises ||--|{ evaluations : "has many"
 
+    %% --- テーブル（エンティティ）の定義 ---
     users {
         int id "PK"
         string email
         string password_digest
         string name
         string profile_image_url
+        int partnership_id "FK"
     }
 
     partnerships {
