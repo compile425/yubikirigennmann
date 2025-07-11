@@ -70,26 +70,29 @@ graph TD
 
     subgraph "評価者 (約束された側)"
         T2 --> U1["通知から評価画面へ"]
-        U1 --> U2["星評価(1~5)を選択"]
-        U2 --> D1{"星2以下か？"}
-        D1 -- No --> U4["「思ったこと(感謝など)」<br>を記入"]
-        D1 -- Yes --> U3["「改善案」を記入"] --> U4
-        U4 --> U5["評価を送信"]
+        U1 --> U2["星評価(1~5)と<br>「思ったこと(感謝など)」を記入"]
+        U2 --> U5["評価を送信"]
     end
 
     subgraph "システム (APIサーバー)"
-        U5 --> S1["[DB] 評価データを保存"] --> S2["[DB] 約束ステータスを更新"] --> S3["[DB] 信頼スコアを<br>再計算・更新"]
+        U5 --> S1["[DB] 評価データを保存"]
+        S1 --> S2["[DB] 約束ステータスを更新"]
+        S2 --> S3["[DB] 信頼スコアを<br>再計算・更新"]
         S3 --> S4["りんごの木のアニメーションを<br>再生させる(実る)"]
-        S3 -.-> S5["(非同期) 被評価者へ<br>評価完了を通知"]
-        S4 --> C1("完了")
+        S4 --> D1{"評価が星2以下か？"}
+        D1 -- No --> C1("完了")
+        D1 -- Yes --> S5["(非同期) 被評価者へ<br>改善案の入力を要求"]
     end
 
     subgraph "被評価者 (約束した側)"
-        S5 -.-> E1["評価完了の通知を受け取り、<br>内容を確認"]
+        S5 -.-> E1["改善案の要求通知を受け取る"]
+        E1 --> E2["評価内容を確認し、<br>改善案を記入・送信"]
+        E2 --> E3["[システム] 改善案をDBに保存"] --> E4("完了")
     end
 
     style T1 fill:#B9E6FF,color:#000
     style C1 fill:#B9E6FF,color:#000
+    style E4 fill:#B9E6FF,color:#000
 ```
 ### フロー4：月末の月次レポート
 
@@ -223,8 +226,7 @@ erDiagram
         int id "PK"
         int partnership_id "FK"
         int creator_id "FK"
-        string title
-        text description
+        text content
         string promise_type
         date due_date
         string status
