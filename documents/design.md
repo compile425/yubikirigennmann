@@ -277,7 +277,6 @@ graph TD
         B_Controllers --> B_Models["モデル<br>(データ処理・検証)"]
         B_Services --> B_Models
         B_Models --> B_Serializers["シリアライザー<br>(JSON整形)"]
-        B_Controllers --> B_Serializers
         B_Controllers -.-> B_Jobs["バックグラウンドジョブ<br>(メール送信、リマインド)"]
     end
 
