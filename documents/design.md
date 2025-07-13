@@ -274,7 +274,6 @@ graph TD
 
     subgraph "バックエンド (Rails API)"
         B_Router["Router (routes.rb)<br>(リクエストの入口)"] --> B_Controllers["コントローラー<br>(リクエストの受付・指示)"]
-        B_Controllers --> B_Services["サービスオブジェクト<br>(複雑なビジネスロジック)"]
         B_Controllers --> B_Models["モデル<br>(データ処理・検証)"]
         B_Services --> B_Models
         B_Models --> B_Serializers["シリアライザー<br>(JSON整形)"]
