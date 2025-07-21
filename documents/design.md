@@ -211,12 +211,16 @@ graph TD
 erDiagram
     %% --- 関係性の定義 ---
     partnerships ||--|{ users : "has"
-    partnerships ||--|{ promises : "has many"
-    partnerships ||--|{ notes : "has many"
+    partnerships ||--|{ promises : "creates"
+    partnerships ||--|{ notes : "sends"
+    partnerships ||--|{ monthly_summaries : "has"
     users ||--o{ promises : "creates"
     users ||--o{ evaluations : "evaluates"
     users ||--o{ notes : "sends"
-    promises ||--|{ evaluations : "has many"
+    users ||--o{ note_read_events : "reads"
+    promises ||--|{ evaluations : "is evaluated by"
+    promises ||--|{ promise_events : "has history of"
+
 
     %% --- テーブル（エンティティ）の定義 ---
     users {
@@ -241,7 +245,15 @@ erDiagram
         text content
         string promise_type
         date due_date
-        string status
+        datetime created_at
+    }
+
+    promise_events {
+        int id "PK"
+        int promise_id "FK"
+        string event_type "'EDITED', 'DELETED', 'COMPLETED', 'EXPIRED'"
+        json event_data "変更内容など"
+        datetime created_at
     }
 
     evaluations {
@@ -258,7 +270,22 @@ erDiagram
         int partnership_id "FK"
         int sender_id "FK"
         text content
-        boolean is_read
+        datetime created_at
+    }
+
+    note_read_events {
+        int id "PK"
+        int note_id "FK"
+        int reader_id "FK"
+        datetime read_at
+    }
+
+    monthly_summaries {
+        int id "PK"
+        int partnership_id "FK"
+        date year_month
+        float average_score
+        int harvested_apples
     }
 ```
 # システム構成図(アプリケーションレイヤーのみ)
