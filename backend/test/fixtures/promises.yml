@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  content: MyText
+  promise_type: MyString
+  due_date: 2025-07-24
+  partnership_id: 
+  creator_id: 
+
+two:
+  content: MyText
+  promise_type: MyString
+  due_date: 2025-07-24
+  partnership_id: 
+  creator_id: 
