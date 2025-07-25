@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+    has_secure_password
     belongs_to :partnership
 
     has_many :created_promises, class_name: 'Promise', foreign_key: 'creator_id'
