@@ -2,14 +2,10 @@
 
 one:
   email: MyString
-  password_digest: MyString
   name: MyString
   profile_image_url: MyString
-  partnership_id: 
 
 two:
   email: MyString
-  password_digest: MyString
   name: MyString
   profile_image_url: MyString
-  partnership_id: 

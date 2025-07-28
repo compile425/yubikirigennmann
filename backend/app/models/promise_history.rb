@@ -1,0 +1,2 @@
+class PromiseHistory < ApplicationRecord
+end
