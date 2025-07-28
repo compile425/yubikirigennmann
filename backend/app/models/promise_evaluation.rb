@@ -1,0 +1,2 @@
+class PromiseEvaluation < ApplicationRecord
+end

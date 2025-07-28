@@ -1,0 +1,2 @@
+class OneWordsRead < ApplicationRecord
+end

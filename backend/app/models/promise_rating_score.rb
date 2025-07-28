@@ -1,0 +1,2 @@
+class PromiseRatingScore < ApplicationRecord
+end
