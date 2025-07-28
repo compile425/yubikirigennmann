@@ -48,6 +48,16 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_28_052737) do
     t.index ["inviter_id"], name: "index_partnerships_on_inviter_id"
   end
 
+  create_table "promise_evaluation_monthly_summaries", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "partnership_id", null: false
+    t.date "year_month", null: false
+    t.float "average_score"
+    t.integer "harvested_apples"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["partnership_id"], name: "index_promise_evaluation_monthly_summaries_on_partnership_id"
+  end
+
   create_table "promise_evaluations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "promise_id", null: false
     t.bigint "user_id", null: false
@@ -68,16 +78,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_28_052737) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_promise_histories_on_user_id"
-  end
-
-  create_table "promise_rating_scores", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "partnership_id", null: false
-    t.date "year_month", null: false
-    t.float "average_score"
-    t.integer "harvested_apples"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["partnership_id"], name: "index_promise_rating_scores_on_partnership_id"
   end
 
   create_table "promises", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -118,10 +118,10 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_28_052737) do
   add_foreign_key "partnerships", "invitations"
   add_foreign_key "partnerships", "users", column: "invitee_id"
   add_foreign_key "partnerships", "users", column: "inviter_id"
+  add_foreign_key "promise_evaluation_monthly_summaries", "partnerships"
   add_foreign_key "promise_evaluations", "promises"
   add_foreign_key "promise_evaluations", "users"
   add_foreign_key "promise_histories", "users"
-  add_foreign_key "promise_rating_scores", "partnerships"
   add_foreign_key "promises", "promises"
   add_foreign_key "user_credentials", "users"
   add_foreign_key "users", "partnerships"

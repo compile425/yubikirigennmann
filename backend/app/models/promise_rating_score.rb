@@ -1,2 +1,0 @@
-class PromiseRatingScore < ApplicationRecord
-end
