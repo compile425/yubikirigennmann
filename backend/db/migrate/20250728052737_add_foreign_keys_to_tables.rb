@@ -32,7 +32,7 @@ class AddForeignKeysToTables < ActiveRecord::Migration[7.1]
     add_foreign_key :one_words_reads, :one_words
     add_foreign_key :one_words_reads, :users
 
-    # promise_rating_scoresテーブル
-    add_foreign_key :promise_rating_scores, :partnerships
+    # promise_evaluation_monthly_summariesテーブル
+    add_foreign_key :promise_evaluation_monthly_summaries, :partnerships
   end
 end

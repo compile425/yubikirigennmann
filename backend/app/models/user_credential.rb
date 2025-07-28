@@ -1,2 +1,5 @@
 class UserCredential < ApplicationRecord
-end
+    has_secure_password
+    
+    belongs_to :user
+  end
