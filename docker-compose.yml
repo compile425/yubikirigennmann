@@ -16,6 +16,7 @@ services:
       DB_HOST: db
       MYSQL_ROOT_PASSWORD: password
       RAILS_ENV: development
+      DISABLE_DATABASE_ENVIRONMENT_CHECK: '1'
     tty: true
     stdin_open: true
 
@@ -40,7 +41,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: password
     volumes:
-      - db-data:/var/lib/mysql
+      - db-data-v2:/var/lib/mysql
     ports:
       - "3306:3306"
     healthcheck:
@@ -51,5 +52,5 @@ services:
       start_period: 5s
 
 volumes:
-  db-data:
+  db-data-v2:
 

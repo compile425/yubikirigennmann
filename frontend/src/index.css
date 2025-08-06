@@ -225,7 +225,6 @@ body.page-report {
   border-radius: 12px;
   box-shadow: inset 0 2px 0 #fff, 0 4px 0 #ccc;
   flex-shrink: 0;
-  position: absolute;
 }
 
 .post-it-footer {
@@ -657,7 +656,7 @@ body.page-report {
 }
 
 /* :target疑似クラスを使って表示を制御 */
-.modal-overlay:target {
+.modal-overlay.is-open {
  opacity: 1;
  visibility: visible;
 }
@@ -674,7 +673,7 @@ body.page-report {
  transform: scale(0.9);
  transition: transform 0.3s ease;
 }
-.modal-overlay:target .modal-window {
+.modal-overlay.is-open .modal-window {
  transform: scale(1);
 }
 
@@ -1120,4 +1119,54 @@ body.page-login {
 .copy-button:active {
  transform: translateY(2px);
  box-shadow: 0 2px 0 #043a40;
+}
+
+/* 評価フォーム用のスタイル */
+.promise-preview {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.promise-preview h3 {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  color: var(--heading-color);
+}
+
+.promise-preview p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-color-brown);
+}
+
+.rating-text {
+  margin-top: 10px;
+  font-size: 14px;
+  color: var(--text-color-brown);
+  text-align: center;
+}
+
+/* 星評価のスタイル調整 */
+.star-rating {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.star {
+  font-size: 24px;
+  cursor: pointer;
+  transition: transform 0.1s ease-out;
+}
+
+.star:hover {
+  transform: scale(1.1);
+}
+
+.star.filled {
+  color: var(--star-filled);
+  text-shadow: 0 2px 0 var(--star-filled-shadow);
 }

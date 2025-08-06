@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_07_28_052737) do
+ActiveRecord::Schema[7.2].define(version: 2025_08_06_095001) do
   create_table "invitations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "partnership_id", null: false
     t.datetime "created_at", null: false
@@ -20,12 +20,10 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_28_052737) do
 
   create_table "one_words", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "partnership_id", null: false
-    t.bigint "user_id", null: false
-    t.text "content", null: false
+    t.text "content"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["partnership_id"], name: "index_one_words_on_partnership_id"
-    t.index ["user_id"], name: "index_one_words_on_user_id"
   end
 
   create_table "one_words_reads", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -38,91 +36,82 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_28_052737) do
   end
 
   create_table "partnerships", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "inviter_id", null: false
-    t.bigint "invitee_id", null: false
-    t.bigint "invitation_id", null: false
+    t.bigint "user_id", null: false
+    t.bigint "partner_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["invitation_id"], name: "index_partnerships_on_invitation_id"
-    t.index ["invitee_id"], name: "index_partnerships_on_invitee_id"
-    t.index ["inviter_id"], name: "index_partnerships_on_inviter_id"
+    t.index ["partner_id"], name: "index_partnerships_on_partner_id"
+    t.index ["user_id"], name: "index_partnerships_on_user_id"
   end
 
-  create_table "promise_evaluation_monthly_summaries", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "promise_evaluations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "promise_id", null: false
+    t.integer "rating"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.text "evaluation_text"
+    t.index ["promise_id"], name: "index_promise_evaluations_on_promise_id"
+  end
+
+  create_table "promise_histories", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "promise_id", null: false
+    t.string "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["promise_id"], name: "index_promise_histories_on_promise_id"
+  end
+
+  create_table "promise_rating_scores", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "partnership_id", null: false
     t.date "year_month", null: false
     t.float "average_score"
     t.integer "harvested_apples"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["partnership_id"], name: "index_promise_evaluation_monthly_summaries_on_partnership_id"
-  end
-
-  create_table "promise_evaluations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "promise_id", null: false
-    t.bigint "user_id", null: false
-    t.integer "score", null: false
-    t.text "comment"
-    t.text "improvement_plan"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["promise_id"], name: "index_promise_evaluations_on_promise_id"
-    t.index ["user_id"], name: "index_promise_evaluations_on_user_id"
-  end
-
-  create_table "promise_histories", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.text "content", null: false
-    t.string "type", null: false
-    t.date "due_date"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_promise_histories_on_user_id"
+    t.index ["partnership_id"], name: "index_promise_rating_scores_on_partnership_id"
   end
 
   create_table "promises", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "promise_id", null: false
-    t.string "type", null: false
-    t.text "content", null: false
-    t.date "due_date"
+    t.bigint "partnership_id", null: false
+    t.text "content"
+    t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["promise_id"], name: "index_promises_on_promise_id"
+    t.bigint "creator_id", null: false
+    t.string "type"
+    t.date "due_date"
+    t.integer "promise_id"
+    t.index ["creator_id"], name: "index_promises_on_creator_id"
+    t.index ["partnership_id"], name: "index_promises_on_partnership_id"
   end
 
   create_table "user_credentials", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "invite_token", null: false
     t.bigint "user_id", null: false
+    t.string "invite_token"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "password_digest"
     t.index ["invite_token"], name: "index_user_credentials_on_invite_token", unique: true
     t.index ["user_id"], name: "index_user_credentials_on_user_id"
   end
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "email", null: false
-    t.string "name", null: false
-    t.string "profile_image_url"
-    t.bigint "partnership_id", null: false
+    t.string "email"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "name"
     t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["partnership_id"], name: "index_users_on_partnership_id"
   end
 
   add_foreign_key "invitations", "partnerships"
   add_foreign_key "one_words", "partnerships"
-  add_foreign_key "one_words", "users"
   add_foreign_key "one_words_reads", "one_words"
   add_foreign_key "one_words_reads", "users"
-  add_foreign_key "partnerships", "invitations"
-  add_foreign_key "partnerships", "users", column: "invitee_id"
-  add_foreign_key "partnerships", "users", column: "inviter_id"
-  add_foreign_key "promise_evaluation_monthly_summaries", "partnerships"
+  add_foreign_key "partnerships", "users"
+  add_foreign_key "partnerships", "users", column: "partner_id"
   add_foreign_key "promise_evaluations", "promises"
-  add_foreign_key "promise_evaluations", "users"
-  add_foreign_key "promise_histories", "users"
-  add_foreign_key "promises", "promises"
+  add_foreign_key "promise_histories", "promises"
+  add_foreign_key "promises", "partnerships"
+  add_foreign_key "promises", "users", column: "creator_id"
   add_foreign_key "user_credentials", "users"
-  add_foreign_key "users", "partnerships"
 end

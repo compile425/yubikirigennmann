@@ -1,6 +1,9 @@
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginForm from './components/LoginForm';
-import Dashboard from './components/Dashboard'; // 新しいDashboardをインポート
+import Dashboard from './components/Dashboard';
+import EvaluationPage from './components/EvaluationPage';
+import PastEvaluationsPage from './components/PastEvaluationsPage';
 import { useAuth } from './contexts/useAuth';
 
 function App() {
@@ -18,10 +21,17 @@ function App() {
   }, [token]);
 
   return (
-    <div>
-      {/* ログインしていれば新しいDashboard、していなければLoginFormを表示 */}
-      {token ? <Dashboard /> : <LoginForm />}
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/evaluate/:id" element={<EvaluationPage />} />
+        <Route path="/past-evaluations" element={
+          token ? <PastEvaluationsPage /> : <LoginForm />
+        } />
+        <Route path="*" element={
+          token ? <Dashboard /> : <LoginForm />
+        } />
+      </Routes>
+    </Router>
   );
 }
 
