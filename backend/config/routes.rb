@@ -1,13 +1,16 @@
 Rails.application.routes.draw do
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   namespace :api do
-    # ↓↓↓↓ この1行を追加します ↓↓↓↓
     post '/login', to: 'sessions#create'
+    resources :promises, only: [:index, :create, :update, :destroy] do
+      resources :promise_evaluations, only: [:create]
+    end
+    get '/evaluated-promises', to: 'evaluated_promises#index'
+    get '/evaluation_pages/:id', to: 'evaluation_pages#show'
+    get '/get_me', to: 'users#me'
+    post '/evaluation_emails', to: 'evaluation_emails#create'
+    
+    # スケジュールタスク用のルーティング
+    post '/scheduled_tasks/send_due_date_evaluations', to: 'scheduled_tasks#send_due_date_evaluations'
+    post '/scheduled_tasks/send_weekly_our_promises_evaluation', to: 'scheduled_tasks#send_weekly_our_promises_evaluation'
   end
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
-  get "up" => "rails/health#show", as: :rails_health_check
-
-  # Defines the root path route ("/")
-  # root "posts#index"
 end

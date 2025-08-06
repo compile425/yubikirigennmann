@@ -1,12 +1,10 @@
 class Partnership < ApplicationRecord
-    # 関連付け
-    has_many :users
-    has_one :invitation
-    has_many :promises, dependent: :destroy
-    has_many :one_words, dependent: :destroy
-    has_many :promise_evaluation_monthly_summaries, dependent: :destroy
-  
-    # Userモデルのuser1_id, user2_idと関連付けるための記述
-    belongs_to :user1, class_name: 'User'
-    belongs_to :user2, class_name: 'User'
-  end
+  has_many :users
+  has_many :promises, dependent: :destroy
+  has_many :one_words, dependent: :destroy
+  has_many :monthly_summaries, dependent: :destroy
+  belongs_to :invitation, optional: true
+  belongs_to :user, class_name: 'User', foreign_key: 'user_id'
+  belongs_to :partner, class_name: 'User', foreign_key: 'partner_id'
+end
+    
