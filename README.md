@@ -9,16 +9,16 @@
 ## 実装済み機能
 
 ### バックエンド (Rails)
-・`EvaluationMailer` - 評価メール送信機能
-・`evaluation_emails_controller` - API エンドポイント
-・メールテンプレート (`weekly_evaluation_email.html.erb`)
-・スケジュール設定 (`config/schedule.rb`)
-・テスト用タスク (`lib/tasks/evaluation_emails.rake`)
+・`EvaluationMailer` - 評価メール送信機能  
+・`evaluation_emails_controller` - API エンドポイント  
+・メールテンプレート (`weekly_evaluation_email.html.erb`)  
+・スケジュール設定 (`config/schedule.rb`)  
+・テスト用タスク (`lib/tasks/evaluation_emails.rake`)  
 
 ### フロントエンド (React)
-・評価メール送信ボタン
-・ローディング状態の表示
-・エラーハンドリング
+・評価メール送信ボタン  
+・ローディング状態の表示  
+・エラーハンドリング  
 
 ## 設定手順
 
@@ -36,10 +36,10 @@ GMAIL_PASSWORD=your-app-password
 
 ### 2. Gmailアプリパスワードの取得
 
-1. Googleアカウントの設定にアクセス
-2. セキュリティ → 2段階認証を有効化
-3. アプリパスワードを生成
-4. 生成されたパスワードを `.env` ファイルに設定
+1. Googleアカウントの設定にアクセス  
+2. セキュリティ → 2段階認証を有効化  
+3. アプリパスワードを生成  
+4. 生成されたパスワードを `.env` ファイルに設定  
 
 ### 3. スケジュールタスクの設定
 
@@ -71,17 +71,17 @@ bundle exec rake evaluation_emails:send_test
 ## トラブルシューティング
 
 ### メールが送信されない場合
-1. `.env` ファイルの設定を確認
-2. Gmailアプリパスワードが正しく設定されているか確認
+1. `.env` ファイルの設定を確認  
+2. Gmailアプリパスワードが正しく設定されているか確認  
 3. ログを確認: `tail -f backend/log/development.log`
 
 ### スケジュールタスクが動作しない場合
-1. cronジョブの確認: `crontab -l`
+1. cronジョブの確認: `crontab -l`  
 2. wheneverの再設定: `bundle exec whenever --update-crontab`
 
 ## 技術仕様
-・**メール送信**: Action Mailer + SMTP (Gmail)
-・**スケジュール**: whenever gem + cron
-・**認証**: JWT トークン
-・**フロントエンド**: React + TypeScript
-・**バックエンド**: Rails 7.2 + MySQL
+・**メール送信**: Action Mailer + SMTP (Gmail)  
+・**スケジュール**: whenever gem + cron  
+・**認証**: JWT トークン  
+・**フロントエンド**: React + TypeScript  
+・**バックエンド**: Rails 7.2 + MySQL  
