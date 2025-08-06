@@ -4,11 +4,9 @@ class Api::PromisesController < ApplicationController
   
   def index
     if current_user&.partnership
-      # ユーザーが所属するパートナーシップの全ての約束を取得
       @promises = current_user.partnership.promises
       render json: @promises
     else
-      # パートナーシップが存在しない場合
       render json: [], status: :ok
     end
   end

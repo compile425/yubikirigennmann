@@ -8,7 +8,6 @@ class Api::EvaluationEmailsController < ApplicationController
       return
     end
 
-    # 二人の約束の中で一番上（最新）のものを取得
     top_our_promise = partnership.promises.where(type: 'our_promise').order(:updated_at).first
 
     unless top_our_promise
@@ -16,10 +15,8 @@ class Api::EvaluationEmailsController < ApplicationController
       return
     end
 
-    # パートナーにメールを送信
     partner = partnership.user == current_user ? partnership.partner : partnership.user
     
-    # メール送信処理を実装
     begin
       EvaluationMailer.weekly_evaluation_email(current_user, partner, top_our_promise).deliver_now
       

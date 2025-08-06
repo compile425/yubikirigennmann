@@ -1,12 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-
-interface Promise {
-  id: number;
-  content: string;
-  due_date: string;
-  type: string;
-}
+import type { Promise } from '../types';
 
 interface EvaluationModalProps {
   isOpen: boolean;
@@ -16,30 +10,30 @@ interface EvaluationModalProps {
 }
 
 const EvaluationModal = ({ isOpen, onClose, promise, onEvaluationSubmitted }: EvaluationModalProps) => {
-  const [evaluationText, setEvaluationText] = useState('');
   const [rating, setRating] = useState(0);
-  
+  const [evaluationText, setEvaluationText] = useState('');
+  const [hoveredRating, setHoveredRating] = useState(0);
+
   useEffect(() => {
     if (isOpen) {
-      setEvaluationText('');
       setRating(0);
+      setEvaluationText('');
+      setHoveredRating(0);
     }
   }, [isOpen]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!promise) return;
+    if (!promise || rating === 0) return;
 
     try {
-      const evaluationData = {
-        evaluation_text: evaluationText,
-        rating: rating,
-      };
-
       await axios.post(`http://localhost:3001/api/promises/${promise.id}/promise_evaluations`, {
-        evaluation: evaluationData
+        evaluation: {
+          rating: rating,
+          evaluation_text: evaluationText,
+        }
       });
-      
+
       onEvaluationSubmitted();
       onClose();
 
@@ -49,54 +43,59 @@ const EvaluationModal = ({ isOpen, onClose, promise, onEvaluationSubmitted }: Ev
     }
   };
 
-  const overlayClassName = isOpen ? "modal-overlay is-open" : "modal-overlay";
+  const overlayClassName = isOpen ? "yubi-modal-overlay yubi-modal-overlay--open" : "yubi-modal-overlay";
 
   return (
     <div className={overlayClassName} onClick={onClose}>
-      <div className="modal-window" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <h2 className="modal-title">約束を評価</h2>
+      <div className="yubi-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="yubi-modal__header">
+          <h2 className="yubi-modal__title">約束を評価</h2>
         </div>
         <form onSubmit={handleSubmit}>
-          <div className="modal-body">
-            {promise && (
-              <div className="promise-preview">
-                <h3>評価対象の約束</h3>
-                <p>{promise.content}</p>
-              </div>
-            )}
-            
-            <div className="form-group">
-              <label htmlFor="evaluation-text">思ったこと</label>
-              <textarea 
-                id="evaluation-text" 
-                placeholder="この約束について思ったことを自由に書いてください..."
-                value={evaluationText}
-                onChange={(e) => setEvaluationText(e.target.value)}
-                required
-              />
+          <div className="yubi-modal__body">
+            <div className="yubi-form-group">
+              <label className="yubi-form-group__label">約束の内容</label>
+              <p className="yubi-evaluation__promise-content">{promise?.content}</p>
             </div>
             
-            <div className="form-group">
-              <label>評価</label>
-              <div className="star-rating">
+            <div className="yubi-form-group">
+              <label className="yubi-form-group__label">評価</label>
+              <div className="yubi-rating">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <span
                     key={star}
-                    className={`star ${star <= rating ? 'filled' : ''}`}
+                    className={`yubi-star ${star <= (hoveredRating || rating) ? 'yubi-star--filled' : ''}`}
                     onClick={() => setRating(star)}
+                    onMouseEnter={() => setHoveredRating(star)}
+                    onMouseLeave={() => setHoveredRating(0)}
+                    style={{ cursor: 'pointer' }}
                   >
-                    ⭐
+                    ★
                   </span>
                 ))}
               </div>
-              <p className="rating-text">{rating > 0 ? `${rating}点` : '評価を選択してください'}</p>
+              {rating > 0 && (
+                <p className="yubi-rating-text">評価: {rating} / 5</p>
+              )}
+            </div>
+            
+            <div className="yubi-form-group">
+              <label htmlFor="evaluation-text" className="yubi-form-group__label">評価コメント</label>
+              <textarea 
+                id="evaluation-text" 
+                placeholder="評価コメントを入力..."
+                value={evaluationText}
+                onChange={(e) => setEvaluationText(e.target.value)}
+                className="yubi-form-group__textarea"
+              />
             </div>
             
           </div>
-          <div className="modal-footer">
-            <button type="button" onClick={onClose} className="modal-button cancel">キャンセル</button>
-            <button type="submit" className="modal-button add">評価を送信</button>
+          <div className="yubi-modal__footer">
+            <button type="button" onClick={onClose} className="yubi-button yubi-button--cancel">キャンセル</button>
+            <button type="submit" className="yubi-button yubi-button--primary" disabled={rating === 0}>
+              評価を送信
+            </button>
           </div>
         </form>
       </div>

@@ -34,41 +34,43 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <div className="login-container">
-      <header className="login-header">
+    <div className="yubi-login">
+      <header className="yubi-login__header">
         <h1>ログイン</h1>
       </header>
 
-      <form className="login-form" onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="email">メールアドレス</label>
+      <form className="yubi-login__form" onSubmit={handleSubmit}>
+        <div className="yubi-form-group">
+          <label htmlFor="email" className="yubi-form-group__label">メールアドレス</label>
           <input
             type="email"
             id="email"
             name="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            className="yubi-form-group__input"
             required
           />
         </div>
-        <div className="form-group">
-          <label htmlFor="password">パスワード</label>
+        <div className="yubi-form-group">
+          <label htmlFor="password" className="yubi-form-group__label">パスワード</label>
           <input
             type="password"
             id="password"
             name="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            className="yubi-form-group__input"
             required
           />
         </div>
-        {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
-        <button type="submit" className="login-button">ログインする</button>
+        {error && <p className="yubi-login__error">{error}</p>}
+        <button type="submit" className="yubi-button yubi-button--primary yubi-button--login">ログインする</button>
       </form>
 
-      <div className="login-links">
-        <a href="#">パスワードを忘れた場合</a>
-        <a href="#">新規登録はこちら</a>
+      <div className="yubi-login__links">
+        <a href="#" className="yubi-login__link">パスワードを忘れた場合</a>
+        <a href="#" className="yubi-login__link">新規登録はこちら</a>
       </div>
     </div>
   );

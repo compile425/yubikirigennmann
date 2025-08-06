@@ -38,7 +38,6 @@ const Dashboard = () => {
   };
 
   const handlePromiseCreated = async () => {
-    // 新しい約束を作成した後に、約束の一覧を再取得
     await fetchPromises();
   };
 
@@ -81,6 +80,28 @@ const Dashboard = () => {
     }
   };
 
+  const handleSendDueDateEvaluations = async () => {
+    try {
+      const response = await axios.post('http://localhost:3001/api/scheduled_tasks/send_due_date_evaluations');
+      alert('期日が来た約束の評価メールを送信しました！');
+      console.log('送信結果:', response.data);
+    } catch (error) {
+      console.error("期日評価メールの送信に失敗しました:", error);
+      alert("期日評価メールの送信に失敗しました。");
+    }
+  };
+
+  const handleSendWeeklyEvaluations = async () => {
+    try {
+      const response = await axios.post('http://localhost:3001/api/scheduled_tasks/send_weekly_our_promises_evaluation');
+      alert('毎週の二人の約束評価メールを送信しました！');
+      console.log('送信結果:', response.data);
+    } catch (error) {
+      console.error("毎週評価メールの送信に失敗しました:", error);
+      alert("毎週評価メールの送信に失敗しました。");
+    }
+  };
+
   const handleOpenEvaluationModal = (promise: Promise) => {
     setSelectedPromise(promise);
     setIsEvaluationModalOpen(true);
@@ -90,11 +111,9 @@ const Dashboard = () => {
     await fetchPromises();
   };
 
-  // 動的なタイトルを生成
   const myPromisesTitle = currentUser ? `${currentUser.name}の約束` : 'わたしの約束';
   const partnerPromisesTitle = partner ? `${partner.name}の約束` : 'パートナーの約束';
 
-  // creator_idを使ってフィルタリング
   const myPromises = promises.filter(p => {
     console.log('Filtering promise:', p);
     console.log('Current user ID:', currentUser?.id);
@@ -106,10 +125,10 @@ const Dashboard = () => {
   const ourPromises = promises.filter(p => p.type === 'our_promise');
 
   return (
-    <div className="app-wrapper">
+    <div className="yubi-app">
       <Sidebar />
-      <main className="board-container">
-        <div className="board-columns">
+      <main className="yubi-main">
+        <div className="yubi-board">
           <PromiseColumn 
             title={myPromisesTitle} 
             promises={myPromises} 
@@ -138,21 +157,27 @@ const Dashboard = () => {
           />
         </div>
         
-        <div style={{ textAlign: 'center', marginTop: '20px' }}>
+        <div className="yubi-evaluation-email-section">
           <button 
             onClick={handleSendEvaluationEmail}
             disabled={isSendingEmail}
-            style={{
-              padding: '10px 20px',
-              backgroundColor: isSendingEmail ? '#ccc' : '#075763',
-              color: 'white',
-              border: 'none',
-              borderRadius: '8px',
-              cursor: isSendingEmail ? 'not-allowed' : 'pointer',
-              fontSize: '16px'
-            }}
+            className="yubi-button yubi-button--primary yubi-button--email"
           >
             {isSendingEmail ? '送信中...' : '評価メールを送信'}
+          </button>
+          <button 
+            onClick={handleSendDueDateEvaluations}
+            className="yubi-button yubi-button--primary yubi-button--email"
+            style={{ marginLeft: '10px' }}
+          >
+            期日評価メールを送信
+          </button>
+          <button 
+            onClick={handleSendWeeklyEvaluations}
+            className="yubi-button yubi-button--primary yubi-button--email"
+            style={{ marginLeft: '10px' }}
+          >
+            毎週評価メールを送信
           </button>
         </div>
       </main>

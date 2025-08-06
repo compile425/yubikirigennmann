@@ -2,13 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import EvaluationModal from './EvaluationModal';
-
-interface Promise {
-  id: number;
-  content: string;
-  due_date: string;
-  type: string;
-}
+import type { Promise } from '../types';
 
 const EvaluationPage = () => {
   const { id } = useParams();
@@ -50,7 +44,6 @@ const EvaluationPage = () => {
 
   const handleEvaluationSubmitted = () => {
     setIsModalOpen(false);
-    // 評価完了後の処理（例：完了ページへのリダイレクト）
   };
 
   if (isLoading) {

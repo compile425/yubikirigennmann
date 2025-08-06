@@ -9,7 +9,6 @@ class Api::PromiseEvaluationsController < ApplicationController
     evaluation.evaluator = current_user
 
     if evaluation.save
-      # 評価された約束を一番下に移動
       @promise.update(updated_at: Time.current)
       render json: evaluation, status: :created
     else

@@ -20,19 +20,22 @@ const PromiseColumn = ({ title, promises, onAdd, showAddButton = true, onEdit, o
   });
   
   return (
-    <div className="column">
-      <h2 className="column-title">
+    <div className="yubi-column">
+      <h2 className="yubi-column__header">
         <span>{title}</span>
         {showAddButton && (
-          <button onClick={onAdd} className="add-promise-button">+</button>
+          <button onClick={onAdd} className="yubi-button yubi-button--add">+</button>
         )}
       </h2>
-      <div className="post-it-container">
+      <div className="yubi-column__content">
         {promises.map((promise, index) => (
           <PostIt 
             key={promise.id} 
             content={promise.content} 
             dueDate={promise.due_date}
+            rating={promise.rating}
+            evaluationText={promise.evaluation_text}
+            evaluationDate={promise.evaluation_date}
             onEdit={onEdit ? () => onEdit(promise) : undefined}
             onDelete={onDelete ? () => onDelete(promise) : undefined}
             onEvaluate={onEvaluate && showEvaluationButton && index === 0 ? () => onEvaluate(promise) : undefined}

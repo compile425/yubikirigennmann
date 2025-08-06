@@ -9,7 +9,7 @@ class Api::EvaluatedPromisesController < ApplicationController
         .includes(:promise_evaluation, :creator)
         .order('promise_evaluations.created_at DESC')
 
-      render json: @evaluated_promises.map do |promise|
+      response_data = @evaluated_promises.map do |promise|
         {
           id: promise.id,
           content: promise.content,
@@ -21,6 +21,9 @@ class Api::EvaluatedPromisesController < ApplicationController
           evaluator_name: promise.promise_evaluation.evaluator.name
         }
       end
+
+      Rails.logger.info "EvaluatedPromises API Response: #{response_data}"
+      render json: response_data
     else
       render json: [], status: :ok
     end

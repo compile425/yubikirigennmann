@@ -10,25 +10,24 @@ const Sidebar: React.FC = () => {
 
   return (
     <>
-      <input type="checkbox" id="menu-toggle" />
-      <label htmlFor="menu-toggle" className="menu-button">
-        <span></span>
-        <span></span>
-        <span></span>
+      <input type="checkbox" id="yubi-nav-toggle" className="yubi-nav-toggle" />
+      <label htmlFor="yubi-nav-toggle" className="yubi-nav-button">
+        <span className="yubi-nav-button__line"></span>
+        <span className="yubi-nav-button__line"></span>
+        <span className="yubi-nav-button__line"></span>
       </label>
-      <aside className="sidebar">
-        <nav className="sidebar-nav">
-          <Link to="/">約束一覧</Link>
-          <Link to="/past-evaluations">過去の約束</Link>
-          <a href="#">ふたりの記録</a>
-          <a href="#">過去の評価</a>
-          <a href="#">ちょっと一言</a>
-          <a href="#">このアプリについて</a>
-          <a href="#">パートナー解消</a>
-          <a href="#" onClick={handleLogout}>ログアウト</a>
+      <aside className="yubi-sidebar">
+        <nav className="yubi-sidebar__nav">
+          <Link to="/" className="yubi-sidebar__link">約束一覧</Link>
+          <a href="#" className="yubi-sidebar__link">ふたりの記録</a>
+          <Link to="/past-evaluations" className="yubi-sidebar__link">過去の評価</Link>
+          <a href="#" className="yubi-sidebar__link">ちょっと一言</a>
+          <a href="#" className="yubi-sidebar__link">このアプリについて</a>
+          <a href="#" className="yubi-sidebar__link">パートナー解消</a>
+          <a href="#" className="yubi-sidebar__link" onClick={handleLogout}>ログアウト</a>
         </nav>
       </aside>
-      <label htmlFor="menu-toggle" className="overlay"></label>
+      <label htmlFor="yubi-nav-toggle" className="yubi-overlay"></label>
     </>
   );
 };
