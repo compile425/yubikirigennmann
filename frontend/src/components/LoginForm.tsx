@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../contexts/useAuth';
+import RegisterForm from './RegisterForm';
 
 interface AxiosErrorResponse {
   error: string;
@@ -10,6 +11,7 @@ const LoginForm: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isRegisterMode, setIsRegisterMode] = useState(false);
   const { setToken } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -32,6 +34,10 @@ const LoginForm: React.FC = () => {
       }
     }
   };
+
+  if (isRegisterMode) {
+    return <RegisterForm onBackToLogin={() => setIsRegisterMode(false)} />;
+  }
 
   return (
     <div className="yubi-login">
@@ -70,7 +76,13 @@ const LoginForm: React.FC = () => {
 
       <div className="yubi-login__links">
         <a href="#" className="yubi-login__link">パスワードを忘れた場合</a>
-        <a href="#" className="yubi-login__link">新規登録はこちら</a>
+        <button 
+          type="button" 
+          className="yubi-login__link yubi-login__link--button"
+          onClick={() => setIsRegisterMode(true)}
+        >
+          新規登録はこちら
+        </button>
       </div>
     </div>
   );

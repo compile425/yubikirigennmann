@@ -5,7 +5,17 @@ const Sidebar: React.FC = () => {
   const { setToken } = useAuth();
 
   const handleLogout = () => {
+    // ログアウト処理
     setToken(null);
+    
+    // サイドバーを閉じる
+    const navToggle = document.getElementById('yubi-nav-toggle') as HTMLInputElement;
+    if (navToggle) {
+      navToggle.checked = false;
+    }
+    
+    // ページをリロードして確実にログイン画面に遷移
+    window.location.href = '/';
   };
 
   return (
