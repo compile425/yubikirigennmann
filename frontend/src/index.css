@@ -1271,3 +1271,18 @@ body.page-login {
   font-style: italic;
   line-height: 1.4;
 }
+
+.yubi-login__link--button {
+  background: none;
+  border: none;
+  color: var(--heading-color);
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+  margin: 0;
+}
+
+.yubi-login__link--button:hover {
+  color: var(--leaf-green);
+}
