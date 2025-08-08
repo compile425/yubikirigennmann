@@ -30,11 +30,9 @@ const PastEvaluationsPage = () => {
     fetchEvaluatedPromises();
   }, [token]);
 
-  // 動的なタイトルを生成
   const myPromisesTitle = currentUser ? `${currentUser.name}の過去の約束` : 'わたしの過去の約束';
   const partnerPromisesTitle = partner ? `${partner.name}の過去の約束` : 'パートナーの過去の約束';
 
-  // 約束タイプ別にフィルタリング
   const myEvaluatedPromises = evaluatedPromises.filter(p => currentUser && p.creator_id === currentUser.id);
   const partnerEvaluatedPromises = evaluatedPromises.filter(p => partner && p.creator_id === partner.id);
   const ourEvaluatedPromises = evaluatedPromises.filter(p => p.type === 'our_promise');

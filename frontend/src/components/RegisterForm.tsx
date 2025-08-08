@@ -8,9 +8,11 @@ interface AxiosErrorResponse {
 
 interface RegisterFormProps {
   onBackToLogin: () => void;
+  invitationToken?: string;
+  onAuthSuccess?: () => void;
 }
 
-const RegisterForm: React.FC<RegisterFormProps> = ({ onBackToLogin }) => {
+const RegisterForm: React.FC<RegisterFormProps> = ({ onBackToLogin, invitationToken, onAuthSuccess }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -33,7 +35,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onBackToLogin }) => {
     }
 
     try {
-      const response = await axios.post('http://localhost:3001/api/register', {
+      const requestData: any = {
         user: {
           name,
           email,
@@ -42,18 +44,27 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onBackToLogin }) => {
           password,
           password_confirmation: passwordConfirmation,
         },
-      });
+      };
+
+      if (invitationToken) {
+        requestData.invitation_token = invitationToken;
+      }
+
+      const response = await axios.post('http://localhost:3001/api/register', requestData);
       
       console.log('Registration response:', response.data);
       setToken(response.data.token);
       
-      // 登録成功後にユーザー情報を即座に取得
       try {
         axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
         const userResponse = await axios.get('http://localhost:3001/api/get_me');
         console.log('User info after registration:', userResponse.data);
       } catch (userError) {
         console.error('Failed to get user info after registration:', userError);
+      }
+
+      if (invitationToken && onAuthSuccess) {
+        onAuthSuccess();
       }
     } catch (err) {
       console.error('登録失敗:', err);

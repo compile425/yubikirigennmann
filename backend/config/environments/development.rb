@@ -38,18 +38,14 @@ Rails.application.configure do
   # caching is enabled.
   config.action_mailer.perform_caching = false
 
+  # メール送信設定
+  config.action_mailer.delivery_method = :letter_opener_web
+  config.action_mailer.perform_deliveries = true
   config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
 
-  # メール送信設定
-  config.action_mailer.delivery_method = :smtp
-  config.action_mailer.smtp_settings = {
-    address: 'smtp.gmail.com',
-    port: 587,
-    domain: 'localhost',
-    user_name: ENV['GMAIL_USERNAME'] || 'yubikirigennmann@gmail.com',
-    password: ENV['GMAIL_PASSWORD'] || 'your-app-password',
-    authentication: 'plain',
-    enable_starttls_auto: true
+  # letter_opener_webの設定
+  config.action_mailer.letter_opener_web_settings = {
+    location: Rails.root.join('tmp', 'letter_opener_web')
   }
 
   # メール送信エラーをログに出力
@@ -80,7 +76,7 @@ Rails.application.configure do
   # config.i18n.raise_on_missing_translations = true
 
   # Annotate rendered view with file names.
-  config.action_view.annotate_rendered_view_with_file_names = true
+  # config.action_view.annotate_rendered_view_with_file_names = true
 
   # Uncomment if you wish to allow Action Cable access from any origin.
   # config.action_cable.disable_request_forgery_protection = true

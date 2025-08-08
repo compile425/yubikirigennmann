@@ -90,72 +90,93 @@ body {
 .yubi-sidebar {
   position: fixed;
   top: 0;
-  left: 0;
-  width: 280px;
-  height: 100%;
-  background-color: #f8f7f2;
-  box-shadow: var(--yubi-shadow-lg);
-  transform: translateX(-100%);
-  transition: transform var(--yubi-transition-slow) cubic-bezier(0.25, 0.8, 0.25, 1);
+  left: -300px;
+  width: 300px;
+  height: 100vh;
+  background-color: #f8f9fa;
   z-index: 1000;
-  padding-top: 80px;
-  border-right: 1px solid var(--yubi-shadow);
+  transition: left 0.3s ease;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
-.yubi-sidebar--open {
-  transform: translateX(0);
+.yubi-nav-toggle:checked ~ .yubi-sidebar {
+  left: 0;
+}
+
+.yubi-sidebar__header {
+  padding: 20px;
+  border-bottom: 1px solid #e2e8f0;
+  text-align: center;
+}
+
+.yubi-sidebar__user-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.yubi-sidebar__user-avatar {
+  width: 60px;
+  height: 60px;
+  background-color: #8b4513;
+  color: white;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
 }
 
 .yubi-sidebar__nav {
-  display: flex;
-  flex-direction: column;
+  padding: 20px 0;
+  height: calc(100% - 120px);
+  overflow-y: auto;
 }
 
 .yubi-sidebar__link {
   display: block;
-  padding: var(--yubi-spacing-lg) var(--yubi-spacing-xl);
-  color: var(--yubi-text-primary);
+  padding: 15px 20px;
+  color: #4a5568;
   text-decoration: none;
-  font-size: var(--yubi-font-size-lg);
-  font-weight: 700;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  transition: background-color var(--yubi-transition-fast);
+  border-bottom: 1px solid #e2e8f0;
+  transition: background-color 0.3s ease;
+  font-size: 16px;
 }
 
 .yubi-sidebar__link:hover {
-  background-color: rgba(0, 0, 0, 0.03);
+  background-color: #edf2f7;
+  color: #2d3748;
 }
 
-/* ===== Navigation Toggle ===== */
+/* ハンバーガーメニュー */
 .yubi-nav-toggle {
   display: none;
 }
 
 .yubi-nav-button {
   position: fixed;
-  top: 25px;
-  left: 25px;
-  width: 30px;
-  height: 30px;
+  top: 20px;
+  left: 20px;
+  z-index: 1001;
+  cursor: pointer;
+  padding: 10px;
   background: none;
   border: none;
-  cursor: pointer;
-  z-index: 1001;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
 }
 
 .yubi-nav-button__line {
-  width: 100%;
+  display: block;
+  width: 25px;
   height: 3px;
-  background-color: var(--yubi-primary);
+  background-color: #8b4513;
+  margin: 5px 0;
+  transition: 0.3s;
   border-radius: 2px;
-  transition: all var(--yubi-transition-base);
 }
 
 .yubi-nav-toggle:checked ~ .yubi-nav-button .yubi-nav-button__line:nth-child(1) {
-  transform: rotate(45deg) translate(5px, 5px);
+  transform: rotate(-45deg) translate(-5px, 6px);
 }
 
 .yubi-nav-toggle:checked ~ .yubi-nav-button .yubi-nav-button__line:nth-child(2) {
@@ -163,13 +184,10 @@ body {
 }
 
 .yubi-nav-toggle:checked ~ .yubi-nav-button .yubi-nav-button__line:nth-child(3) {
-  transform: rotate(-45deg) translate(7px, -6px);
+  transform: rotate(45deg) translate(-5px, -6px);
 }
 
-.yubi-nav-toggle:checked ~ .yubi-sidebar {
-  transform: translateX(0);
-}
-
+/* オーバーレイ */
 .yubi-overlay {
   position: fixed;
   top: 0;
@@ -177,15 +195,39 @@ body {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
   opacity: 0;
   visibility: hidden;
-  transition: all var(--yubi-transition-base);
-  z-index: 999;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .yubi-nav-toggle:checked ~ .yubi-overlay {
   opacity: 1;
   visibility: visible;
+}
+
+/* メインコンテンツの調整 */
+.yubi-main {
+  margin-left: 0;
+  transition: margin-left 0.3s ease;
+  padding: 20px;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.yubi-nav-toggle:checked ~ .yubi-main {
+  margin-left: 300px;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .yubi-nav-toggle:checked ~ .yubi-main {
+    margin-left: 0;
+  }
+  
+  .yubi-sidebar {
+    width: 280px;
+  }
 }
 
 /* ===== Board Layout ===== */
@@ -597,3 +639,451 @@ body {
     margin: var(--yubi-spacing-md);
   }
 } 
+
+/* 招待受諾ページ */
+.yubi-invite-accept {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding: 20px;
+}
+
+.yubi-invite-accept__card {
+  background: white;
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+}
+
+.yubi-invite-accept__card h1 {
+  color: #333;
+  margin-bottom: 16px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.yubi-invite-accept__card p {
+  color: #666;
+  margin-bottom: 32px;
+  font-size: 16px;
+}
+
+.yubi-invite-accept__auth {
+  margin-top: 32px;
+}
+
+.yubi-invite-accept__tabs {
+  display: flex;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.yubi-tab {
+  flex: 1;
+  padding: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #666;
+  border-bottom: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.yubi-tab--active {
+  color: #2c7a7b;
+  border-bottom-color: #2c7a7b;
+}
+
+.yubi-tab:hover {
+  color: #2c7a7b;
+}
+
+/* 招待モーダル */
+.yubi-invitation-result {
+  text-align: center;
+}
+
+.yubi-invitation-result h3 {
+  color: #333;
+  margin-bottom: 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.yubi-invitation-result p {
+  color: #666;
+  margin-bottom: 24px;
+  font-size: 16px;
+}
+
+.yubi-invitation-url {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  align-items: center;
+}
+
+.yubi-invitation-url input {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: #f9f9f9;
+}
+
+.yubi-invitation-url button {
+  white-space: nowrap;
+  padding: 12px 16px;
+  background-color: #2c7a7b;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.yubi-invitation-url button:hover {
+  background-color: #234e52;
+}
+
+/* ローディングとエラー */
+.yubi-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.yubi-loading p {
+  color: #666;
+  font-size: 18px;
+}
+
+.yubi-error {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding: 20px;
+  text-align: center;
+}
+
+.yubi-error h2 {
+  color: #e53e3e;
+  margin-bottom: 16px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.yubi-error p {
+  color: #666;
+  margin-bottom: 24px;
+  font-size: 16px;
+}
+
+/* 招待ボタン */
+.yubi-button--invite {
+  background-color: #38a169;
+}
+
+.yubi-button--invite:hover {
+  background-color: #2f855a;
+} 
+
+/* パートナー解消モーダル */
+.yubi-modal--dissolve {
+  max-width: 400px;
+}
+
+.yubi-dissolve-warning {
+  text-align: left;
+  margin-bottom: 24px;
+}
+
+.yubi-dissolve-warning p {
+  margin-bottom: 16px;
+  color: #333;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.yubi-dissolve-warning__danger {
+  color: #e53e3e !important;
+  font-weight: 500;
+  background-color: #fed7d7;
+  padding: 12px;
+  border-radius: 6px;
+  border-left: 4px solid #e53e3e;
+}
+
+.yubi-modal__actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.yubi-button--danger {
+  background-color: #e53e3e;
+  color: white;
+}
+
+.yubi-button--danger:hover {
+  background-color: #c53030;
+}
+
+.yubi-button--danger:disabled {
+  background-color: #cbd5e0;
+  cursor: not-allowed;
+}
+
+.yubi-button--secondary {
+  background-color: #718096;
+  color: white;
+}
+
+.yubi-button--secondary:hover {
+  background-color: #4a5568;
+}
+
+.yubi-button--secondary:disabled {
+  background-color: #cbd5e0;
+  cursor: not-allowed;
+} 
+
+/* ハンバーガーメニュー（招待ページ用） */
+.yubi-invite-page .yubi-nav-button {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1001;
+  cursor: pointer;
+  padding: 10px;
+  background: none;
+  border: none;
+}
+
+.yubi-invite-page .yubi-nav-button__line {
+  display: block;
+  width: 25px;
+  height: 3px;
+  background-color: #8b4513;
+  margin: 5px 0;
+  transition: 0.3s;
+  border-radius: 2px;
+}
+
+.yubi-invite-page .yubi-nav-toggle:checked ~ .yubi-nav-button .yubi-nav-button__line:nth-child(1) {
+  transform: rotate(-45deg) translate(-5px, 6px);
+}
+
+.yubi-invite-page .yubi-nav-toggle:checked ~ .yubi-nav-button .yubi-nav-button__line:nth-child(2) {
+  opacity: 0;
+}
+
+.yubi-invite-page .yubi-nav-toggle:checked ~ .yubi-nav-button .yubi-nav-button__line:nth-child(3) {
+  transform: rotate(45deg) translate(-5px, -6px);
+}
+
+/* サイドバー（招待ページ用） */
+.yubi-invite-page .yubi-sidebar {
+  position: fixed;
+  top: 0;
+  left: -300px;
+  width: 300px;
+  height: 100vh;
+  background-color: #f8f9fa;
+  z-index: 1000;
+  transition: left 0.3s ease;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.yubi-invite-page .yubi-nav-toggle:checked ~ .yubi-sidebar {
+  left: 0;
+}
+
+.yubi-invite-page .yubi-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.yubi-invite-page .yubi-nav-toggle:checked ~ .yubi-overlay {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* 招待ページ */
+.yubi-invite-page {
+  min-height: 100vh;
+  background-color: white;
+  position: relative;
+}
+
+
+
+.board-container {
+  padding: 80px 20px 40px;
+  transition: filter 0.4s;
+  position: relative;
+  z-index: 10;
+}
+
+.invitation-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 20px;
+}
+
+.invitation-panel {
+  width: 90%;
+  max-width: 500px;
+  background-color: var(--panel-bg, #f8f9fa);
+  border-radius: 20px;
+  padding: 30px 35px;
+  border: 4px solid white;
+  box-shadow: 0 6px 0 var(--shadow-dark, #043a40), 0 10px 20px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  position: relative;
+  z-index: 20;
+}
+
+.invitation-icon {
+  font-size: 56px;
+  margin-bottom: 15px;
+}
+
+.invitation-panel h2 {
+  font-weight: 800;
+  font-size: 24px;
+  color: var(--heading-color, #333);
+  margin: 0 0 15px 0;
+}
+
+.invitation-panel p {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--text-color-brown, #666);
+  margin: 0 0 30px 0;
+}
+
+.invitation-form {
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--heading-color, #333);
+  font-size: 14px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--heading-color, #333);
+}
+
+.form-error {
+  color: #e53e3e;
+  margin-bottom: 16px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.create-button {
+  background-color: var(--heading-color, #333);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.1s ease-out;
+  box-shadow: 0 4px 0 #043a40;
+}
+
+.create-button:hover {
+  background-color: #086673;
+}
+
+.create-button:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #043a40;
+}
+
+.create-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.link-generator {
+  text-align: center;
+}
+
+.link-display {
+  background-color: #fff;
+  border: 2px dashed #ddd;
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  color: #777;
+  word-wrap: break-word;
+}
+
+.copy-button {
+  display: inline-block;
+  background-color: var(--heading-color, #333);
+  color: white;
+  box-shadow: 0 4px 0 #043a40;
+  transition: all 0.1s ease-out;
+  text-decoration: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.copy-button:hover {
+  background-color: #086673;
+  color: white;
+  text-decoration: none;
+}
+
+.copy-button:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #043a40;
+}
