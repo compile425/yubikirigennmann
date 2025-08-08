@@ -5,6 +5,7 @@ import PromiseColumn from './PromiseColumn';
 import AddPromiseModal from './AddPromiseModal';
 import EditPromiseModal from './EditPromiseModal';
 import EvaluationModal from './EvaluationModal';
+import DissolvePartnershipModal from './DissolvePartnershipModal';
 import type { Promise } from '../types';
 import { useAuth } from '../contexts/useAuth';
 
@@ -14,6 +15,7 @@ const Dashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isEvaluationModalOpen, setIsEvaluationModalOpen] = useState(false);
+  const [isDissolveModalOpen, setIsDissolveModalOpen] = useState(false);
   const [selectedPromise, setSelectedPromise] = useState<Promise | null>(null);
   const [promiseTypeToAdd, setPromiseTypeToAdd] = useState<'my_promise' | 'our_promise' | 'partner_promise' | ''>('');
   const [isSendingEmail, setIsSendingEmail] = useState(false);
@@ -50,7 +52,7 @@ const Dashboard = () => {
     if (!confirm('この約束を削除しますか？')) {
       return;
     }
-
+    
     try {
       await axios.delete(`http://localhost:3001/api/promises/${promise.id}`);
       await fetchPromises();
@@ -74,7 +76,32 @@ const Dashboard = () => {
       console.log('送信結果:', response.data);
     } catch (error) {
       console.error("評価メールの送信に失敗しました:", error);
-      alert("評価メールの送信に失敗しました。");
+      
+      if (axios.isAxiosError(error) && error.response) {
+        const errorData = error.response.data;
+        console.log('エラー詳細:', errorData);
+        
+        let errorMessage = "評価メールの送信に失敗しました。";
+        if (errorData.error) {
+          errorMessage += `\n\n理由: ${errorData.error}`;
+        }
+        if (errorData.details) {
+          errorMessage += `\n\n詳細: ${errorData.details}`;
+        }
+        if (errorData.user_id) {
+          errorMessage += `\n\nユーザーID: ${errorData.user_id}`;
+        }
+        if (errorData.partnership_id) {
+          errorMessage += `\n\nパートナーシップID: ${errorData.partnership_id}`;
+        }
+        if (errorData.available_promises) {
+          errorMessage += `\n\n利用可能な約束: ${JSON.stringify(errorData.available_promises)}`;
+        }
+        
+        alert(errorMessage);
+      } else {
+        alert("評価メールの送信に失敗しました。");
+      }
     } finally {
       setIsSendingEmail(false);
     }
@@ -126,7 +153,10 @@ const Dashboard = () => {
 
   return (
     <div className="yubi-app">
-      <Sidebar />
+      <Sidebar
+        onDissolvePartnership={() => setIsDissolveModalOpen(true)}
+      />
+      
       <main className="yubi-main">
         <div className="yubi-board">
           <PromiseColumn 
@@ -158,7 +188,7 @@ const Dashboard = () => {
         </div>
         
         <div className="yubi-evaluation-email-section">
-          <button 
+          <button
             onClick={handleSendEvaluationEmail}
             disabled={isSendingEmail}
             className="yubi-button yubi-button--primary yubi-button--email"
@@ -181,8 +211,8 @@ const Dashboard = () => {
           </button>
         </div>
       </main>
-      
-      <AddPromiseModal 
+
+      <AddPromiseModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         promiseType={promiseTypeToAdd}
@@ -201,6 +231,11 @@ const Dashboard = () => {
         onClose={() => setIsEvaluationModalOpen(false)}
         promise={selectedPromise}
         onEvaluationSubmitted={handleEvaluationSubmitted}
+      />
+
+      <DissolvePartnershipModal
+        isOpen={isDissolveModalOpen}
+        onClose={() => setIsDissolveModalOpen(false)}
       />
     </div>
   );

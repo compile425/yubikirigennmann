@@ -7,7 +7,12 @@ interface AxiosErrorResponse {
   error: string;
 }
 
-const LoginForm: React.FC = () => {
+interface LoginFormProps {
+  invitationToken?: string;
+  onAuthSuccess?: () => void;
+}
+
+const LoginForm: React.FC<LoginFormProps> = ({ invitationToken, onAuthSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -24,6 +29,10 @@ const LoginForm: React.FC = () => {
         password,
       });
       setToken(response.data.token);
+      
+      if (invitationToken && onAuthSuccess) {
+        onAuthSuccess();
+      }
     } catch (err) {
       console.error('ログイン失敗:', err);
       if (axios.isAxiosError(err) && err.response) {
@@ -36,7 +45,7 @@ const LoginForm: React.FC = () => {
   };
 
   if (isRegisterMode) {
-    return <RegisterForm onBackToLogin={() => setIsRegisterMode(false)} />;
+    return <RegisterForm onBackToLogin={() => setIsRegisterMode(false)} invitationToken={invitationToken} onAuthSuccess={onAuthSuccess} />;
   }
 
   return (

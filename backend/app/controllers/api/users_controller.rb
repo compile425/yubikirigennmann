@@ -39,6 +39,19 @@ class Api::UsersController < ApplicationController
           # メール送信に失敗してもユーザー登録は成功とする
         end
         
+        # 招待トークンが存在する場合はパートナーシップを作成
+        if params[:invitation_token].present?
+          invitation = Invitation.find_by(token: params[:invitation_token])
+          if invitation && invitation.inviter_id != user.id
+            partnership = Partnership.create!(
+              user: invitation.inviter,
+              partner: user
+            )
+            invitation.destroy
+            Rails.logger.info "パートナーシップを作成しました: #{partnership.id}"
+          end
+        end
+        
         token = JWT.encode(
           { user_id: user.id, exp: 24.hours.from_now.to_i },
           Rails.application.secret_key_base
