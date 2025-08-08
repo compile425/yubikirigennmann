@@ -17,6 +17,8 @@ services:
       MYSQL_ROOT_PASSWORD: password
       RAILS_ENV: development
       DISABLE_DATABASE_ENVIRONMENT_CHECK: '1'
+      GMAIL_USERNAME: your-email@gmail.com
+      GMAIL_PASSWORD: your-app-password
     tty: true
     stdin_open: true
 

@@ -71,6 +71,24 @@ Rails.application.configure do
   # caching is enabled.
   config.action_mailer.perform_caching = false
 
+  # メール送信設定
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    address: 'smtp.gmail.com',
+    port: 587,
+    domain: ENV['MAILER_DOMAIN'] || 'yubikirigennmann.com',
+    user_name: ENV['GMAIL_USERNAME'] || 'yubikirigennmann@gmail.com',
+    password: ENV['GMAIL_PASSWORD'] || 'your-app-password',
+    authentication: 'plain',
+    enable_starttls_auto: true
+  }
+
+  # メール送信エラーをログに出力
+  config.action_mailer.logger = Rails.logger
+
+  # メール送信エラーを無視（本番環境でもメール送信に失敗してもアプリが停止しない）
+  config.action_mailer.raise_delivery_errors = false
+
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false

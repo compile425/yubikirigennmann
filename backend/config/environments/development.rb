@@ -46,11 +46,17 @@ Rails.application.configure do
     address: 'smtp.gmail.com',
     port: 587,
     domain: 'localhost',
-    user_name: ENV['GMAIL_USERNAME'] || 'your-email@gmail.com',
+    user_name: ENV['GMAIL_USERNAME'] || 'yubikirigennmann@gmail.com',
     password: ENV['GMAIL_PASSWORD'] || 'your-app-password',
     authentication: 'plain',
     enable_starttls_auto: true
   }
+
+  # メール送信エラーをログに出力
+  config.action_mailer.logger = Rails.logger
+
+  # メール送信エラーを無視（開発環境ではメール送信に失敗してもアプリが停止しない）
+  config.action_mailer.raise_delivery_errors = false
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
@@ -74,7 +80,7 @@ Rails.application.configure do
   # config.i18n.raise_on_missing_translations = true
 
   # Annotate rendered view with file names.
-  config.action_view.annotate_rendered_view_with_filenames = true
+  config.action_view.annotate_rendered_view_with_file_names = true
 
   # Uncomment if you wish to allow Action Cable access from any origin.
   # config.action_cable.disable_request_forgery_protection = true

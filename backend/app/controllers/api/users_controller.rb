@@ -33,8 +33,10 @@ class Api::UsersController < ApplicationController
         # 新規ユーザー登録成功時にメールを送信
         begin
           RegistrationMailer.welcome_email(user).deliver_now
+          Rails.logger.info "Welcome email sent successfully to #{user.email}"
         rescue => e
-          Rails.logger.error "Failed to send welcome email: #{e.message}"
+          Rails.logger.error "Failed to send welcome email to #{user.email}: #{e.message}"
+          # メール送信に失敗してもユーザー登録は成功とする
         end
         
         token = JWT.encode(
