@@ -20,10 +20,14 @@ class Api::PromisesController < ApplicationController
 
     promise = partnership.promises.new(promise_params)
     promise.creator = current_user
+    Rails.logger.info "Creating promise with params: #{promise_params}"
+    Rails.logger.info "Partnership ID: #{partnership.id}"
+    Rails.logger.info "Creator ID: #{current_user.id}"
     
     if promise.save
       render json: promise, status: :created
     else
+      Rails.logger.error "Promise validation errors: #{promise.errors.full_messages}"
       render json: { errors: promise.errors.full_messages }, status: :unprocessable_entity
     end
   end

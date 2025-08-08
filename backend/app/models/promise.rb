@@ -10,4 +10,14 @@ class Promise < ApplicationRecord
 
     validates :content, presence: true
     validates :type, presence: true
+    
+    after_validation :log_validation_errors
+    
+    private
+    
+    def log_validation_errors
+      if errors.any?
+        Rails.logger.error "Promise validation errors: #{errors.full_messages}"
+      end
+    end
 end

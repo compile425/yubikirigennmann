@@ -42,7 +42,21 @@ const AddPromiseModal = ({ isOpen, onClose, promiseType, onPromiseCreated }: Add
 
     } catch (error) {
       console.error("約束の作成に失敗しました:", error);
-      alert("約束の作成に失敗しました。");
+      
+      if (axios.isAxiosError(error) && error.response) {
+        const errorData = error.response.data;
+        let errorMessage = "約束の作成に失敗しました。";
+        
+        if (errorData.errors) {
+          errorMessage += `\n\nエラー詳細:\n${errorData.errors.join('\n')}`;
+        } else if (errorData.error) {
+          errorMessage += `\n\nエラー詳細: ${errorData.error}`;
+        }
+        
+        alert(errorMessage);
+      } else {
+        alert("約束の作成に失敗しました。");
+      }
     }
   };
 
