@@ -1,5 +1,4 @@
 class User < ApplicationRecord
-  # 関連付け
   has_one :user_credential, dependent: :destroy
   has_many :partnerships_as_user, class_name: 'Partnership', foreign_key: 'user_id', dependent: :destroy
   has_many :partnerships_as_partner, class_name: 'Partnership', foreign_key: 'partner_id', dependent: :destroy
@@ -12,7 +11,6 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true
   validates :name, presence: true
 
-  # パートナーシップを取得するメソッド
   def partnership
     partnerships_as_user.first || partnerships_as_partner.first
   end

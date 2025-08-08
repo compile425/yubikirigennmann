@@ -10,10 +10,8 @@ class Api::PartnershipsController < ApplicationController
     end
 
     begin
-      # パートナーシップに関連する約束を削除
       partnership.promises.destroy_all
       
-      # パートナーシップを削除
       partnership.destroy
       
       Rails.logger.info "パートナーシップを解消しました - ユーザーID: #{current_user.id}"

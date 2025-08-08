@@ -30,16 +30,13 @@ class Api::UsersController < ApplicationController
       credential = user.build_user_credential(credential_params)
       
       if credential.save
-        # 新規ユーザー登録成功時にメールを送信
         begin
           RegistrationMailer.welcome_email(user).deliver_now
           Rails.logger.info "Welcome email sent successfully to #{user.email}"
         rescue => e
           Rails.logger.error "Failed to send welcome email to #{user.email}: #{e.message}"
-          # メール送信に失敗してもユーザー登録は成功とする
         end
         
-        # 招待トークンが存在する場合はパートナーシップを作成
         if params[:invitation_token].present?
           invitation = Invitation.find_by(token: params[:invitation_token])
           if invitation && invitation.inviter_id != user.id

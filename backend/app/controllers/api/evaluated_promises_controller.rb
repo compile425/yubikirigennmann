@@ -3,7 +3,6 @@ class Api::EvaluatedPromisesController < ApplicationController
 
   def index
     if current_user&.partnership
-      # 評価済みの約束を取得（評価が存在する約束のみ）
       @evaluated_promises = current_user.partnership.promises
         .joins(:promise_evaluation)
         .includes(:promise_evaluation, :creator)
