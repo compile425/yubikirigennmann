@@ -56,6 +56,9 @@ Rails.application.configure do
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
+  
+  # ログレベルを設定
+  config.log_level = :debug
 
   # Raise exceptions for disallowed deprecations.
   config.active_support.disallowed_deprecation = :raise
