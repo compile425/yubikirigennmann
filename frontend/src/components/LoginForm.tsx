@@ -17,6 +17,7 @@ const LoginForm = ({ invitationToken, onAuthSuccess }: LoginFormProps) => {
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [isRegisterMode, setIsRegisterMode] = useState<boolean>(false);
+  const [isGuestLoggingIn, setIsGuestLoggingIn] = useState<boolean>(false);
   const { setToken } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
@@ -43,6 +44,32 @@ const LoginForm = ({ invitationToken, onAuthSuccess }: LoginFormProps) => {
       } else {
         setError('予期せぬエラーが発生しました。');
       }
+    }
+  };
+
+  const handleGuestLogin = async (): Promise<void> => {
+    setError('');
+    setIsGuestLoggingIn(true);
+
+    try {
+      const response = await axios.post(
+        'http://localhost:3001/api/guest_login'
+      );
+      setToken(response.data.token);
+
+      if (invitationToken && onAuthSuccess) {
+        onAuthSuccess();
+      }
+    } catch (err) {
+      console.error('ゲストログイン失敗:', err);
+      if (axios.isAxiosError(err) && err.response) {
+        const errorData = err.response.data as AxiosErrorResponse;
+        setError(errorData.error || 'ゲストログインに失敗しました。');
+      } else {
+        setError('予期せぬエラーが発生しました。');
+      }
+    } finally {
+      setIsGuestLoggingIn(false);
     }
   };
 
@@ -110,6 +137,17 @@ const LoginForm = ({ invitationToken, onAuthSuccess }: LoginFormProps) => {
           onClick={() => setIsRegisterMode(true)}
         >
           新規登録はこちら
+        </button>
+      </div>
+
+      <div className="yubi-login__guest">
+        <button
+          type="button"
+          className="yubi-button yubi-button--secondary yubi-button--guest"
+          onClick={handleGuestLogin}
+          disabled={isGuestLoggingIn}
+        >
+          {isGuestLoggingIn ? 'ログイン中...' : 'ゲストとしてログイン'}
         </button>
       </div>
     </div>
