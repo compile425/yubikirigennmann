@@ -2,25 +2,25 @@ import { useState, useEffect } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import EvaluationModal from './EvaluationModal';
-import type { Promise } from '../types';
+import type { PromiseItem } from '../types';
 
 const EvaluationPage = () => {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
-  const [promise, setPromise] = useState<Promise | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isValidToken, setIsValidToken] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [promise, setPromise] = useState<PromiseItem | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isValidToken, setIsValidToken] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const token = searchParams.get('token');
-    if (!token) {
+    if (!token || !id) {
       setIsValidToken(false);
       setIsLoading(false);
       return;
     }
 
-    const fetchPromise = async () => {
+    const fetchPromise = async (): Promise<void> => {
       try {
         const response = await axios.get(`http://localhost:3001/api/evaluation_pages/${id}?token=${token}`);
         
@@ -42,7 +42,7 @@ const EvaluationPage = () => {
     fetchPromise();
   }, [id, searchParams]);
 
-  const handleEvaluationSubmitted = () => {
+  const handleEvaluationSubmitted = (): void => {
     setIsModalOpen(false);
   };
 

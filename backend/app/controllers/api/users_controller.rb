@@ -2,25 +2,40 @@ class Api::UsersController < ApplicationController
   skip_before_action :authenticate_user!, only: [:me, :create], raise: false
   
   def me
-    if current_user
-      partnership = current_user.partnership
-      partner = partnership ? (partnership.user_id == current_user.id ? partnership.partner : partnership.user) : nil
-      
-      render json: {
-        current_user: {
-          id: current_user.id,
-          name: current_user.name,
-          email: current_user.email
-        },
-        partner: partner ? {
-          id: partner.id,
-          name: partner.name,
-          email: partner.email
-        } : nil
-      }
-    else
-      render json: { error: '認証が必要です' }, status: :unauthorized
+    # トークンを手動で検証
+    if auth_header
+      token = auth_header.split(' ')[1]
+      begin
+        decoded = decode_token(token)
+        if decoded && decoded['user_id']
+          user = User.find_by(id: decoded['user_id'])
+          if user
+            partnership = user.partnership
+            partner = partnership ? (partnership.user_id == user.id ? partnership.partner : partnership.user) : nil
+            
+            render json: {
+              current_user: {
+                id: user.id,
+                name: user.name,
+                email: user.email
+              },
+              partner: partner ? {
+                id: partner.id,
+                name: partner.name,
+                email: partner.email
+              } : nil
+            }
+            return
+          end
+        end
+      rescue JWT::DecodeError => e
+        Rails.logger.error "JWT decode error: #{e.message}"
+      rescue => e
+        Rails.logger.error "Token validation error: #{e.message}"
+      end
     end
+    
+    render json: { error: '認証が必要です' }, status: :unauthorized
   end
 
   def create
@@ -52,10 +67,7 @@ class Api::UsersController < ApplicationController
           end
         end
         
-        token = JWT.encode(
-          { user_id: user.id, exp: 24.hours.from_now.to_i },
-          Rails.application.secret_key_base
-        )
+        token = encode_token(user_id: user.id)
         
         render json: {
           token: token,

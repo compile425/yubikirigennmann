@@ -7,7 +7,7 @@ interface DissolvePartnershipModalProps {
   onClose: () => void;
 }
 
-const DissolvePartnershipModal: React.FC<DissolvePartnershipModalProps> = ({ isOpen, onClose }) => {
+const DissolvePartnershipModal = ({ isOpen, onClose }: DissolvePartnershipModalProps) => {
   const [isDissolving, setIsDissolving] = useState(false);
   const { token, partner } = useAuth();
 

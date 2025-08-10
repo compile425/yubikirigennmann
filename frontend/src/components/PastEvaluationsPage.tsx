@@ -8,9 +8,9 @@ import { useAuth } from '../contexts/useAuth';
 const PastEvaluationsPage = () => {
   const [evaluatedPromises, setEvaluatedPromises] = useState<EvaluatedPromise[]>([]);
   const { token, currentUser, partner } = useAuth();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  const fetchEvaluatedPromises = async () => {
+  const fetchEvaluatedPromises = async (): Promise<void> => {
     if (!token) return;
     try {
       setLoading(true);

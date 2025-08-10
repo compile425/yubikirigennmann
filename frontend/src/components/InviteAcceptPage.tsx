@@ -4,16 +4,28 @@ import axios from 'axios';
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
 
-const InviteAcceptPage: React.FC = () => {
+interface InvitationData {
+  message?: string;
+  requires_auth?: boolean;
+  error?: string;
+}
+
+const InviteAcceptPage = () => {
   const { token } = useParams<{ token: string }>();
   const navigate = useNavigate();
-  const [invitation, setInvitation] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [isLoginMode, setIsLoginMode] = useState(true);
+  const [invitation, setInvitation] = useState<InvitationData | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>('');
+  const [isLoginMode, setIsLoginMode] = useState<boolean>(true);
 
   useEffect(() => {
-    const checkInvitation = async () => {
+    const checkInvitation = async (): Promise<void> => {
+      if (!token) {
+        setError('無効な招待リンクです');
+        setIsLoading(false);
+        return;
+      }
+
       try {
         const response = await axios.get(`http://localhost:3001/api/invite/${token}`);
         setInvitation(response.data);
@@ -29,18 +41,17 @@ const InviteAcceptPage: React.FC = () => {
       }
     };
 
-    if (token) {
-      checkInvitation();
-    }
+    checkInvitation();
   }, [token]);
 
-  const handleAuthSuccess = async () => {
+  const handleAuthSuccess = async (): Promise<void> => {
+    if (!token) return;
+    
     try {
-      // 招待を再確認してパートナーシップを作成
       const response = await axios.get(`http://localhost:3001/api/invite/${token}`);
       if (response.data.message === 'パートナーシップが作成されました') {
         alert('パートナーシップが作成されました！');
-        navigate('/dashboard');
+        navigate('/');
       }
     } catch (error) {
       console.error('パートナーシップ作成エラー:', error);
@@ -93,7 +104,11 @@ const InviteAcceptPage: React.FC = () => {
           {isLoginMode ? (
             <LoginForm invitationToken={token} onAuthSuccess={handleAuthSuccess} />
           ) : (
-            <RegisterForm invitationToken={token} onAuthSuccess={handleAuthSuccess} />
+            <RegisterForm 
+              onBackToLogin={() => setIsLoginMode(true)} 
+              invitationToken={token} 
+              onAuthSuccess={handleAuthSuccess} 
+            />
           )}
         </div>
       </div>

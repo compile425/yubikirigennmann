@@ -12,15 +12,15 @@ interface RegisterFormProps {
   onAuthSuccess?: () => void;
 }
 
-const RegisterForm: React.FC<RegisterFormProps> = ({ onBackToLogin, invitationToken, onAuthSuccess }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [passwordConfirmation, setPasswordConfirmation] = useState('');
-  const [error, setError] = useState('');
+const RegisterForm = ({ onBackToLogin, invitationToken, onAuthSuccess }: RegisterFormProps) => {
+  const [name, setName] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [passwordConfirmation, setPasswordConfirmation] = useState<string>('');
+  const [error, setError] = useState<string>('');
   const { setToken } = useAuth();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     setError('');
 
@@ -144,7 +144,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onBackToLogin, invitationTo
           className="yubi-login__link yubi-login__link--button"
           onClick={onBackToLogin}
         >
-          ログイン画面に戻る
+          ← ログインに戻る
         </button>
       </div>
     </div>

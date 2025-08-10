@@ -9,8 +9,8 @@ interface AddPromiseModalProps {
 }
 
 const AddPromiseModal = ({ isOpen, onClose, promiseType, onPromiseCreated }: AddPromiseModalProps) => {
-  const [content, setContent] = useState('');
-  const [dueDate, setDueDate] = useState('');
+  const [content, setContent] = useState<string>('');
+  const [dueDate, setDueDate] = useState<string>('');
   
   const isOurPromise = promiseType === 'our_promise';
 
@@ -21,7 +21,7 @@ const AddPromiseModal = ({ isOpen, onClose, promiseType, onPromiseCreated }: Add
     }
   }, [isOpen]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     if (!promiseType) return;
 

@@ -6,21 +6,21 @@ import AddPromiseModal from './AddPromiseModal';
 import EditPromiseModal from './EditPromiseModal';
 import EvaluationModal from './EvaluationModal';
 import DissolvePartnershipModal from './DissolvePartnershipModal';
-import type { Promise } from '../types';
+import type { PromiseItem } from '../types';
 import { useAuth } from '../contexts/useAuth';
 
 const Dashboard = () => {
-  const [promises, setPromises] = useState<Promise[]>([]);
+  const [promises, setPromises] = useState<PromiseItem[]>([]);
   const { token, currentUser, partner } = useAuth();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isEvaluationModalOpen, setIsEvaluationModalOpen] = useState(false);
-  const [isDissolveModalOpen, setIsDissolveModalOpen] = useState(false);
-  const [selectedPromise, setSelectedPromise] = useState<Promise | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
+  const [isEvaluationModalOpen, setIsEvaluationModalOpen] = useState<boolean>(false);
+  const [isDissolveModalOpen, setIsDissolveModalOpen] = useState<boolean>(false);
+  const [selectedPromise, setSelectedPromise] = useState<PromiseItem | null>(null);
   const [promiseTypeToAdd, setPromiseTypeToAdd] = useState<'my_promise' | 'our_promise' | 'partner_promise' | ''>('');
-  const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const [isSendingEmail, setIsSendingEmail] = useState<boolean>(false);
 
-  const fetchPromises = async () => {
+  const fetchPromises = async (): Promise<void> => {
     if (!token) return;
     try {
       const response = await axios.get('http://localhost:3001/api/promises');
@@ -34,21 +34,21 @@ const Dashboard = () => {
     fetchPromises();
   }, [token]);
 
-  const handleOpenModal = (type: 'my_promise' | 'our_promise' | 'partner_promise') => {
+  const handleOpenModal = (type: 'my_promise' | 'our_promise' | 'partner_promise'): void => {
     setPromiseTypeToAdd(type);
     setIsModalOpen(true);
   };
 
-  const handlePromiseCreated = async () => {
+  const handlePromiseCreated = async (): Promise<void> => {
     await fetchPromises();
   };
 
-  const handleEditPromise = (promise: Promise) => {
+  const handleEditPromise = (promise: PromiseItem): void => {
     setSelectedPromise(promise);
     setIsEditModalOpen(true);
   };
 
-  const handleDeletePromise = async (promise: Promise) => {
+  const handleDeletePromise = async (promise: PromiseItem): Promise<void> => {
     if (!confirm('この約束を削除しますか？')) {
       return;
     }
@@ -62,11 +62,11 @@ const Dashboard = () => {
     }
   };
 
-  const handlePromiseUpdated = async () => {
+  const handlePromiseUpdated = async (): Promise<void> => {
     await fetchPromises();
   };
 
-  const handleSendEvaluationEmail = async () => {
+  const handleSendEvaluationEmail = async (): Promise<void> => {
     if (isSendingEmail) return;
     
     setIsSendingEmail(true);
@@ -107,7 +107,7 @@ const Dashboard = () => {
     }
   };
 
-  const handleSendDueDateEvaluations = async () => {
+  const handleSendDueDateEvaluations = async (): Promise<void> => {
     try {
       const response = await axios.post('http://localhost:3001/api/scheduled_tasks/send_due_date_evaluations');
       alert('期日が来た約束の評価メールを送信しました！');
@@ -118,7 +118,7 @@ const Dashboard = () => {
     }
   };
 
-  const handleSendWeeklyEvaluations = async () => {
+  const handleSendWeeklyEvaluations = async (): Promise<void> => {
     try {
       const response = await axios.post('http://localhost:3001/api/scheduled_tasks/send_weekly_our_promises_evaluation');
       alert('毎週の二人の約束評価メールを送信しました！');
@@ -129,12 +129,12 @@ const Dashboard = () => {
     }
   };
 
-  const handleOpenEvaluationModal = (promise: Promise) => {
+  const handleOpenEvaluationModal = (promise: PromiseItem): void => {
     setSelectedPromise(promise);
     setIsEvaluationModalOpen(true);
   };
 
-  const handleEvaluationSubmitted = async () => {
+  const handleEvaluationSubmitted = async (): Promise<void> => {
     await fetchPromises();
   };
 

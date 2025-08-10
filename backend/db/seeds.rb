@@ -46,7 +46,6 @@ default_our_promises.each do |promise_data|
     promise.due_date = promise_data[:due_date]
   end
 end
-
 personal_promises = [
   {
     content: "毎日30分運動する",
@@ -148,3 +147,4 @@ puts "ユーザー1: #{user1.email} (パスワード: password123)"
 puts "ユーザー2: #{user2.email} (パスワード: password123)"
 puts "二人の約束のデフォルトデータが作成されました"
 puts "過去の評価データが作成されました"
+

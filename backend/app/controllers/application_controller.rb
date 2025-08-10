@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::API
   before_action :authenticate_user!
 
-  private
+  protected
 
   def auth_header
     request.headers['Authorization']
@@ -31,12 +31,12 @@ class ApplicationController < ActionController::API
 
   def encode_token(payload)
     payload[:exp] = 24.hours.from_now.to_i
-    secret_key = Rails.application.credentials.secret_key_base || Rails.application.secret_key_base
+    secret_key = Rails.application.secret_key_base
     JWT.encode(payload, secret_key)
   end
 
   def decode_token(token)
-    secret_key = Rails.application.credentials.secret_key_base || Rails.application.secret_key_base
+    secret_key = Rails.application.secret_key_base
     begin
       decoded = JWT.decode(token, secret_key, true, algorithm: 'HS256')
       HashWithIndifferentAccess.new decoded[0]
