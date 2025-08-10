@@ -14,30 +14,62 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [partner, setPartner] = useState<AuthContextType['partner']>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    const initializeAuth = async () => {
-      if (token) {
-        try {
-          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-          const response = await axios.get('http://localhost:3001/api/get_me');
-          console.log('Auth response:', response.data);
-          setCurrentUser(response.data.current_user);
-          setPartner(response.data.partner);
-        } catch (error) {
-          console.error("認証に失敗しました。トークンを削除します:", error);
-          localStorage.removeItem('authToken');
-          setTokenState(null);
-          setCurrentUser(null);
-          setPartner(null);
-        }
+  const fetchUserData = async (): Promise<void> => {
+    if (token) {
+      try {
+        console.log('Token found:', token);
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        console.log('Making request to /api/get_me with token:', token);
+        const response = await axios.get('http://localhost:3001/api/get_me');
+        console.log('Auth response:', response.data);
+        setCurrentUser(response.data.current_user);
+        setPartner(response.data.partner);
+      } catch (error) {
+        console.error("認証に失敗しました。トークンを削除します:", error);
+        localStorage.removeItem('authToken');
+        setTokenState(null);
+        setCurrentUser(null);
+        setPartner(null);
       }
+    } else {
+      console.log('No token found');
+    }
+  };
+
+  useEffect(() => {
+    const initializeAuth = async (): Promise<void> => {
+      await fetchUserData();
       setIsLoading(false);
     };
 
     initializeAuth();
   }, [token]);
 
-  const setToken = (newToken: string | null) => {
+  // パートナーシップの状態を定期的にチェック（10秒ごと）
+  useEffect(() => {
+    if (token && !partner) {
+      const interval = setInterval(async (): Promise<void> => {
+        try {
+          const response = await axios.get('http://localhost:3001/api/get_me', {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          
+          if (response.data.partner && !partner) {
+            console.log('パートナーシップが作成されました:', response.data.partner);
+            setPartner(response.data.partner);
+          }
+        } catch (error) {
+          console.error('パートナーシップ状態チェックエラー:', error);
+        }
+      }, 10000);
+
+      return () => clearInterval(interval);
+    }
+  }, [token, partner]);
+
+  const setToken = (newToken: string | null): void => {
     console.log('Setting token:', newToken);
     setTokenState(newToken);
     if (newToken) {

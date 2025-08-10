@@ -12,14 +12,14 @@ interface LoginFormProps {
   onAuthSuccess?: () => void;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ invitationToken, onAuthSuccess }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isRegisterMode, setIsRegisterMode] = useState(false);
+const LoginForm = ({ invitationToken, onAuthSuccess }: LoginFormProps) => {
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [error, setError] = useState<string>('');
+  const [isRegisterMode, setIsRegisterMode] = useState<boolean>(false);
   const { setToken } = useAuth();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     setError('');
 

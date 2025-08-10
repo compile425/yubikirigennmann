@@ -12,10 +12,12 @@
 
 ActiveRecord::Schema[7.2].define(version: 2025_08_06_142428) do
   create_table "invitations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "partnership_id", null: false
+    t.bigint "inviter_id", null: false
+    t.string "token", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["partnership_id"], name: "index_invitations_on_partnership_id"
+    t.index ["inviter_id"], name: "index_invitations_on_inviter_id"
+    t.index ["token"], name: "index_invitations_on_token", unique: true
   end
 
   create_table "one_words", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -105,7 +107,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_06_142428) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
-  add_foreign_key "invitations", "partnerships"
+  add_foreign_key "invitations", "users", column: "inviter_id"
   add_foreign_key "one_words", "partnerships"
   add_foreign_key "one_words_reads", "one_words"
   add_foreign_key "one_words_reads", "users"

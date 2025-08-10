@@ -1,30 +1,30 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../contexts/useAuth';
 
-const InvitePartnerPage: React.FC = () => {
-  const [inviteeEmail, setInviteeEmail] = useState('');
-  const [invitationUrl, setInvitationUrl] = useState('');
-  const [isCreating, setIsCreating] = useState(false);
-  const [error, setError] = useState('');
-  const { token } = useAuth();
+const InvitePartnerPage = () => {
+  const [invitationUrl, setInvitationUrl] = useState<string>('');
+  const [isCreating, setIsCreating] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
+  const { token, partner, currentUser, setToken } = useAuth();
   const navigate = useNavigate();
 
-  const handleCreateInvitation = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!inviteeEmail.trim()) {
-      setError('メールアドレスを入力してください');
+  // パートナーシップの状態を監視
+  useEffect(() => {
+    if (partner) {
+      // パートナーシップが作成されたら自動的にダッシュボードに移行
+      navigate('/');
       return;
     }
+  }, [partner, navigate]);
 
+  const handleCreateInvitation = useCallback(async (): Promise<void> => {
     setIsCreating(true);
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:3001/api/invitations', {
-        invitee_email: inviteeEmail
-      }, {
+      const response = await axios.post('http://localhost:3001/api/invitations', {}, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -41,9 +41,16 @@ const InvitePartnerPage: React.FC = () => {
     } finally {
       setIsCreating(false);
     }
-  };
+  }, [token]);
 
-  const handleCopyLink = async () => {
+  // 自動で招待リンクを生成
+  useEffect(() => {
+    if (!partner) {
+      handleCreateInvitation();
+    }
+  }, [partner, handleCreateInvitation]);
+
+  const handleCopyLink = async (): Promise<void> => {
     try {
       await navigator.clipboard.writeText(invitationUrl);
       alert('リンクをコピーしました！');
@@ -53,9 +60,18 @@ const InvitePartnerPage: React.FC = () => {
     }
   };
 
-  const handleBackToDashboard = () => {
-    navigate('/');
+  const handleLogout = (): void => {
+    setToken(null);
+    const navToggle = document.getElementById('yubi-nav-toggle') as HTMLInputElement;
+    if (navToggle) {
+      navToggle.checked = false;
+    }
   };
+
+  // パートナーシップが既に存在する場合はダッシュボードにリダイレクト
+  if (partner) {
+    return null;
+  }
 
   return (
     <div className="yubi-invite-page">
@@ -71,63 +87,50 @@ const InvitePartnerPage: React.FC = () => {
           <h2>パートナーを招待しよう！</h2>
           <p>
             「ゆびきりげんまん」は、ふたりで使うアプリです。<br />
-            まずはパートナーを招待して、一緒に約束の木を育て始めましょう。
+            まずはパートナーを招待して、<br />
+            一緒に約束の木を育て始めましょう。
           </p>
           
-          {!invitationUrl ? (
-            <form onSubmit={handleCreateInvitation} className="invitation-form">
-              <div className="form-group">
-                <label htmlFor="inviteeEmail" className="form-label">
-                  パートナーのメールアドレス
-                </label>
-                <input
-                  type="email"
-                  id="inviteeEmail"
-                  value={inviteeEmail}
-                  onChange={(e) => setInviteeEmail(e.target.value)}
-                  className="form-input"
-                  placeholder="partner@example.com"
-                  required
-                />
-              </div>
-              
-              {error && <p className="form-error">{error}</p>}
-              
+          {isCreating ? (
+            <div className="loading-state">
+              <p>招待リンクを作成中...</p>
+            </div>
+          ) : error ? (
+            <div className="error-state">
+              <p className="form-error">{error}</p>
               <button
-                type="submit"
-                disabled={isCreating}
+                onClick={handleCreateInvitation}
                 className="modal-button create-button"
               >
-                {isCreating ? '作成中...' : '招待リンクを作成'}
+                再試行
               </button>
-            </form>
+            </div>
           ) : (
             <div className="link-generator">
+              <p>以下の招待リンクをパートナーに送ってください：</p>
               <div className="link-display">{invitationUrl}</div>
-              <a href="#" className="modal-button copy-button" onClick={handleCopyLink}>
+              <button
+                onClick={handleCopyLink}
+                className="modal-button copy-button"
+              >
                 リンクをコピーする
-              </a>
+              </button>
             </div>
           )}
         </div>
       </main>
       
+      {/* パートナーシップが存在しない場合はログアウトのみ表示 */}
       <aside className="yubi-sidebar">
         <div className="yubi-sidebar__header">
           <div className="yubi-sidebar__user-icon">
             <div className="yubi-sidebar__user-avatar">
-              U
+              {currentUser?.name?.charAt(0) || 'U'}
             </div>
           </div>
         </div>
         <nav className="yubi-sidebar__nav">
-          <a href="#" className="yubi-sidebar__link" onClick={handleBackToDashboard}>約束一覧</a>
-          <a href="#" className="yubi-sidebar__link">ふたりの記録</a>
-          <a href="#" className="yubi-sidebar__link">過去の評価</a>
-          <a href="#" className="yubi-sidebar__link">ちょっと一言</a>
-          <a href="#" className="yubi-sidebar__link">このアプリについて</a>
-          <a href="#" className="yubi-sidebar__link">パートナー招待</a>
-          <a href="#" className="yubi-sidebar__link">ログアウト</a>
+          <a href="#" className="yubi-sidebar__link" onClick={handleLogout}>ログアウト</a>
         </nav>
       </aside>
       <label htmlFor="yubi-nav-toggle" className="yubi-overlay"></label>

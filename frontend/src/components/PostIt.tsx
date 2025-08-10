@@ -12,17 +12,17 @@ interface PostItProps {
   showEvaluationButton?: boolean;
 }
 
-const PostIt: React.FC<PostItProps> = ({ content, dueDate, rating, evaluationText, evaluationDate, onEdit, onDelete, onEvaluate, showEvaluationButton = false }) => {
+const PostIt = ({ content, dueDate, rating, evaluationText, evaluationDate, onEdit, onDelete, onEvaluate, showEvaluationButton = false }: PostItProps) => {
   console.log('PostIt rendering with:', { content, dueDate, rating, evaluationText, evaluationDate });
   
-  const renderStars = (rating: number) => {
-    console.log('Rendering stars for rating:', rating);
+  const renderStars = (ratingValue: number): React.JSX.Element => {
+    console.log('Rendering stars for rating:', ratingValue);
     return (
       <div className="yubi-rating-display">
         {[1, 2, 3, 4, 5].map((star) => (
           <span
             key={star}
-            className={`yubi-star-display ${star <= rating ? 'yubi-star-display--filled' : ''}`}
+            className={`yubi-star-display ${star <= ratingValue ? 'yubi-star-display--filled' : ''}`}
           >
             ★
           </span>

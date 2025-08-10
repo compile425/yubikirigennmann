@@ -1,18 +1,18 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import type { Promise } from '../types';
+import type { PromiseItem } from '../types';
 
 interface EvaluationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  promise: Promise | null;
+  promise: PromiseItem | null;
   onEvaluationSubmitted: () => void;
 }
 
 const EvaluationModal = ({ isOpen, onClose, promise, onEvaluationSubmitted }: EvaluationModalProps) => {
-  const [rating, setRating] = useState(0);
-  const [evaluationText, setEvaluationText] = useState('');
-  const [hoveredRating, setHoveredRating] = useState(0);
+  const [rating, setRating] = useState<number>(0);
+  const [evaluationText, setEvaluationText] = useState<string>('');
+  const [hoveredRating, setHoveredRating] = useState<number>(0);
 
   useEffect(() => {
     if (isOpen) {
@@ -22,7 +22,7 @@ const EvaluationModal = ({ isOpen, onClose, promise, onEvaluationSubmitted }: Ev
     }
   }, [isOpen]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     if (!promise || rating === 0) return;
 

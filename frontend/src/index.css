@@ -1,5 +1,7 @@
+/*1. フォント定義 (Imports)*/
 @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;800&display=swap');
 
+/*2. 全体・カラー・フォント設定 (Root Variables)*/
 :root {
   --bg-main: #ffffff;
   --panel-bg: #FBF5E3;
@@ -16,6 +18,7 @@
   --font-rounded: 'M PLUS Rounded 1c', sans-serif;
 }
 
+/*3. 基本スタイル (Global Resets & Body)*/
 html {
   box-sizing: border-box;
   height: 100%;
@@ -44,6 +47,26 @@ body.page-report {
   overflow: hidden;
 }
 
+body.page-login {
+  background-color: var(--bg-main);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
+
+body.page-about {
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/*4. 共通コンポーネント (Layout & Common Components)*/
+
+/* --- アプリケーションラッパー --- */
 .yubi-app {
   position: relative;
   max-width: 100%;
@@ -52,36 +75,23 @@ body.page-report {
   overflow-x: hidden;
 }
 
+/* --- サイドバー --- */
 .yubi-sidebar {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 280px !important;
-  height: 100% !important;
-  background-color: #f8f7f2 !important;
-  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1) !important;
-  transform: translateX(-100%) !important;
-  transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
-  z-index: 1000 !important;
-  padding-top: 80px !important;
-  border-right: 1px solid rgba(0, 0, 0, 0.1) !important;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 280px;
+  height: 100%;
+  background-color: #f8f7f2;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+  transform: translateX(-100%);
+  transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  z-index: 1000;
+  padding-top: 80px;
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.yubi-sidebar__nav a {
-  display: block;
-  padding: 18px 30px;
-  color: var(--text-color-brown);
-  text-decoration: none;
-  font-size: 18px;
-  font-weight: 700;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  transition: background-color 0.2s;
-}
-
-.yubi-sidebar__nav a:hover {
-  background-color: rgba(0, 0, 0, 0.03);
-}
-
+.yubi-sidebar__nav a,
 .yubi-sidebar__link {
   display: block;
   padding: 18px 30px;
@@ -93,64 +103,56 @@ body.page-report {
   transition: background-color 0.2s;
 }
 
+.yubi-sidebar__nav a:hover,
 .yubi-sidebar__link:hover {
   background-color: rgba(0, 0, 0, 0.03);
 }
 
+/* --- メニュー開閉の仕組み --- */
 #yubi-nav-toggle {
   display: none;
 }
 
 .yubi-nav-button {
-  position: fixed !important;
-  top: 25px !important;
-  left: 25px !important;
-  z-index: 9999 !important;
-  cursor: pointer !important;
-  padding: 12px !important;
-  -webkit-tap-highlight-color: transparent !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: space-around !important;
-  width: 40px !important;
-  height: 40px !important;
-  background: rgba(255, 255, 255, 0.95) !important;
-  border: none !important;
-  border-radius: 8px !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+  position: fixed;
+  top: 25px;
+  left: 25px;
+  z-index: 1001;
+  cursor: pointer;
+  padding: 10px;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .yubi-nav-button__line {
-  display: block !important;
-  width: 24px !important;
-  height: 3px !important;
-  background-color: var(--text-color-brown) !important;
-  margin: 3px 0 !important;
-  border-radius: 2px !important;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+  display: block;
+  width: 28px;
+  height: 3px;
+  background-color: var(--text-color-brown);
+  margin: 6px 0;
+  border-radius: 3px;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .yubi-overlay {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  background: rgba(0, 0, 0, 0.4) !important;
-  z-index: 999 !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  transition: opacity 0.4s, visibility 0.4s !important;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s, visibility 0.4s;
 }
 
 #yubi-nav-toggle:checked ~ .yubi-sidebar {
-  transform: translateX(0) !important;
+  transform: translateX(0);
 }
 
 #yubi-nav-toggle:checked ~ .yubi-overlay {
-  opacity: 1 !important;
-  visibility: visible !important;
+  opacity: 1;
+  visibility: visible;
 }
 
 #yubi-nav-toggle:checked + .yubi-nav-button .yubi-nav-button__line:nth-child(1) {
@@ -165,6 +167,7 @@ body.page-report {
   transform: translateY(-9px) rotate(-45deg);
 }
 
+/*5. ボード画面のスタイル*/
 .yubi-main {
   padding: 80px 20px 40px;
   transition: filter 0.4s;
@@ -185,33 +188,33 @@ body.page-report {
 }
 
 .yubi-column__header {
- display: flex;
- justify-content: space-between;
- align-items: center;
- font-weight: 800;
- font-size: 22px;
- color: #fff;
- background-color: var(--heading-color);
- margin: 0 0 -10px 0;
- padding: 8px 15px 8px 25px;
- border-radius: 12px;
- box-shadow: 0 4px 8px rgba(0,0,0,0.15);
- position: relative;
- z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 800;
+  font-size: 22px;
+  color: #fff;
+  background-color: var(--heading-color);
+  margin: 0 0 -10px 0;
+  padding: 8px 15px 8px 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  position: relative;
+  z-index: 2;
 }
 
 .yubi-column__content {
- background-color: var(--panel-bg);
- border-radius: 16px;
- padding: 25px;
- padding-top: 35px;
- box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
- height: 70vh;
- overflow-y: auto;
- display: flex;
- flex-direction: column;
- align-items: center;
- gap: 15px;
+  background-color: var(--panel-bg);
+  border-radius: 16px;
+  padding: 25px;
+  padding-top: 35px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  height: 70vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
 }
 
 .yubi-column__content::-webkit-scrollbar {
@@ -241,12 +244,13 @@ body.page-report {
   border-radius: 12px;
   box-shadow: inset 0 2px 0 #fff, 0 4px 0 #ccc;
   flex-shrink: 0;
+  position: relative;
 }
 
 .yubi-card__footer {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: center;
   margin-top: 15px;
   font-size: 13px;
   color: #999;
@@ -255,20 +259,20 @@ body.page-report {
 }
 
 .yubi-card--highlighted {
- border-color: var(--heading-color);
- box-shadow: inset 0 2px 0 #fff, 0 4px 0 #ccc, 0 5px 15px rgba(7, 87, 99, 0.2);
- padding-top: 40px;
+  border-color: var(--heading-color);
+  box-shadow: inset 0 2px 0 #fff, 0 4px 0 #ccc, 0 5px 15px rgba(7, 87, 99, 0.2);
+  padding-top: 40px;
 }
 
 .yubi-card--highlighted::before {
- content: 'Pick Up!';
- position: absolute;
- top: 15px;
- left: 20px;
- font-size: 14px;
- font-weight: 800;
- color: var(--heading-color);
-}  
+  content: 'Pick Up!';
+  position: absolute;
+  top: 15px;
+  left: 20px;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--heading-color);
+}
 
 .yubi-rating {
   display: flex;
@@ -294,250 +298,261 @@ body.page-report {
   text-shadow: 0 2px 0 var(--star-filled-shadow);
 }
 
+/*6. 約束の編集・削除ボタンとモーダルのスタイル*/
 .yubi-actions {
- display: flex;
- gap: 8px;
+  display: flex;
+  gap: 8px;
 }
 
 .yubi-action-button {
- display: flex;
- justify-content: center;
- align-items: center;
- width: 36px;
- height: 36px;
- background-color: #e0e0e0;
- border-radius: 50%;
- color: var(--text-color-brown);
- text-decoration: none;
- font-size: 18px;
- box-shadow: 0 2px 0 #a0a0a0;
- transition: all 0.1s ease-out;
-}
-.yubi-action-button:active {
- transform: translateY(1px);
- box-shadow: 0 1px 0 #a0a0a0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 36px;
+  height: 36px;
+  background-color: #e0e0e0;
+  border-radius: 50%;
+  color: var(--text-color-brown);
+  text-decoration: none;
+  font-size: 18px;
+  box-shadow: 0 2px 0 #a0a0a0;
+  transition: all 0.1s ease-out;
 }
 
+.yubi-action-button:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 0 #a0a0a0;
+}
+
+/* --- モーダルウィンドウのスタイル (共通) --- */
 .yubi-modal-overlay {
- position: fixed;
- top: 0;
- left: 0;
- width: 100%;
- height: 100%;
- background-color: rgba(0, 0, 0, 0.6);
- display: flex;
- justify-content: center;
- align-items: center;
- z-index: 2000;
- opacity: 0;
- visibility: hidden;
- transition: opacity 0.3s ease, visibility 0.3s ease;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .yubi-modal-overlay--open {
- opacity: 1;
- visibility: visible;
+  opacity: 1;
+  visibility: visible;
 }
 
 .yubi-modal {
- width: 90%;
- max-width: 450px;
- background-color: var(--panel-bg);
- border-radius: 20px;
- padding: 25px;
- border: 5px solid white;
- box-shadow: 0 6px 0 var(--shadow-dark), 0 10px 20px rgba(0, 0, 0, 0.2);
- text-align: center;
- transform: scale(0.9);
- transition: transform 0.3s ease;
-}
-.yubi-modal-overlay--open .yubi-modal {
- transform: scale(1);
+  width: 90%;
+  max-width: 450px;
+  background-color: var(--panel-bg);
+  border-radius: 20px;
+  padding: 25px;
+  border: 5px solid white;
+  box-shadow: 0 6px 0 var(--shadow-dark), 0 10px 20px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
 }
 
-.yubi-modal__header { 
- margin-bottom: 20px; 
+.yubi-modal-overlay--open .yubi-modal {
+  transform: scale(1);
 }
-.yubi-modal__title { 
- font-weight: 800; 
- font-size: 22px; 
- color: var(--text-color-brown); 
- margin: 0; 
+
+.yubi-modal__header {
+  margin-bottom: 20px;
 }
-.yubi-modal__body p { 
- font-size: 16px; 
- line-height: 1.7; 
- color: var(--text-color-brown); 
- margin: 0 0 25px 0; 
+
+.yubi-modal__title {
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--text-color-brown);
+  margin: 0;
 }
-.yubi-modal__body p strong { 
- color: #C62828; 
- font-weight: 700; 
+
+.yubi-modal__body p {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text-color-brown);
+  margin: 0 0 25px 0;
+}
+
+.yubi-modal__body p strong {
+  color: #C62828;
+  font-weight: 700;
 }
 
 .yubi-modal__footer {
- display: flex;
- gap: 15px;
+  display: flex;
+  gap: 15px;
 }
 
 .yubi-button {
- flex: 1;
- display: block;
- padding: 15px;
- border-radius: 16px;
- font-size: 16px;
- font-weight: 700;
- text-align: center;
- text-decoration: none;
- transition: all 0.1s ease-out;
- border: none;
- cursor: pointer;
+  flex: 1;
+  display: block;
+  padding: 15px;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+  transition: all 0.1s ease-out;
+  border: none;
+  cursor: pointer;
 }
 
+/* --- 編集モーダルのテキストエリア --- */
 .yubi-modal__body textarea {
- width: 100%;
- height: 15vh;
- border: 2px solid #ddd;
- border-radius: 12px;
- padding: 15px;
- font-size: 16px;
- font-family: var(--font-rounded);
- color: var(--text-color-brown);
- resize: vertical;
- margin-bottom: 20px;
- box-sizing: border-box;
+  width: 100%;
+  height: 15vh;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  padding: 15px;
+  font-size: 16px;
+  font-family: var(--font-rounded);
+  color: var(--text-color-brown);
+  resize: vertical;
+  margin-bottom: 20px;
+  box-sizing: border-box;
 }
 
 .yubi-modal__body textarea:focus {
- outline: none;
- border-color: var(--leaf-green);
+  outline: none;
+  border-color: var(--leaf-green);
 }
 
+/* --- ボタンの色分け --- */
 .yubi-button--primary {
- display: inline-block;
- background-color: var(--heading-color);
- color: white;
- box-shadow: 0 4px 0 #043a40;
- transition: all 0.1s ease-out;
+  display: inline-block;
+  background-color: var(--heading-color);
+  color: white;
+  box-shadow: 0 4px 0 #043a40;
+  transition: all 0.1s ease-out;
 }
 
 .yubi-button--primary:hover {
- background-color: #086673;
+  background-color: #086673;
 }
 
 .yubi-button--primary:active {
- transform: translateY(2px);
- box-shadow: 0 2px 0 #043a40;
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #043a40;
 }
 
-.yubi-button--danger { 
- background-color: #E57373; 
- color: white; 
- box-shadow: 0 4px 0 #B71C1C; 
+.yubi-button--danger {
+  background-color: #E57373;
+  color: white;
+  box-shadow: 0 4px 0 #B71C1C;
 }
 
 .yubi-button--danger:hover {
- background-color: #EC8A8A;
+  background-color: #EC8A8A;
 }
 
 .yubi-button--danger:active {
- transform: translateY(2px);
- box-shadow: 0 2px 0 #B71C1C;
-}
-
-.yubi-button--confirm {
- background-color: #E57373;
- color: white;
- box-shadow: 0 4px 0 #B71C1C;
-}
-
-.yubi-button--confirm:active {
- transform: translateY(2px);
- box-shadow: 0 2px 0 #B71C1C;
-}
-
-.yubi-button--confirm:hover {
- background-color: #EC8A8A;
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #B71C1C;
 }
 
 .yubi-button--cancel {
- background-color: #A0A0A0;
- color: white;
- box-shadow: 0 4px 0 #616161;
-}
-
-.yubi-button--cancel:active {
- transform: translateY(2px);
- box-shadow: 0 2px 0 #616161;
+  background-color: #A0A0A0;
+  color: white;
+  box-shadow: 0 4px 0 #616161;
 }
 
 .yubi-button--cancel:hover {
- background-color: #B0B0B0;
+  background-color: #B0B0B0;
 }
 
+.yubi-button--cancel:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #616161;
+}
+
+.yubi-button--secondary {
+  background-color: #718096;
+  color: white;
+}
+
+.yubi-button--secondary:hover {
+  background-color: #4a5568;
+}
+
+.yubi-button--secondary:disabled {
+  background-color: #cbd5e0;
+  cursor: not-allowed;
+}
+
+/*7. 約束作成ボタンとモーダルのスタイル*/
 .yubi-button--add {
- display: flex;
- justify-content: center;
- align-items: center;
- width: 32px;
- height: 32px;
- background-color: rgba(255,255,255,0.2);
- border-radius: 50%;
- color: #fff;
- text-decoration: none;
- font-size: 22px;
- font-weight: 700;
- transition: all 0.2s ease-out;
- border: 1px solid rgba(255,255,255,0.3);
- flex-shrink: 0;
- cursor: pointer;
- border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 32px;
+  height: 32px;
+  background-color: rgba(255,255,255,0.2);
+  border-radius: 50%;
+  color: #fff;
+  text-decoration: none;
+  font-size: 22px;
+  font-weight: 700;
+  transition: all 0.2s ease-out;
+  border: 1px solid rgba(255,255,255,0.3);
+  flex-shrink: 0;
+  padding: 0;
+  box-sizing: border-box; 
 }
 
 .yubi-button--add:hover {
-   background-color: rgba(255,255,255,0.3);
-   transform: scale(1.1);
+  background-color: rgba(255,255,255,0.3);
+  transform: scale(1.1);
 }
 
 .yubi-button--add:active {
-   transform: scale(0.95);
+  transform: scale(0.95);
 }
 
+/* --- モーダル内のフォーム要素 --- */
 .yubi-form-group {
- margin-bottom: 20px;
- text-align: left;
+  margin-bottom: 20px;
+  text-align: left;
 }
 
 .yubi-form-group__label {
- display: block;
- font-weight: 700;
- margin-bottom: 8px;
- color: var(--text-color-brown);
+  display: block;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--text-color-brown);
 }
 
 .yubi-form-group__input,
 .yubi-form-group__textarea {
- width: 100%;
- border: 2px solid #ddd;
- border-radius: 12px;
- padding: 12px;
- font-size: 16px;
- font-family: var(--font-rounded);
- color: var(--text-color-brown);
- box-sizing: border-box;
+  width: 100%;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 16px;
+  font-family: var(--font-rounded);
+  color: var(--text-color-brown);
+  box-sizing: border-box;
 }
 
 .yubi-form-group__textarea {
-   height: 20vh;
-   resize: vertical;
+  height: 20vh;
+  resize: vertical;
 }
 
 .yubi-form-group__input:focus,
 .yubi-form-group__textarea:focus {
- outline: none;
- border-color: var(--leaf-green);
+  outline: none;
+  border-color: var(--leaf-green);
 }
 
+/*8. レポート画面のスタイル*/
 .yubi-report-fullscreen-container {
   width: 100%;
   height: 100%;
@@ -599,7 +614,7 @@ body.page-report {
   width: auto;
   height: 75vh;
   max-width: 500px;
-  filter: none
+  filter: none;
 }
 
 .yubi-score-plate {
@@ -651,6 +666,7 @@ body.page-report {
   margin-top: 10px;
 }
 
+/*9. レスポンシブ対応 (Media Queries)*/
 @media (max-width: 900px) {
   body.page-report {
     overflow: auto;
@@ -674,384 +690,598 @@ body.page-report {
   }
 }
 
-.yubi-modal-overlay {
- position: fixed;
- top: 0;
- left: 0;
- width: 100%;
- height: 100%;
- background-color: rgba(0, 0, 0, 0.6);
- display: flex;
- justify-content: center;
- align-items: center;
- z-index: 2000;
- opacity: 0;
- visibility: hidden;
- transition: opacity 0.3s ease, visibility 0.3s ease;
+@media (max-width: 768px) {
+  .yubi-board {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  
+  .yubi-column {
+    min-width: auto;
+  }
+  
+  .yubi-main {
+    padding: 24px 16px;
+  }
 }
 
-.yubi-modal-overlay--open {
- opacity: 1;
- visibility: visible;
+@media (max-width: 480px) {
+  .yubi-sidebar {
+    width: 100%;
+  }
+  
+  .yubi-modal {
+    width: 95%;
+    margin: 16px;
+  }
 }
 
-.yubi-modal {
- width: 90%;
- max-width: 450px;
- background-color: var(--panel-bg);
- border-radius: 20px;
- padding: 25px;
- border: 5px solid white;
- box-shadow: 0 6px 0 var(--shadow-dark), 0 10px 20px rgba(0, 0, 0, 0.2);
- text-align: center;
- transform: scale(0.9);
- transition: transform 0.3s ease;
-}
-.yubi-modal-overlay--open .yubi-modal {
- transform: scale(1);
+/*10. モーダルウィンドウのスタイル*/
+.yubi-modal--dissolve {
+  max-width: 400px;
 }
 
-.yubi-modal__header {
- margin-bottom: 20px;
+.yubi-dissolve-warning {
+  text-align: left;
+  margin-bottom: 24px;
 }
 
-.yubi-modal__title {
- font-weight: 800;
- font-size: 22px;
- color: var(--text-color-brown);
- margin: 0;
+.yubi-dissolve-warning p {
+  margin-bottom: 16px;
+  color: #333;
+  font-size: 16px;
+  line-height: 1.5;
 }
 
-.yubi-modal__body p {
- font-size: 16px;
- line-height: 1.7;
- color: var(--text-color-brown);
- margin: 0 0 25px 0;
-}
-.yubi-modal__body p strong {
-   color: #C62828;
-   font-weight: 700;
+.yubi-dissolve-warning__danger {
+  color: #e53e3e !important;
+  font-weight: 500;
+  background-color: #fed7d7;
+  padding: 12px;
+  border-radius: 6px;
+  border-left: 4px solid #e53e3e;
 }
 
-.yubi-modal__footer {
- display: flex;
- gap: 15px;
+.yubi-modal__actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
 }
 
-.yubi-button {
- flex: 1;
- display: block;
- padding: 15px;
- border-radius: 16px;
- font-size: 16px;
- font-weight: 700;
- text-align: center;
- text-decoration: none;
- transition: all 0.1s ease-out;
- border: none;
- cursor: pointer;
-}
-
-.yubi-button--confirm {
- background-color: #E57373;
- color: white;
- box-shadow: 0 4px 0 #B71C1C;
-}
-
-.yubi-button--confirm:active {
- transform: translateY(2px);
- box-shadow: 0 2px 0 #B71C1C;
-}
-
-.yubi-button--confirm:hover {
- background-color: #EC8A8A;
-}
-
-.yubi-button--cancel {
- background-color: #A0A0A0;
- color: white;
- box-shadow: 0 4px 0 #616161;
-}
-
-.yubi-button--cancel:active {
- transform: translateY(2px);
- box-shadow: 0 2px 0 #616161;
-}
-
-.yubi-button--cancel:hover {
- background-color: #B0B0B0;
-}
-
+/*11. 「ちょっと一言」画面のスタイル*/
 .yubi-hitokoto-container {
- max-width: 680px;
- margin: 0 auto;
+  max-width: 680px;
+  margin: 0 auto;
 }
 
 .yubi-form-section {
- margin-bottom: 50px;
+  margin-bottom: 50px;
 }
 
 .yubi-form-panel {
- background-color: var(--panel-bg);
- border-radius: 12px;
- padding: 30px;
- box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
- text-align: center;
+  background-color: var(--panel-bg);
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
 .yubi-form-panel textarea {
- width: 100%;
- height: 25vh;
- border: 2px solid #ddd;
- border-radius: 12px;
- padding: 15px;
- font-size: 16px;
- font-family: var(--font-rounded);
- color: var(--text-color-brown);
- resize: vertical;
- margin-bottom: 20px;
- box-sizing: border-box;
+  width: 100%;
+  height: 25vh;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  padding: 15px;
+  font-size: 16px;
+  font-family: var(--font-rounded);
+  color: var(--text-color-brown);
+  resize: vertical;
+  margin-bottom: 20px;
+  box-sizing: border-box;
 }
 
 .yubi-form-panel textarea:focus {
- outline: none;
- border-color: var(--leaf-green);
- box-shadow: 0 0 10px rgba(89, 148, 91, 0.2);
+  outline: none;
+  border-color: var(--leaf-green);
+  box-shadow: 0 0 10px rgba(89, 148, 91, 0.2);
 }
 
 .yubi-send-button {
- display: inline-block;
- padding: 15px;
- margin-top: 10px;
- background-color: var(--heading-color);
- color: white;
- text-decoration: none;
- border-radius: 99px;
- font-size: 18px;
- font-weight: 700;
- text-align: center;
- border: none;
- cursor: pointer;
- box-shadow: 0 4px 0 #043a40;
- transition: all 0.1s ease-out;
+  display: inline-block;
+  padding: 15px;
+  margin-top: 10px;
+  background-color: var(--heading-color);
+  color: white;
+  text-decoration: none;
+  border-radius: 99px;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #043a40;
+  transition: all 0.1s ease-out;
 }
 
 .yubi-send-button:hover {
- background-color: #086673;
+  background-color: #086673;
 }
 
 .yubi-send-button:active {
- transform: translateY(2px);
- box-shadow: 0 2px 0 #043a40;
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #043a40;
 }
 
 .yubi-send-button .icon {
- display: inline-block;
- margin-right: 8px;
+  display: inline-block;
+  margin-right: 8px;
 }
 
 .yubi-received-messages .yubi-column__content {
- height: auto;
- min-height: 30vh;
+  height: auto;
+  min-height: 30vh;
 }
 
 .yubi-received-messages .yubi-card {
- margin-left: 0;
- margin-right: auto;
+  margin-left: 0;
+  margin-right: auto;
 }
 
+/*12. 「このアプリについて」画面のスタイル*/
 .yubi-about-container {
- max-width: 800px;
- margin: 0 auto;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .yubi-page-header {
- text-align: center;
- position: relative;
- bottom: 20px;
+  text-align: center;
+  position: relative;
+  bottom: 20px;
 }
 
 .yubi-page-header h1 {
- font-weight: 800;
- font-size: 32px;
- color: white;
- background-color: var(--heading-color);
- padding: 15px 30px;
- border-radius: 99px;
- display: inline-block;
+  font-weight: 800;
+  font-size: 32px;
+  color: white;
+  background-color: var(--heading-color);
+  padding: 15px 30px;
+  border-radius: 99px;
+  display: inline-block;
 }
 
 .yubi-feature-grid {
-   display: grid;
-   grid-template-columns: 1fr 1fr;
-   gap: 25px;
-   margin-bottom: 30px;
-   position: relative;
-   bottom: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+  margin-bottom: 30px;
+  position: relative;
+  bottom: 20px;
 }
 
 .yubi-feature-panel {
- background: var(--panel-bg);
- border: 4px solid white;
- border-radius: 20px;
- padding: 20px;
- box-shadow: 0 6px 0 var(--shadow-dark), 0 8px 15px rgba(0, 0, 0, 0.15);
- display: flex;
- flex-direction: column;
- align-items: center;
- text-align: center;
+  background: var(--panel-bg);
+  border: 4px solid white;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 6px 0 var(--shadow-dark), 0 8px 15px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 .yubi-feature-icon {
- flex-shrink: 0;
- width: 80px;
- height: 80px;
- background-color: #fff;
- border-radius: 16px;
- display: flex;
- justify-content: center;
- align-items: center;
- font-size: 40px;
- border: 2px solid #ddd;
- box-shadow: inset 0 2px 0 #fff, 0 4px 0 #ccc;
- color: var(--leaf-green);
- margin-bottom: 15px;
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+  background-color: #fff;
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 40px;
+  border: 2px solid #ddd;
+  box-shadow: inset 0 2px 0 #fff, 0 4px 0 #ccc;
+  color: var(--leaf-green);
+  margin-bottom: 15px;
 }
 
 .yubi-feature-text h3 {
- font-size: 18px;
- font-weight: 800;
- color: var(--heading-color);
- margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--heading-color);
+  margin: 0 0 8px 0;
 }
 
 .yubi-feature-text p {
- margin: 0;
- font-size: 14px;
- line-height: 1.6;
- color: var(--text-color-brown);
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-color-brown);
 }
 
 .yubi-back-to-board-button {
-   display: inline-block;
-   padding: 15px 35px;
-   background-color: var(--text-color-brown);
-   color: white;
-   text-decoration: none;
-   border-radius: 99px;
-   font-size: 18px;
-   font-weight: 700;
-   text-align: center;
-   border: none;
-   cursor: pointer;
-   box-shadow: 0 4px 0 var(--shadow-dark);
-   transition: all 0.1s ease-out;
-   position: relative;
-   bottom: 20px;
-}
-.yubi-back-to-board-button:active {
-   transform: translateY(1px);
-   box-shadow: 0 3px 0 var(--text-color-brown);
+  display: inline-block;
+  padding: 15px 35px;
+  background-color: var(--text-color-brown);
+  color: white;
+  text-decoration: none;
+  border-radius: 99px;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 0 var(--shadow-dark);
+  transition: all 0.1s ease-out;
+  position: relative;
+  bottom: 20px;
 }
 
-body.page-about {
- height: 100vh;
- overflow: hidden;
- display: flex;
- justify-content: center;
- align-items: center;
+.yubi-back-to-board-button:active {
+  transform: translateY(1px);
+  box-shadow: 0 3px 0 var(--text-color-brown);
 }
 
 body.page-about .yubi-main {
-   padding: 20px;
+  padding: 20px;
 }
 
+/*13. ログイン画面のスタイル*/
 .yubi-login {
-  width: 200%;
-  max-width: 500px;
+  width: 90%;
+  max-width: 400px;
   background-color: var(--panel-bg);
   border-radius: 20px;
-  padding: 35px 100px;
+  padding: 35px;
   border: 1px solid #E0E0E0;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
   text-align: center;
- }
-
-body.page-login {
- background-color: var(--bg-main);
- display: flex;
- justify-content: center;
- align-items: center;
- height: 100vh;
- overflow: hidden;
 }
 
-.yubi-invitation-container {
- display: flex;
- justify-content: center;
- align-items: center;
- height: 100%;
- padding: 20px;
+.yubi-login__header {
+  margin-bottom: 25px;
 }
 
-.yubi-invitation-panel {
- width: 90%;
- max-width: 500px;
- background-color: var(--panel-bg);
- border-radius: 20px;
- padding: 30px 35px;
- border: 4px solid white;
- box-shadow: 0 6px 0 var(--shadow-dark), 0 10px 20px rgba(0, 0, 0, 0.2);
- text-align: center;
+.yubi-login__header h1 {
+  font-weight: 800;
+  font-size: 32px;
+  color: var(--heading-color);
+  margin: 0;
 }
 
-.yubi-invitation-icon {
- font-size: 56px;
- margin-bottom: 15px;
+.yubi-login__form .yubi-form-group {
+  margin-bottom: 20px;
+  text-align: left;
 }
 
-.yubi-invitation-panel h2 {
- font-weight: 800;
- font-size: 24px;
- color: var(--heading-color);
- margin: 0 0 15px 0;
+.yubi-login__form label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 14px;
 }
 
-.yubi-invitation-panel p {
- font-size: 15px;
- line-height: 1.8;
- color: var(--text-color-brown);
- margin: 0 0 30px 0;
+.yubi-login__form input {
+  width: 100%;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  padding: 12px 15px;
+  font-size: 16px;
+  font-family: var(--font-rounded);
+  color: var(--text-color-brown);
+  box-sizing: border-box;
+  background-color: #fff;
+  transition: all 0.2s;
 }
 
-.yubi-link-display {
- background-color: #fff;
- border: 2px dashed #ddd;
- border-radius: 12px;
- padding: 15px;
- margin-bottom: 15px;
- font-size: 14px;
- color: #777;
- word-wrap: break-word;
+.yubi-login__form input:focus {
+  outline: none;
+  border-color: var(--heading-color);
+  box-shadow: 0 0 10px rgba(7, 87, 99, 0.2);
 }
 
-.yubi-copy-button {
- display: inline-block;
- background-color: var(--heading-color);
- color: white;
- box-shadow: 0 4px 0 #043a40;
- transition: all 0.1s ease-out;
+.yubi-button--login {
+  display: inline-block;
+  width: 100%;
+  padding: 15px;
+  margin-top: 10px;
+  background-color: var(--heading-color);
+  color: white;
+  text-decoration: none;
+  border-radius: 99px;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #043a40;
+  transition: all 0.1s ease-out;
 }
 
-.yubi-copy-button:hover {
- background-color: #086673;
+.yubi-button--login:hover {
+  background-color: #086673;
 }
 
-.yubi-copy-button:active {
- transform: translateY(2px);
- box-shadow: 0 2px 0 #043a40;
+.yubi-button--login:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #043a40;
 }
 
+.yubi-login__links {
+  margin-top: 25px;
+  font-size: 14px;
+}
+
+.yubi-login__links a {
+  color: var(--text-color-brown);
+  text-decoration: underline;
+  margin: 0 10px;
+}
+
+.yubi-login__links a:hover {
+  color: var(--heading-color);
+}
+
+.yubi-login__link--button {
+  background: none;
+  border: none;
+  color: var(--heading-color);
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+  margin: 0;
+}
+
+.yubi-login__link--button:hover {
+  color: var(--leaf-green);
+}
+
+/*14. パートナー招待画面のスタイル*/
+.yubi-invite-page {
+  min-height: 100vh;
+  background-color: white;
+  position: relative;
+}
+
+.yubi-invite-page .yubi-nav-button {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1001;
+  cursor: pointer;
+  padding: 10px;
+  background: none;
+  border: none;
+}
+
+.yubi-invite-page .yubi-nav-button__line {
+  display: block;
+  width: 25px;
+  height: 3px;
+  background-color: #8b4513;
+  margin: 5px 0;
+  transition: 0.3s;
+  border-radius: 2px;
+}
+
+.yubi-invite-page .yubi-nav-toggle:checked ~ .yubi-nav-button .yubi-nav-button__line:nth-child(1) {
+  transform: rotate(-45deg) translate(-5px, 6px);
+}
+
+.yubi-invite-page .yubi-nav-toggle:checked ~ .yubi-nav-button .yubi-nav-button__line:nth-child(2) {
+  opacity: 0;
+}
+
+.yubi-invite-page .yubi-nav-toggle:checked ~ .yubi-nav-button .yubi-nav-button__line:nth-child(3) {
+  transform: rotate(45deg) translate(-5px, -6px);
+}
+
+.yubi-invite-page .yubi-sidebar {
+  position: fixed;
+  top: 0;
+  left: -300px;
+  width: 300px;
+  height: 100vh;
+  background-color: #f8f9fa;
+  z-index: 1000;
+  transition: left 0.3s ease;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.yubi-invite-page .yubi-nav-toggle:checked ~ .yubi-sidebar {
+  left: 0;
+}
+
+.yubi-invite-page .yubi-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.yubi-invite-page .yubi-nav-toggle:checked ~ .yubi-overlay {
+  opacity: 1;
+  visibility: visible;
+}
+
+.board-container {
+  padding: 80px 20px 40px;
+  transition: filter 0.4s;
+  position: relative;
+  z-index: 10;
+}
+
+.invitation-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 20px;
+}
+
+.invitation-panel {
+  width: 90%;
+  max-width: 500px;
+  background-color: var(--panel-bg);
+  border-radius: 20px;
+  padding: 30px 35px;
+  border: 4px solid white;
+  box-shadow: 0 6px 0 var(--shadow-dark), 0 10px 20px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  position: relative;
+  z-index: 20;
+}
+
+.invitation-icon {
+  font-size: 56px;
+  margin-bottom: 15px;
+}
+
+.invitation-panel h2 {
+  font-weight: 800;
+  font-size: 24px;
+  color: var(--heading-color);
+  margin: 0 0 15px 0;
+}
+
+.invitation-panel p {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--text-color-brown);
+  margin: 0 0 30px 0;
+}
+
+.invitation-form {
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--heading-color);
+  font-size: 14px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--heading-color);
+}
+
+.form-error {
+  color: #e53e3e;
+  margin-bottom: 16px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.create-button {
+  background-color: var(--heading-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.1s ease-out;
+  box-shadow: 0 4px 0 #043a40;
+}
+
+.create-button:hover {
+  background-color: #086673;
+}
+
+.create-button:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #043a40;
+}
+
+.create-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.link-generator {
+  text-align: center;
+}
+
+.link-display {
+  background-color: #fff;
+  border: 2px dashed #ddd;
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  color: #777;
+  word-wrap: break-word;
+}
+
+.copy-button {
+  display: inline-block;
+  background-color: var(--heading-color);
+  color: white;
+  box-shadow: 0 4px 0 #043a40;
+  transition: all 0.1s ease-out;
+  text-decoration: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.copy-button:hover {
+  background-color: #086673;
+  color: white;
+  text-decoration: none;
+}
+
+.copy-button:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #043a40;
+}
+
+/* ローディングとエラー状態 */
+.loading-state {
+  text-align: center;
+  padding: 20px;
+}
+
+.loading-state p {
+  color: var(--text-color-brown);
+  font-size: 16px;
+}
+
+.error-state {
+  text-align: center;
+  padding: 20px;
+}
+
+.error-state .form-error {
+  margin-bottom: 20px;
+}
+
+/* 評価関連のスタイル */
 .yubi-evaluation__promise-content {
   background-color: #f5f5f5;
   border-radius: 8px;
@@ -1078,30 +1308,6 @@ body.page-login {
   text-align: center;
 }
 
-.yubi-rating {
-  display: flex;
-  justify-content: center;
-  gap: 5px;
-  margin-top: 10px;
-}
-
-.yubi-star {
-  font-size: 24px;
-  cursor: pointer;
-  transition: transform 0.1s ease-out;
-  color: var(--star-empty);
-  text-shadow: 0 1px 0 var(--star-empty-shadow);
-}
-
-.yubi-star:hover {
-  transform: scale(1.1);
-}
-
-.yubi-star--filled {
-  color: var(--star-filled);
-  text-shadow: 0 1px 0 var(--star-filled-shadow);
-}
-
 .yubi-evaluation-email-section {
   text-align: center;
   margin-top: 20px;
@@ -1117,6 +1323,7 @@ body.page-login {
   cursor: not-allowed;
 }
 
+/* ユーティリティクラス */
 .yubi-text-center {
   text-align: center;
 }
@@ -1150,75 +1357,42 @@ body.page-login {
 }
 
 .yubi-gap-sm {
-  gap: var(--yubi-spacing-sm);
+  gap: 8px;
 }
 
 .yubi-gap-md {
-  gap: var(--yubi-spacing-md);
+  gap: 16px;
 }
 
 .yubi-gap-lg {
-  gap: var(--yubi-spacing-lg);
+  gap: 24px;
 }
 
 .yubi-mb-sm {
-  margin-bottom: var(--yubi-spacing-sm);
+  margin-bottom: 8px;
 }
 
 .yubi-mb-md {
-  margin-bottom: var(--yubi-spacing-md);
+  margin-bottom: 16px;
 }
 
 .yubi-mb-lg {
-  margin-bottom: var(--yubi-spacing-lg);
+  margin-bottom: 24px;
 }
 
 .yubi-mt-sm {
-  margin-top: var(--yubi-spacing-sm);
+  margin-top: 8px;
 }
 
 .yubi-mt-md {
-  margin-top: var(--yubi-spacing-md);
+  margin-top: 16px;
 }
 
 .yubi-mt-lg {
-  margin-top: var(--yubi-spacing-lg);
+  margin-top: 24px;
 }
 
-.yubi-evaluation-email-section {
-  text-align: center;
-  margin-top: 20px;
-}
-
-.yubi-button--email {
-  padding: 10px 20px;
-  font-size: 16px;
-}
-
-.yubi-button--email:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-.yubi-evaluation__promise-content {
-  background-color: #f5f5f5;
-  border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 20px;
-}
-
-.yubi-evaluation__promise-content h3 {
-  margin: 0 0 10px 0;
-  font-size: 16px;
-  color: var(--heading-color);
-}
-
-.yubi-evaluation__promise-content p {
-  margin: 0;
-  font-size: 14px;
-  color: var(--text-color-brown);
-}
-
+/* 評価表示関連 */
 .yubi-rating-display {
   display: flex;
   gap: 2px;
@@ -1270,19 +1444,4 @@ body.page-login {
   color: var(--text-color-brown);
   font-style: italic;
   line-height: 1.4;
-}
-
-.yubi-login__link--button {
-  background: none;
-  border: none;
-  color: var(--heading-color);
-  text-decoration: underline;
-  cursor: pointer;
-  font-size: 14px;
-  padding: 0;
-  margin: 0;
-}
-
-.yubi-login__link--button:hover {
-  color: var(--leaf-green);
 }

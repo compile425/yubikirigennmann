@@ -1,14 +1,14 @@
 import PostIt from './PostIt';
-import type { Promise } from '../types';
+import type { PromiseItem } from '../types';
 
 interface PromiseColumnProps {
   title: string;
-  promises: Promise[];
+  promises: PromiseItem[];
   onAdd: () => void;
   showAddButton?: boolean;
-  onEdit?: (promise: Promise) => void;
-  onDelete?: (promise: Promise) => void;
-  onEvaluate?: (promise: Promise) => void;
+  onEdit?: (promise: PromiseItem) => void;
+  onDelete?: (promise: PromiseItem) => void;
+  onEvaluate?: (promise: PromiseItem) => void;
   showEvaluationButton?: boolean;
 }
 

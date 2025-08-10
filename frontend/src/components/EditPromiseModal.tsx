@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import type { Promise } from '../types';
+import type { PromiseItem } from '../types';
 
 interface EditPromiseModalProps {
   isOpen: boolean;
   onClose: () => void;
-  promise: Promise | null;
+  promise: PromiseItem | null;
   onPromiseUpdated: () => void;
 }
 
 const EditPromiseModal = ({ isOpen, onClose, promise, onPromiseUpdated }: EditPromiseModalProps) => {
-  const [content, setContent] = useState('');
-  const [dueDate, setDueDate] = useState('');
+  const [content, setContent] = useState<string>('');
+  const [dueDate, setDueDate] = useState<string>('');
   
   useEffect(() => {
     if (promise && isOpen) {
@@ -20,7 +20,7 @@ const EditPromiseModal = ({ isOpen, onClose, promise, onPromiseUpdated }: EditPr
     }
   }, [promise, isOpen]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     if (!promise) return;
 

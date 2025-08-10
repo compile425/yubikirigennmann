@@ -3,15 +3,12 @@ class Api::InvitationsController < ApplicationController
   skip_before_action :authenticate_user!, only: [:accept], raise: false
 
   def create
-    # 既にパートナーシップがある場合はエラー
     if current_user.partnership
       render json: { error: '既にパートナーシップが存在します' }, status: :unprocessable_entity
       return
     end
 
-    # 招待を作成
     invitation = current_user.invitations.build(
-      invitee_email: params[:invitee_email],
       token: generate_invitation_token
     )
 
@@ -42,15 +39,12 @@ class Api::InvitationsController < ApplicationController
       return
     end
 
-    # 招待を受け取ったユーザーがログインしている場合
     if current_user
-      # パートナーシップを作成
       partnership = Partnership.create!(
         user: invitation.inviter,
         partner: current_user
       )
       
-      # 招待を削除
       invitation.destroy
       
       render json: {
@@ -62,7 +56,6 @@ class Api::InvitationsController < ApplicationController
         }
       }
     else
-      # ログインしていない場合は、招待情報をセッションに保存
       session[:pending_invitation_token] = invitation.token
       render json: {
         message: 'ログインまたは新規登録してください',
@@ -76,4 +69,4 @@ class Api::InvitationsController < ApplicationController
   def generate_invitation_token
     SecureRandom.urlsafe_base64(32)
   end
-end 
+end

@@ -3,6 +3,7 @@ class CreateUserCredentials < ActiveRecord::Migration[7.2]
     create_table :user_credentials do |t|
       t.references :user, null: false, foreign_key: true
       t.string :invite_token
+      t.string :password_digest
       t.timestamps
     end
     

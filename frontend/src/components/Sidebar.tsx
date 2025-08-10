@@ -1,17 +1,14 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/useAuth';
-import InvitePartnerModal from './InvitePartnerModal';
 
 interface SidebarProps {
   onDissolvePartnership?: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ onDissolvePartnership }) => {
+const Sidebar = ({ onDissolvePartnership }: SidebarProps) => {
   const { setToken, partner, currentUser } = useAuth();
-  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
 
-  const handleLogout = () => {
+  const handleLogout = (): void => {
     setToken(null);
     
     const navToggle = document.getElementById('yubi-nav-toggle') as HTMLInputElement;
@@ -22,7 +19,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onDissolvePartnership }) => {
     window.location.href = '/';
   };
 
-  const handleDissolvePartnership = (e: React.MouseEvent) => {
+  const handleDissolvePartnership = (e: React.MouseEvent): void => {
     e.preventDefault();
     
     const navToggle = document.getElementById('yubi-nav-toggle') as HTMLInputElement;
@@ -33,15 +30,11 @@ const Sidebar: React.FC<SidebarProps> = ({ onDissolvePartnership }) => {
     onDissolvePartnership?.();
   };
 
-  const handleInvitePartner = (e: React.MouseEvent) => {
-    e.preventDefault();
-    
+  const handleNavLinkClick = (): void => {
     const navToggle = document.getElementById('yubi-nav-toggle') as HTMLInputElement;
     if (navToggle) {
       navToggle.checked = false;
     }
-
-    setIsInviteModalOpen(true);
   };
 
   return (
@@ -62,11 +55,11 @@ const Sidebar: React.FC<SidebarProps> = ({ onDissolvePartnership }) => {
           </div>
         </div>
         <nav className="yubi-sidebar__nav">
-          <Link to="/" className="yubi-sidebar__link">約束一覧</Link>
-          <a href="#" className="yubi-sidebar__link">ふたりの記録</a>
-          <Link to="/past-evaluations" className="yubi-sidebar__link">過去の評価</Link>
-          <a href="#" className="yubi-sidebar__link">ちょっと一言</a>
-          <a href="#" className="yubi-sidebar__link">このアプリについて</a>
+          <Link to="/" className="yubi-sidebar__link" onClick={handleNavLinkClick}>約束一覧</Link>
+          <Link to="/" className="yubi-sidebar__link" onClick={handleNavLinkClick}>ふたりの記録</Link>
+          <Link to="/past-evaluations" className="yubi-sidebar__link" onClick={handleNavLinkClick}>過去の評価</Link>
+          <Link to="/" className="yubi-sidebar__link" onClick={handleNavLinkClick}>ちょっと一言</Link>
+          <Link to="/" className="yubi-sidebar__link" onClick={handleNavLinkClick}>このアプリについて</Link>
           {partner ? (
             <a
               href="#"
@@ -76,23 +69,14 @@ const Sidebar: React.FC<SidebarProps> = ({ onDissolvePartnership }) => {
               パートナー解消
             </a>
           ) : (
-            <a
-              href="#"
-              className="yubi-sidebar__link"
-              onClick={handleInvitePartner}
-            >
+            <Link to="/invite-partner" className="yubi-sidebar__link" onClick={handleNavLinkClick}>
               パートナー招待
-            </a>
+            </Link>
           )}
           <a href="#" className="yubi-sidebar__link" onClick={handleLogout}>ログアウト</a>
         </nav>
       </aside>
       <label htmlFor="yubi-nav-toggle" className="yubi-overlay"></label>
-
-      <InvitePartnerModal
-        isOpen={isInviteModalOpen}
-        onClose={() => setIsInviteModalOpen(false)}
-      />
     </>
   );
 };
