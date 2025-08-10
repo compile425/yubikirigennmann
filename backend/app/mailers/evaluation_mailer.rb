@@ -4,7 +4,7 @@ class EvaluationMailer < ApplicationMailer
     @partner = partner
     @promise = promise
     @evaluation_url = "http://localhost:3000/evaluate/#{promise.id}?token=#{generate_evaluation_token(promise)}"
-    
+
     mail(
       to: partner.email,
       subject: "【約束の評価】今週の約束を評価してください"
@@ -15,7 +15,7 @@ class EvaluationMailer < ApplicationMailer
     @promise = promise
     @evaluator = evaluator
     @evaluation_url = "http://localhost:3000/evaluate/#{promise.id}?token=#{generate_evaluation_token(promise)}"
-    
+
     mail(
       to: evaluator.email,
       subject: "【約束の評価】期日が来た約束を評価してください"
@@ -25,16 +25,16 @@ class EvaluationMailer < ApplicationMailer
   def self.send_due_date_evaluations
     today = Date.current
     due_promises = Promise.where(due_date: today).includes(:creator, :partnership)
-    
+
     due_promises.each do |promise|
       partnership = promise.partnership
-      
+
       if promise.creator_id == partnership.user_id
         evaluator = partnership.partner
       else
         evaluator = partnership.user
       end
-      
+
       begin
         due_date_evaluation_email(promise, evaluator).deliver_now
         Rails.logger.info "Due date evaluation email sent successfully to #{evaluator.email}"
@@ -47,8 +47,8 @@ class EvaluationMailer < ApplicationMailer
 
   def self.send_weekly_our_promises_evaluation
     Partnership.includes(:user, :partner, :promises).find_each do |partnership|
-      top_our_promise = partnership.promises.where(type: 'our_promise').order(:updated_at).first
-      
+      top_our_promise = partnership.promises.where(type: "our_promise").order(:updated_at).first
+
       next unless top_our_promise
 
       week_number = Date.current.cweek
@@ -59,7 +59,7 @@ class EvaluationMailer < ApplicationMailer
         evaluator = partnership.user
         user = partnership.partner
       end
-      
+
       begin
         weekly_evaluation_email(user, evaluator, top_our_promise).deliver_now
         Rails.logger.info "Weekly evaluation email sent successfully to #{evaluator.email}"
@@ -72,13 +72,13 @@ class EvaluationMailer < ApplicationMailer
 
   def self.send_weekly_evaluation_emails
     Partnership.includes(:user, :partner, :promises).find_each do |partnership|
-      top_our_promise = partnership.promises.where(type: 'our_promise').order(:updated_at).first
-      
+      top_our_promise = partnership.promises.where(type: "our_promise").order(:updated_at).first
+
       next unless top_our_promise
 
       partner = partnership.partner
       user = partnership.user
-      
+
       begin
         weekly_evaluation_email(user, partner, top_our_promise).deliver_now
         Rails.logger.info "Weekly evaluation email sent successfully to #{partner.email}"
@@ -97,4 +97,4 @@ class EvaluationMailer < ApplicationMailer
       Rails.application.secret_key_base
     )
   end
-end 
+end

@@ -22,4 +22,4 @@ class Api::ScheduledTasksController < ApplicationController
       render json: { error: "メール送信に失敗しました: #{e.message}" }, status: :internal_server_error
     end
   end
-end 
+end

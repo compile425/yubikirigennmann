@@ -74,12 +74,12 @@ Rails.application.configure do
   # メール送信設定
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    address: 'smtp.gmail.com',
+    address: "smtp.gmail.com",
     port: 587,
-    domain: ENV['MAILER_DOMAIN'] || 'yubikirigennmann.com',
-    user_name: ENV['GMAIL_USERNAME'] || 'yubikirigennmann@gmail.com',
-    password: ENV['GMAIL_PASSWORD'] || 'your-app-password',
-    authentication: 'plain',
+    domain: ENV["MAILER_DOMAIN"] || "yubikirigennmann.com",
+    user_name: ENV["GMAIL_USERNAME"] || "yubikirigennmann@gmail.com",
+    password: ENV["GMAIL_PASSWORD"] || "your-app-password",
+    authentication: "plain",
     enable_starttls_auto: true
   }
 

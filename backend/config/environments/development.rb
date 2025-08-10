@@ -45,7 +45,7 @@ Rails.application.configure do
 
   # letter_opener_webの設定
   config.action_mailer.letter_opener_web_settings = {
-    location: Rails.root.join('tmp', 'letter_opener_web')
+    location: Rails.root.join("tmp", "letter_opener_web")
   }
 
   # メール送信エラーをログに出力
@@ -56,7 +56,7 @@ Rails.application.configure do
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
-  
+
   # ログレベルを設定
   config.log_level = :debug
 

@@ -1,7 +1,7 @@
 class Api::PromisesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_promise, only: [:update, :destroy]
-  
+  before_action :set_promise, only: [ :update, :destroy ]
+
   def index
     if current_user&.partnership
       @promises = current_user.partnership.promises
@@ -14,7 +14,7 @@ class Api::PromisesController < ApplicationController
   def create
     partnership = current_user.partnership
     unless partnership
-      render json: { error: 'パートナーシップが存在しません' }, status: :unprocessable_entity
+      render json: { error: "パートナーシップが存在しません" }, status: :unprocessable_entity
       return
     end
 
@@ -23,7 +23,7 @@ class Api::PromisesController < ApplicationController
     Rails.logger.info "Creating promise with params: #{promise_params}"
     Rails.logger.info "Partnership ID: #{partnership.id}"
     Rails.logger.info "Creator ID: #{current_user.id}"
-    
+
     if promise.save
       render json: promise, status: :created
     else

@@ -33,4 +33,4 @@ namespace :evaluation do
       puts "パートナーシップが見つかりません"
     end
   end
-end 
+end

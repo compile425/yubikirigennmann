@@ -7,7 +7,7 @@ class Api::EvaluatedPromisesController < ApplicationController
       @evaluated_promises = current_user.partnership.promises
         .joins(:promise_evaluation)
         .includes(:promise_evaluation, :creator)
-        .order('promise_evaluations.created_at DESC')
+        .order("promise_evaluations.created_at DESC")
 
       response_data = @evaluated_promises.map do |promise|
         {
@@ -28,4 +28,4 @@ class Api::EvaluatedPromisesController < ApplicationController
       render json: [], status: :ok
     end
   end
-end 
+end

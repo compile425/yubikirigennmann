@@ -6,7 +6,7 @@ class CreateUserCredentials < ActiveRecord::Migration[7.2]
       t.string :password_digest
       t.timestamps
     end
-    
+
     add_index :user_credentials, :invite_token, unique: true
   end
-end 
+end
