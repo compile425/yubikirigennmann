@@ -1,4 +1,4 @@
-FROM ruby:3.2.2
+FROM ruby:3.4.5
 
 ENV RAILS_LOG_TO_STDOUT=true \
     BUNDLE_JOBS=4
