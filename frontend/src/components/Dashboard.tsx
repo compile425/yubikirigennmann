@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import Sidebar from './Sidebar';
 import PromiseColumn from './PromiseColumn';
@@ -20,7 +20,7 @@ const Dashboard = () => {
   const [promiseTypeToAdd, setPromiseTypeToAdd] = useState<'my_promise' | 'our_promise' | 'partner_promise' | ''>('');
   const [isSendingEmail, setIsSendingEmail] = useState<boolean>(false);
 
-  const fetchPromises = async (): Promise<void> => {
+  const fetchPromises = useCallback(async (): Promise<void> => {
     if (!token) return;
     try {
       const response = await axios.get('http://localhost:3001/api/promises');
@@ -28,11 +28,11 @@ const Dashboard = () => {
     } catch (error) {
       console.error("約束の取得に失敗しました:", error);
     }
-  };
+  }, [token]);
 
   useEffect(() => {
     fetchPromises();
-  }, [token]);
+  }, [fetchPromises]);
 
   const handleOpenModal = (type: 'my_promise' | 'our_promise' | 'partner_promise'): void => {
     setPromiseTypeToAdd(type);

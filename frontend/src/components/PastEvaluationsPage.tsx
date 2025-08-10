@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import Sidebar from './Sidebar';
 import PromiseColumn from './PromiseColumn';
@@ -10,7 +10,7 @@ const PastEvaluationsPage = () => {
   const { token, currentUser, partner } = useAuth();
   const [loading, setLoading] = useState<boolean>(true);
 
-  const fetchEvaluatedPromises = async (): Promise<void> => {
+  const fetchEvaluatedPromises = useCallback(async (): Promise<void> => {
     if (!token) return;
     try {
       setLoading(true);
@@ -24,11 +24,11 @@ const PastEvaluationsPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]);
 
   useEffect(() => {
     fetchEvaluatedPromises();
-  }, [token]);
+  }, [fetchEvaluatedPromises]);
 
   const myPromisesTitle = currentUser ? `${currentUser.name}の過去の約束` : 'わたしの過去の約束';
   const partnerPromisesTitle = partner ? `${partner.name}の過去の約束` : 'パートナーの過去の約束';
