@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     post "/login", to: "sessions#create"
+    post "/guest_login", to: "sessions#guest_login"
     post "/register", to: "users#create"
     resources :promises, only: [ :index, :create, :update, :destroy ] do
       resources :promise_evaluations, only: [ :create ]
