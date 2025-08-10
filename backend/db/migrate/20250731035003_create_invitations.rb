@@ -5,7 +5,7 @@ class CreateInvitations < ActiveRecord::Migration[7.2]
       t.string :token, null: false
       t.timestamps
     end
-    
+
     add_index :invitations, :token, unique: true
   end
-end 
+end

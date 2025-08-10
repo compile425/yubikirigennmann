@@ -1,18 +1,18 @@
 class Api::UsersController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:me, :create], raise: false
-  
+  skip_before_action :authenticate_user!, only: [ :me, :create ], raise: false
+
   def me
     # トークンを手動で検証
     if auth_header
-      token = auth_header.split(' ')[1]
+      token = auth_header.split(" ")[1]
       begin
         decoded = decode_token(token)
-        if decoded && decoded['user_id']
-          user = User.find_by(id: decoded['user_id'])
+        if decoded && decoded["user_id"]
+          user = User.find_by(id: decoded["user_id"])
           if user
             partnership = user.partnership
             partner = partnership ? (partnership.user_id == user.id ? partnership.partner : partnership.user) : nil
-            
+
             render json: {
               current_user: {
                 id: user.id,
@@ -34,16 +34,16 @@ class Api::UsersController < ApplicationController
         Rails.logger.error "Token validation error: #{e.message}"
       end
     end
-    
-    render json: { error: '認証が必要です' }, status: :unauthorized
+
+    render json: { error: "認証が必要です" }, status: :unauthorized
   end
 
   def create
     user = User.new(user_params)
-    
+
     if user.save
       credential = user.build_user_credential(credential_params)
-      
+
       if credential.save
         # 新規ユーザー登録成功時にメールを送信
         begin
@@ -53,7 +53,7 @@ class Api::UsersController < ApplicationController
           Rails.logger.error "Failed to send welcome email to #{user.email}: #{e.message}"
           # メール送信に失敗してもユーザー登録は成功とする
         end
-        
+
         # 招待トークンが存在する場合はパートナーシップを作成
         if params[:invitation_token].present?
           invitation = Invitation.find_by(token: params[:invitation_token])
@@ -66,9 +66,9 @@ class Api::UsersController < ApplicationController
             Rails.logger.info "パートナーシップを作成しました: #{partnership.id}"
           end
         end
-        
+
         token = encode_token(user_id: user.id)
-        
+
         render json: {
           token: token,
           user: {
@@ -79,10 +79,10 @@ class Api::UsersController < ApplicationController
         }, status: :created
       else
         user.destroy
-        render json: { error: credential.errors.full_messages.join(', ') }, status: :unprocessable_entity
+        render json: { error: credential.errors.full_messages.join(", ") }, status: :unprocessable_entity
       end
     else
-      render json: { error: user.errors.full_messages.join(', ') }, status: :unprocessable_entity
+      render json: { error: user.errors.full_messages.join(", ") }, status: :unprocessable_entity
     end
   end
 

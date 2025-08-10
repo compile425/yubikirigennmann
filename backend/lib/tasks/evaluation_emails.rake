@@ -2,7 +2,7 @@ namespace :evaluation_emails do
   desc "テスト用：評価メールを手動で送信"
   task send_test: :environment do
     puts "評価メールのテスト送信を開始します..."
-    
+
     begin
       EvaluationMailer.send_weekly_evaluation_emails
       puts "✅ 評価メールの送信が完了しました"
@@ -23,4 +23,4 @@ namespace :evaluation_emails do
       puts "---"
     end
   end
-end 
+end
