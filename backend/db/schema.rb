@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_08_06_142428) do
+ActiveRecord::Schema[7.2].define(version: 2025_07_31_090421) do
   create_table "invitations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "inviter_id", null: false
     t.string "token", null: false
@@ -48,11 +48,11 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_06_142428) do
 
   create_table "promise_evaluations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "promise_id", null: false
+    t.bigint "evaluator_id", null: false
     t.integer "rating"
+    t.text "evaluation_text"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.text "evaluation_text"
-    t.bigint "evaluator_id", null: false
     t.index ["evaluator_id"], name: "index_promise_evaluations_on_evaluator_id"
     t.index ["promise_id"], name: "index_promise_evaluations_on_promise_id"
   end
@@ -77,14 +77,14 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_06_142428) do
 
   create_table "promises", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "partnership_id", null: false
+    t.bigint "creator_id", null: false
     t.text "content"
     t.string "status"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "creator_id", null: false
     t.string "type"
     t.date "due_date"
     t.integer "promise_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["creator_id"], name: "index_promises_on_creator_id"
     t.index ["partnership_id"], name: "index_promises_on_partnership_id"
   end
@@ -92,18 +92,18 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_06_142428) do
   create_table "user_credentials", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "invite_token"
+    t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "password_digest"
     t.index ["invite_token"], name: "index_user_credentials_on_invite_token", unique: true
     t.index ["user_id"], name: "index_user_credentials_on_user_id"
   end
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "email"
+    t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "name"
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
