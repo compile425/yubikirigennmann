@@ -9,7 +9,7 @@ interface DissolvePartnershipModalProps {
 
 const DissolvePartnershipModal = ({ isOpen, onClose }: DissolvePartnershipModalProps) => {
   const [isDissolving, setIsDissolving] = useState(false);
-  const { token, partner } = useAuth();
+  const { token } = useAuth();
 
   const handleDissolvePartnership = async () => {
     if (!confirm('本当にパートナーとの関係を解消しますか？\n\nこの操作を行うと、共有していた全ての約束の記録が閲覧できなくなります。\nこの操作は元に戻せません。')) {

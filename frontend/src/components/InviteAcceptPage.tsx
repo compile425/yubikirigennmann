@@ -4,16 +4,12 @@ import axios from 'axios';
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
 
-interface InvitationData {
-  message?: string;
-  requires_auth?: boolean;
-  error?: string;
-}
+
 
 const InviteAcceptPage = () => {
   const { token } = useParams<{ token: string }>();
   const navigate = useNavigate();
-  const [invitation, setInvitation] = useState<InvitationData | null>(null);
+
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
   const [isLoginMode, setIsLoginMode] = useState<boolean>(true);
@@ -26,9 +22,9 @@ const InviteAcceptPage = () => {
         return;
       }
 
-      try {
-        const response = await axios.get(`http://localhost:3001/api/invite/${token}`);
-        setInvitation(response.data);
+        try {
+        await axios.get(`http://localhost:3001/api/invite/${token}`);
+        
       } catch (error) {
         console.error('招待確認エラー:', error);
         if (axios.isAxiosError(error) && error.response) {

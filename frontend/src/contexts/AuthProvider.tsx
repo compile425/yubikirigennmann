@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import axios from 'axios';
 import { AuthContext } from './AuthContext';
@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [partner, setPartner] = useState<AuthContextType['partner']>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const fetchUserData = async (): Promise<void> => {
+  const fetchUserData = useCallback(async (): Promise<void> => {
     if (token) {
       try {
         console.log('Token found:', token);
@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     } else {
       console.log('No token found');
     }
-  };
+  }, [token]);
 
   useEffect(() => {
     const initializeAuth = async (): Promise<void> => {
@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     };
 
     initializeAuth();
-  }, [token]);
+  }, [fetchUserData]);
 
   // パートナーシップの状態を定期的にチェック（10秒ごと）
   useEffect(() => {

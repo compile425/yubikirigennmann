@@ -35,7 +35,17 @@ const RegisterForm = ({ onBackToLogin, invitationToken, onAuthSuccess }: Registe
     }
 
     try {
-      const requestData: any = {
+      const requestData: {
+        user: {
+          name: string;
+          email: string;
+        };
+        user_credential: {
+          password: string;
+          password_confirmation: string;
+        };
+        invitation_token?: string;
+      } = {
         user: {
           name,
           email,
