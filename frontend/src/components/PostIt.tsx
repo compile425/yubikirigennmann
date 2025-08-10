@@ -12,14 +12,30 @@ interface PostItProps {
   showEvaluationButton?: boolean;
 }
 
-const PostIt = ({ content, dueDate, rating, evaluationText, evaluationDate, onEdit, onDelete, onEvaluate, showEvaluationButton = false }: PostItProps) => {
-  console.log('PostIt rendering with:', { content, dueDate, rating, evaluationText, evaluationDate });
-  
+const PostIt = ({
+  content,
+  dueDate,
+  rating,
+  evaluationText,
+  evaluationDate,
+  onEdit,
+  onDelete,
+  onEvaluate,
+  showEvaluationButton = false,
+}: PostItProps) => {
+  console.log('PostIt rendering with:', {
+    content,
+    dueDate,
+    rating,
+    evaluationText,
+    evaluationDate,
+  });
+
   const renderStars = (ratingValue: number): React.JSX.Element => {
     console.log('Rendering stars for rating:', ratingValue);
     return (
       <div className="yubi-rating-display">
-        {[1, 2, 3, 4, 5].map((star) => (
+        {[1, 2, 3, 4, 5].map(star => (
           <span
             key={star}
             className={`yubi-star-display ${star <= ratingValue ? 'yubi-star-display--filled' : ''}`}
@@ -30,7 +46,7 @@ const PostIt = ({ content, dueDate, rating, evaluationText, evaluationDate, onEd
       </div>
     );
   };
-  
+
   return (
     <div className="yubi-card">
       {content}
@@ -42,13 +58,40 @@ const PostIt = ({ content, dueDate, rating, evaluationText, evaluationDate, onEd
       <footer className="yubi-card__footer">
         <div className="yubi-actions">
           {onEdit && (
-            <a href="#" className="yubi-action-button" onClick={(e) => { e.preventDefault(); onEdit(); }}>✏️</a>
+            <a
+              href="#"
+              className="yubi-action-button"
+              onClick={e => {
+                e.preventDefault();
+                onEdit();
+              }}
+            >
+              ✏️
+            </a>
           )}
           {onDelete && (
-            <a href="#" className="yubi-action-button" onClick={(e) => { e.preventDefault(); onDelete(); }}>🗑️</a>
+            <a
+              href="#"
+              className="yubi-action-button"
+              onClick={e => {
+                e.preventDefault();
+                onDelete();
+              }}
+            >
+              🗑️
+            </a>
           )}
           {onEvaluate && showEvaluationButton && (
-            <a href="#" className="yubi-action-button" onClick={(e) => { e.preventDefault(); onEvaluate(); }}>⭐</a>
+            <a
+              href="#"
+              className="yubi-action-button"
+              onClick={e => {
+                e.preventDefault();
+                onEvaluate();
+              }}
+            >
+              ⭐
+            </a>
           )}
         </div>
         <div className="yubi-card__info">
@@ -56,7 +99,12 @@ const PostIt = ({ content, dueDate, rating, evaluationText, evaluationDate, onEd
             {rating && renderStars(rating)}
           </div>
           <div className="yubi-card__bottom-right">
-            <span>評価日: {evaluationDate ? new Date(evaluationDate).toLocaleDateString('ja-JP') : (dueDate || 'なし')}</span>
+            <span>
+              評価日:{' '}
+              {evaluationDate
+                ? new Date(evaluationDate).toLocaleDateString('ja-JP')
+                : dueDate || 'なし'}
+            </span>
           </div>
         </div>
       </footer>

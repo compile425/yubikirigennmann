@@ -26,16 +26,16 @@ function App() {
     <Router>
       <Routes>
         <Route path="/invite/:token" element={<InviteAcceptPage />} />
-        <Route path="/invite-partner" element={
-          token ? <InvitePartnerPage /> : <LoginForm />
-        } />
+        <Route
+          path="/invite-partner"
+          element={token ? <InvitePartnerPage /> : <LoginForm />}
+        />
         <Route path="/evaluate/:id" element={<EvaluationPage />} />
-        <Route path="/past-evaluations" element={
-          token ? <PastEvaluationsPage /> : <LoginForm />
-        } />
-        <Route path="*" element={
-          token ? <Dashboard /> : <LoginForm />
-        } />
+        <Route
+          path="/past-evaluations"
+          element={token ? <PastEvaluationsPage /> : <LoginForm />}
+        />
+        <Route path="*" element={token ? <Dashboard /> : <LoginForm />} />
       </Routes>
     </Router>
   );

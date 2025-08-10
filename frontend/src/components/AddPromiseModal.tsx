@@ -8,10 +8,15 @@ interface AddPromiseModalProps {
   onPromiseCreated: () => void;
 }
 
-const AddPromiseModal = ({ isOpen, onClose, promiseType, onPromiseCreated }: AddPromiseModalProps) => {
+const AddPromiseModal = ({
+  isOpen,
+  onClose,
+  promiseType,
+  onPromiseCreated,
+}: AddPromiseModalProps) => {
   const [content, setContent] = useState<string>('');
   const [dueDate, setDueDate] = useState<string>('');
-  
+
   const isOurPromise = promiseType === 'our_promise';
 
   useEffect(() => {
@@ -28,77 +33,99 @@ const AddPromiseModal = ({ isOpen, onClose, promiseType, onPromiseCreated }: Add
     try {
       const promiseData = {
         content: content,
-        due_date: isOurPromise ? null : (dueDate || null),
+        due_date: isOurPromise ? null : dueDate || null,
         type: promiseType,
         promise_id: null,
       };
 
       await axios.post('http://localhost:3001/api/promises', {
-        promise: promiseData
+        promise: promiseData,
       });
 
       onPromiseCreated();
       onClose();
-
     } catch (error) {
-      console.error("約束の作成に失敗しました:", error);
-      
+      console.error('約束の作成に失敗しました:', error);
+
       if (axios.isAxiosError(error) && error.response) {
         const errorData = error.response.data;
-        let errorMessage = "約束の作成に失敗しました。";
-        
+        let errorMessage = '約束の作成に失敗しました。';
+
         if (errorData.errors) {
           errorMessage += `\n\nエラー詳細:\n${errorData.errors.join('\n')}`;
         } else if (errorData.error) {
           errorMessage += `\n\nエラー詳細: ${errorData.error}`;
         }
-        
+
         alert(errorMessage);
       } else {
-        alert("約束の作成に失敗しました。");
+        alert('約束の作成に失敗しました。');
       }
     }
   };
 
-  const overlayClassName = isOpen ? "yubi-modal-overlay yubi-modal-overlay--open" : "yubi-modal-overlay";
+  const overlayClassName = isOpen
+    ? 'yubi-modal-overlay yubi-modal-overlay--open'
+    : 'yubi-modal-overlay';
 
   return (
     <div className={overlayClassName} onClick={onClose}>
-      <div className="yubi-modal" onClick={(e) => e.stopPropagation()}>
+      <div className="yubi-modal" onClick={e => e.stopPropagation()}>
         <div className="yubi-modal__header">
           <h2 className="yubi-modal__title">新しい約束を追加</h2>
         </div>
         <form onSubmit={handleSubmit}>
           <div className="yubi-modal__body">
             <div className="yubi-form-group">
-              <label htmlFor="promise-content" className="yubi-form-group__label">約束の内容</label>
-              <textarea 
-                id="promise-content" 
-                placeholder={isOurPromise ? "ふたりで守る新しい約束を入力..." : "新しい約束を入力..."}
+              <label
+                htmlFor="promise-content"
+                className="yubi-form-group__label"
+              >
+                約束の内容
+              </label>
+              <textarea
+                id="promise-content"
+                placeholder={
+                  isOurPromise
+                    ? 'ふたりで守る新しい約束を入力...'
+                    : '新しい約束を入力...'
+                }
                 value={content}
-                onChange={(e) => setContent(e.target.value)}
+                onChange={e => setContent(e.target.value)}
                 className="yubi-form-group__textarea"
                 required
               />
             </div>
-            
+
             {!isOurPromise && (
               <div className="yubi-form-group">
-                <label htmlFor="promise-deadline" className="yubi-form-group__label">期日</label>
-                <input 
+                <label
+                  htmlFor="promise-deadline"
+                  className="yubi-form-group__label"
+                >
+                  期日
+                </label>
+                <input
                   type="date"
                   id="promise-deadline"
                   value={dueDate}
-                  onChange={(e) => setDueDate(e.target.value)}
+                  onChange={e => setDueDate(e.target.value)}
                   className="yubi-form-group__input"
                 />
               </div>
             )}
-            
           </div>
           <div className="yubi-modal__footer">
-            <button type="button" onClick={onClose} className="yubi-button yubi-button--cancel">キャンセル</button>
-            <button type="submit" className="yubi-button yubi-button--primary">追加する</button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="yubi-button yubi-button--cancel"
+            >
+              キャンセル
+            </button>
+            <button type="submit" className="yubi-button yubi-button--primary">
+              追加する
+            </button>
           </div>
         </form>
       </div>

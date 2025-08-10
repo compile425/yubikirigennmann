@@ -8,4 +8,6 @@ export interface AuthContextType {
   partner: User | null;
 }
 
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined
+);

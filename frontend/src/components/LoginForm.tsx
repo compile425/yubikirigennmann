@@ -29,7 +29,7 @@ const LoginForm = ({ invitationToken, onAuthSuccess }: LoginFormProps) => {
         password,
       });
       setToken(response.data.token);
-      
+
       if (invitationToken && onAuthSuccess) {
         onAuthSuccess();
       }
@@ -37,7 +37,9 @@ const LoginForm = ({ invitationToken, onAuthSuccess }: LoginFormProps) => {
       console.error('ログイン失敗:', err);
       if (axios.isAxiosError(err) && err.response) {
         const errorData = err.response.data as AxiosErrorResponse;
-        setError(errorData.error || 'メールアドレスまたはパスワードが違います。');
+        setError(
+          errorData.error || 'メールアドレスまたはパスワードが違います。'
+        );
       } else {
         setError('予期せぬエラーが発生しました。');
       }
@@ -45,7 +47,13 @@ const LoginForm = ({ invitationToken, onAuthSuccess }: LoginFormProps) => {
   };
 
   if (isRegisterMode) {
-    return <RegisterForm onBackToLogin={() => setIsRegisterMode(false)} invitationToken={invitationToken} onAuthSuccess={onAuthSuccess} />;
+    return (
+      <RegisterForm
+        onBackToLogin={() => setIsRegisterMode(false)}
+        invitationToken={invitationToken}
+        onAuthSuccess={onAuthSuccess}
+      />
+    );
   }
 
   return (
@@ -56,37 +64,48 @@ const LoginForm = ({ invitationToken, onAuthSuccess }: LoginFormProps) => {
 
       <form className="yubi-login__form" onSubmit={handleSubmit}>
         <div className="yubi-form-group">
-          <label htmlFor="email" className="yubi-form-group__label">メールアドレス</label>
+          <label htmlFor="email" className="yubi-form-group__label">
+            メールアドレス
+          </label>
           <input
             type="email"
             id="email"
             name="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={e => setEmail(e.target.value)}
             className="yubi-form-group__input"
             required
           />
         </div>
         <div className="yubi-form-group">
-          <label htmlFor="password" className="yubi-form-group__label">パスワード</label>
+          <label htmlFor="password" className="yubi-form-group__label">
+            パスワード
+          </label>
           <input
             type="password"
             id="password"
             name="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={e => setPassword(e.target.value)}
             className="yubi-form-group__input"
             required
           />
         </div>
         {error && <p className="yubi-login__error">{error}</p>}
-        <button type="submit" className="yubi-button yubi-button--primary yubi-button--login">ログインする</button>
+        <button
+          type="submit"
+          className="yubi-button yubi-button--primary yubi-button--login"
+        >
+          ログインする
+        </button>
       </form>
 
       <div className="yubi-login__links">
-        <a href="#" className="yubi-login__link">パスワードを忘れた場合</a>
-        <button 
-          type="button" 
+        <a href="#" className="yubi-login__link">
+          パスワードを忘れた場合
+        </a>
+        <button
+          type="button"
           className="yubi-login__link yubi-login__link--button"
           onClick={() => setIsRegisterMode(true)}
         >

@@ -24,11 +24,15 @@ const InvitePartnerPage = () => {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:3001/api/invitations', {}, {
-        headers: {
-          'Authorization': `Bearer ${token}`
+      const response = await axios.post(
+        'http://localhost:3001/api/invitations',
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      });
+      );
 
       setInvitationUrl(response.data.invitation.invite_url);
     } catch (error) {
@@ -62,7 +66,9 @@ const InvitePartnerPage = () => {
 
   const handleLogout = (): void => {
     setToken(null);
-    const navToggle = document.getElementById('yubi-nav-toggle') as HTMLInputElement;
+    const navToggle = document.getElementById(
+      'yubi-nav-toggle'
+    ) as HTMLInputElement;
     if (navToggle) {
       navToggle.checked = false;
     }
@@ -81,16 +87,18 @@ const InvitePartnerPage = () => {
         <span className="yubi-nav-button__line"></span>
         <span className="yubi-nav-button__line"></span>
       </label>
-      
+
       <main className="board-container invitation-container">
         <div className="invitation-panel">
           <h2>パートナーを招待しよう！</h2>
           <p>
-            「ゆびきりげんまん」は、ふたりで使うアプリです。<br />
-            まずはパートナーを招待して、<br />
+            「ゆびきりげんまん」は、ふたりで使うアプリです。
+            <br />
+            まずはパートナーを招待して、
+            <br />
             一緒に約束の木を育て始めましょう。
           </p>
-          
+
           {isCreating ? (
             <div className="loading-state">
               <p>招待リンクを作成中...</p>
@@ -119,7 +127,7 @@ const InvitePartnerPage = () => {
           )}
         </div>
       </main>
-      
+
       {/* パートナーシップが存在しない場合はログアウトのみ表示 */}
       <aside className="yubi-sidebar">
         <div className="yubi-sidebar__header">
@@ -130,7 +138,9 @@ const InvitePartnerPage = () => {
           </div>
         </div>
         <nav className="yubi-sidebar__nav">
-          <a href="#" className="yubi-sidebar__link" onClick={handleLogout}>ログアウト</a>
+          <a href="#" className="yubi-sidebar__link" onClick={handleLogout}>
+            ログアウト
+          </a>
         </nav>
       </aside>
       <label htmlFor="yubi-nav-toggle" className="yubi-overlay"></label>
@@ -138,4 +148,4 @@ const InvitePartnerPage = () => {
   );
 };
 
-export default InvitePartnerPage; 
+export default InvitePartnerPage;

@@ -12,7 +12,11 @@ interface RegisterFormProps {
   onAuthSuccess?: () => void;
 }
 
-const RegisterForm = ({ onBackToLogin, invitationToken, onAuthSuccess }: RegisterFormProps) => {
+const RegisterForm = ({
+  onBackToLogin,
+  invitationToken,
+  onAuthSuccess,
+}: RegisterFormProps) => {
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -60,14 +64,20 @@ const RegisterForm = ({ onBackToLogin, invitationToken, onAuthSuccess }: Registe
         requestData.invitation_token = invitationToken;
       }
 
-      const response = await axios.post('http://localhost:3001/api/register', requestData);
-      
+      const response = await axios.post(
+        'http://localhost:3001/api/register',
+        requestData
+      );
+
       console.log('Registration response:', response.data);
       setToken(response.data.token);
-      
+
       try {
-        axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
-        const userResponse = await axios.get('http://localhost:3001/api/get_me');
+        axios.defaults.headers.common['Authorization'] =
+          `Bearer ${response.data.token}`;
+        const userResponse = await axios.get(
+          'http://localhost:3001/api/get_me'
+        );
         console.log('User info after registration:', userResponse.data);
       } catch (userError) {
         console.error('Failed to get user info after registration:', userError);
@@ -95,62 +105,78 @@ const RegisterForm = ({ onBackToLogin, invitationToken, onAuthSuccess }: Registe
 
       <form className="yubi-login__form" onSubmit={handleSubmit}>
         <div className="yubi-form-group">
-          <label htmlFor="name" className="yubi-form-group__label">お名前</label>
+          <label htmlFor="name" className="yubi-form-group__label">
+            お名前
+          </label>
           <input
             type="text"
             id="name"
             name="name"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={e => setName(e.target.value)}
             className="yubi-form-group__input"
             required
           />
         </div>
         <div className="yubi-form-group">
-          <label htmlFor="email" className="yubi-form-group__label">メールアドレス</label>
+          <label htmlFor="email" className="yubi-form-group__label">
+            メールアドレス
+          </label>
           <input
             type="email"
             id="email"
             name="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={e => setEmail(e.target.value)}
             className="yubi-form-group__input"
             required
           />
         </div>
         <div className="yubi-form-group">
-          <label htmlFor="password" className="yubi-form-group__label">パスワード</label>
+          <label htmlFor="password" className="yubi-form-group__label">
+            パスワード
+          </label>
           <input
             type="password"
             id="password"
             name="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={e => setPassword(e.target.value)}
             className="yubi-form-group__input"
             required
             minLength={6}
           />
         </div>
         <div className="yubi-form-group">
-          <label htmlFor="passwordConfirmation" className="yubi-form-group__label">パスワード（確認）</label>
+          <label
+            htmlFor="passwordConfirmation"
+            className="yubi-form-group__label"
+          >
+            パスワード（確認）
+          </label>
           <input
             type="password"
             id="passwordConfirmation"
             name="passwordConfirmation"
             value={passwordConfirmation}
-            onChange={(e) => setPasswordConfirmation(e.target.value)}
+            onChange={e => setPasswordConfirmation(e.target.value)}
             className="yubi-form-group__input"
             required
             minLength={6}
           />
         </div>
         {error && <p className="yubi-login__error">{error}</p>}
-        <button type="submit" className="yubi-button yubi-button--primary yubi-button--login">登録する</button>
+        <button
+          type="submit"
+          className="yubi-button yubi-button--primary yubi-button--login"
+        >
+          登録する
+        </button>
       </form>
 
       <div className="yubi-login__links">
-        <button 
-          type="button" 
+        <button
+          type="button"
           className="yubi-login__link yubi-login__link--button"
           onClick={onBackToLogin}
         >
@@ -161,4 +187,4 @@ const RegisterForm = ({ onBackToLogin, invitationToken, onAuthSuccess }: Registe
   );
 };
 
-export default RegisterForm; 
+export default RegisterForm;
