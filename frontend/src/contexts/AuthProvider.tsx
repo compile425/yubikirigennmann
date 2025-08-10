@@ -9,8 +9,11 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [token, setTokenState] = useState<string | null>(localStorage.getItem('authToken'));
-  const [currentUser, setCurrentUser] = useState<AuthContextType['currentUser']>(null);
+  const [token, setTokenState] = useState<string | null>(
+    localStorage.getItem('authToken')
+  );
+  const [currentUser, setCurrentUser] =
+    useState<AuthContextType['currentUser']>(null);
   const [partner, setPartner] = useState<AuthContextType['partner']>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -25,7 +28,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setCurrentUser(response.data.current_user);
         setPartner(response.data.partner);
       } catch (error) {
-        console.error("認証に失敗しました。トークンを削除します:", error);
+        console.error('認証に失敗しました。トークンを削除します:', error);
         localStorage.removeItem('authToken');
         setTokenState(null);
         setCurrentUser(null);
@@ -52,12 +55,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         try {
           const response = await axios.get('http://localhost:3001/api/get_me', {
             headers: {
-              'Authorization': `Bearer ${token}`
-            }
+              Authorization: `Bearer ${token}`,
+            },
           });
-          
+
           if (response.data.partner && !partner) {
-            console.log('パートナーシップが作成されました:', response.data.partner);
+            console.log(
+              'パートナーシップが作成されました:',
+              response.data.partner
+            );
             setPartner(response.data.partner);
           }
         } catch (error) {
@@ -81,7 +87,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       delete axios.defaults.headers.common['Authorization'];
       setCurrentUser(null);
       setPartner(null);
-      
+
       // 確実にユーザー情報をクリア
       console.log('ログアウト処理完了');
     }

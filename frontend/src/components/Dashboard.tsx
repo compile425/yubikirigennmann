@@ -14,10 +14,16 @@ const Dashboard = () => {
   const { token, currentUser, partner } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
-  const [isEvaluationModalOpen, setIsEvaluationModalOpen] = useState<boolean>(false);
-  const [isDissolveModalOpen, setIsDissolveModalOpen] = useState<boolean>(false);
-  const [selectedPromise, setSelectedPromise] = useState<PromiseItem | null>(null);
-  const [promiseTypeToAdd, setPromiseTypeToAdd] = useState<'my_promise' | 'our_promise' | 'partner_promise' | ''>('');
+  const [isEvaluationModalOpen, setIsEvaluationModalOpen] =
+    useState<boolean>(false);
+  const [isDissolveModalOpen, setIsDissolveModalOpen] =
+    useState<boolean>(false);
+  const [selectedPromise, setSelectedPromise] = useState<PromiseItem | null>(
+    null
+  );
+  const [promiseTypeToAdd, setPromiseTypeToAdd] = useState<
+    'my_promise' | 'our_promise' | 'partner_promise' | ''
+  >('');
   const [isSendingEmail, setIsSendingEmail] = useState<boolean>(false);
 
   const fetchPromises = useCallback(async (): Promise<void> => {
@@ -26,7 +32,7 @@ const Dashboard = () => {
       const response = await axios.get('http://localhost:3001/api/promises');
       setPromises(response.data);
     } catch (error) {
-      console.error("約束の取得に失敗しました:", error);
+      console.error('約束の取得に失敗しました:', error);
     }
   }, [token]);
 
@@ -34,7 +40,9 @@ const Dashboard = () => {
     fetchPromises();
   }, [fetchPromises]);
 
-  const handleOpenModal = (type: 'my_promise' | 'our_promise' | 'partner_promise'): void => {
+  const handleOpenModal = (
+    type: 'my_promise' | 'our_promise' | 'partner_promise'
+  ): void => {
     setPromiseTypeToAdd(type);
     setIsModalOpen(true);
   };
@@ -52,13 +60,13 @@ const Dashboard = () => {
     if (!confirm('この約束を削除しますか？')) {
       return;
     }
-    
+
     try {
       await axios.delete(`http://localhost:3001/api/promises/${promise.id}`);
       await fetchPromises();
     } catch (error) {
-      console.error("約束の削除に失敗しました:", error);
-      alert("約束の削除に失敗しました。");
+      console.error('約束の削除に失敗しました:', error);
+      alert('約束の削除に失敗しました。');
     }
   };
 
@@ -68,20 +76,22 @@ const Dashboard = () => {
 
   const handleSendEvaluationEmail = async (): Promise<void> => {
     if (isSendingEmail) return;
-    
+
     setIsSendingEmail(true);
     try {
-      const response = await axios.post('http://localhost:3001/api/evaluation_emails');
+      const response = await axios.post(
+        'http://localhost:3001/api/evaluation_emails'
+      );
       alert('評価メールを送信しました！');
       console.log('送信結果:', response.data);
     } catch (error) {
-      console.error("評価メールの送信に失敗しました:", error);
-      
+      console.error('評価メールの送信に失敗しました:', error);
+
       if (axios.isAxiosError(error) && error.response) {
         const errorData = error.response.data;
         console.log('エラー詳細:', errorData);
-        
-        let errorMessage = "評価メールの送信に失敗しました。";
+
+        let errorMessage = '評価メールの送信に失敗しました。';
         if (errorData.error) {
           errorMessage += `\n\n理由: ${errorData.error}`;
         }
@@ -97,10 +107,10 @@ const Dashboard = () => {
         if (errorData.available_promises) {
           errorMessage += `\n\n利用可能な約束: ${JSON.stringify(errorData.available_promises)}`;
         }
-        
+
         alert(errorMessage);
       } else {
-        alert("評価メールの送信に失敗しました。");
+        alert('評価メールの送信に失敗しました。');
       }
     } finally {
       setIsSendingEmail(false);
@@ -109,23 +119,27 @@ const Dashboard = () => {
 
   const handleSendDueDateEvaluations = async (): Promise<void> => {
     try {
-      const response = await axios.post('http://localhost:3001/api/scheduled_tasks/send_due_date_evaluations');
+      const response = await axios.post(
+        'http://localhost:3001/api/scheduled_tasks/send_due_date_evaluations'
+      );
       alert('期日が来た約束の評価メールを送信しました！');
       console.log('送信結果:', response.data);
     } catch (error) {
-      console.error("期日評価メールの送信に失敗しました:", error);
-      alert("期日評価メールの送信に失敗しました。");
+      console.error('期日評価メールの送信に失敗しました:', error);
+      alert('期日評価メールの送信に失敗しました。');
     }
   };
 
   const handleSendWeeklyEvaluations = async (): Promise<void> => {
     try {
-      const response = await axios.post('http://localhost:3001/api/scheduled_tasks/send_weekly_our_promises_evaluation');
+      const response = await axios.post(
+        'http://localhost:3001/api/scheduled_tasks/send_weekly_our_promises_evaluation'
+      );
       alert('毎週の二人の約束評価メールを送信しました！');
       console.log('送信結果:', response.data);
     } catch (error) {
-      console.error("毎週評価メールの送信に失敗しました:", error);
-      alert("毎週評価メールの送信に失敗しました。");
+      console.error('毎週評価メールの送信に失敗しました:', error);
+      alert('毎週評価メールの送信に失敗しました。');
     }
   };
 
@@ -138,8 +152,12 @@ const Dashboard = () => {
     await fetchPromises();
   };
 
-  const myPromisesTitle = currentUser ? `${currentUser.name}の約束` : 'わたしの約束';
-  const partnerPromisesTitle = partner ? `${partner.name}の約束` : 'パートナーの約束';
+  const myPromisesTitle = currentUser
+    ? `${currentUser.name}の約束`
+    : 'わたしの約束';
+  const partnerPromisesTitle = partner
+    ? `${partner.name}の約束`
+    : 'パートナーの約束';
 
   const myPromises = promises.filter(p => {
     console.log('Filtering promise:', p);
@@ -148,45 +166,45 @@ const Dashboard = () => {
     console.log('Is match:', currentUser && p.creator_id === currentUser.id);
     return currentUser && p.creator_id === currentUser.id;
   });
-  const partnerPromises = promises.filter(p => partner && p.creator_id === partner.id);
+  const partnerPromises = promises.filter(
+    p => partner && p.creator_id === partner.id
+  );
   const ourPromises = promises.filter(p => p.type === 'our_promise');
 
   return (
     <div className="yubi-app">
-      <Sidebar
-        onDissolvePartnership={() => setIsDissolveModalOpen(true)}
-      />
-      
+      <Sidebar onDissolvePartnership={() => setIsDissolveModalOpen(true)} />
+
       <main className="yubi-main">
         <div className="yubi-board">
-          <PromiseColumn 
-            title={myPromisesTitle} 
-            promises={myPromises} 
-            onAdd={() => handleOpenModal('my_promise')} 
+          <PromiseColumn
+            title={myPromisesTitle}
+            promises={myPromises}
+            onAdd={() => handleOpenModal('my_promise')}
             showAddButton={true}
             onEdit={handleEditPromise}
             onDelete={handleDeletePromise}
           />
-          <PromiseColumn 
-            title="ふたりの約束" 
-            promises={ourPromises} 
-            onAdd={() => handleOpenModal('our_promise')} 
+          <PromiseColumn
+            title="ふたりの約束"
+            promises={ourPromises}
+            onAdd={() => handleOpenModal('our_promise')}
             showAddButton={true}
             onEdit={handleEditPromise}
             onDelete={handleDeletePromise}
             onEvaluate={handleOpenEvaluationModal}
             showEvaluationButton={true}
           />
-          <PromiseColumn 
-            title={partnerPromisesTitle} 
-            promises={partnerPromises} 
-            onAdd={() => handleOpenModal('partner_promise')} 
+          <PromiseColumn
+            title={partnerPromisesTitle}
+            promises={partnerPromises}
+            onAdd={() => handleOpenModal('partner_promise')}
             showAddButton={false}
             onEdit={handleEditPromise}
             onDelete={handleDeletePromise}
           />
         </div>
-        
+
         <div className="yubi-evaluation-email-section">
           <button
             onClick={handleSendEvaluationEmail}
@@ -195,14 +213,14 @@ const Dashboard = () => {
           >
             {isSendingEmail ? '送信中...' : '評価メールを送信'}
           </button>
-          <button 
+          <button
             onClick={handleSendDueDateEvaluations}
             className="yubi-button yubi-button--primary yubi-button--email"
             style={{ marginLeft: '10px' }}
           >
             期日評価メールを送信
           </button>
-          <button 
+          <button
             onClick={handleSendWeeklyEvaluations}
             className="yubi-button yubi-button--primary yubi-button--email"
             style={{ marginLeft: '10px' }}

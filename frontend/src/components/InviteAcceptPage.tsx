@@ -4,8 +4,6 @@ import axios from 'axios';
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
 
-
-
 const InviteAcceptPage = () => {
   const { token } = useParams<{ token: string }>();
   const navigate = useNavigate();
@@ -22,9 +20,8 @@ const InviteAcceptPage = () => {
         return;
       }
 
-        try {
+      try {
         await axios.get(`http://localhost:3001/api/invite/${token}`);
-        
       } catch (error) {
         console.error('招待確認エラー:', error);
         if (axios.isAxiosError(error) && error.response) {
@@ -42,9 +39,11 @@ const InviteAcceptPage = () => {
 
   const handleAuthSuccess = async (): Promise<void> => {
     if (!token) return;
-    
+
     try {
-      const response = await axios.get(`http://localhost:3001/api/invite/${token}`);
+      const response = await axios.get(
+        `http://localhost:3001/api/invite/${token}`
+      );
       if (response.data.message === 'パートナーシップが作成されました') {
         alert('パートナーシップが作成されました！');
         navigate('/');
@@ -68,7 +67,10 @@ const InviteAcceptPage = () => {
       <div className="yubi-error">
         <h2>エラー</h2>
         <p>{error}</p>
-        <button onClick={() => navigate('/')} className="yubi-button yubi-button--primary">
+        <button
+          onClick={() => navigate('/')}
+          className="yubi-button yubi-button--primary"
+        >
           ホームに戻る
         </button>
       </div>
@@ -80,7 +82,7 @@ const InviteAcceptPage = () => {
       <div className="yubi-invite-accept__card">
         <h1>パートナーを招待しよう！</h1>
         <p>「ゆびきりげんまん」は、ふたりで使うアプリです。</p>
-        
+
         <div className="yubi-invite-accept__auth">
           <div className="yubi-invite-accept__tabs">
             <button
@@ -96,14 +98,17 @@ const InviteAcceptPage = () => {
               新規登録
             </button>
           </div>
-          
+
           {isLoginMode ? (
-            <LoginForm invitationToken={token} onAuthSuccess={handleAuthSuccess} />
+            <LoginForm
+              invitationToken={token}
+              onAuthSuccess={handleAuthSuccess}
+            />
           ) : (
-            <RegisterForm 
-              onBackToLogin={() => setIsLoginMode(true)} 
-              invitationToken={token} 
-              onAuthSuccess={handleAuthSuccess} 
+            <RegisterForm
+              onBackToLogin={() => setIsLoginMode(true)}
+              invitationToken={token}
+              onAuthSuccess={handleAuthSuccess}
             />
           )}
         </div>
@@ -112,4 +117,4 @@ const InviteAcceptPage = () => {
   );
 };
 
-export default InviteAcceptPage; 
+export default InviteAcceptPage;

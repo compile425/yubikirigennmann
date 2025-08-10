@@ -7,12 +7,19 @@ interface DissolvePartnershipModalProps {
   onClose: () => void;
 }
 
-const DissolvePartnershipModal = ({ isOpen, onClose }: DissolvePartnershipModalProps) => {
+const DissolvePartnershipModal = ({
+  isOpen,
+  onClose,
+}: DissolvePartnershipModalProps) => {
   const [isDissolving, setIsDissolving] = useState(false);
   const { token } = useAuth();
 
   const handleDissolvePartnership = async () => {
-    if (!confirm('本当にパートナーとの関係を解消しますか？\n\nこの操作を行うと、共有していた全ての約束の記録が閲覧できなくなります。\nこの操作は元に戻せません。')) {
+    if (
+      !confirm(
+        '本当にパートナーとの関係を解消しますか？\n\nこの操作を行うと、共有していた全ての約束の記録が閲覧できなくなります。\nこの操作は元に戻せません。'
+      )
+    ) {
       return;
     }
 
@@ -21,8 +28,8 @@ const DissolvePartnershipModal = ({ isOpen, onClose }: DissolvePartnershipModalP
     try {
       await axios.delete('http://localhost:3001/api/partnerships/dissolve', {
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       alert('パートナーシップを解消しました');
@@ -31,7 +38,9 @@ const DissolvePartnershipModal = ({ isOpen, onClose }: DissolvePartnershipModalP
     } catch (error) {
       console.error('パートナーシップ解消エラー:', error);
       if (axios.isAxiosError(error) && error.response) {
-        alert(error.response.data.error || 'パートナーシップの解消に失敗しました');
+        alert(
+          error.response.data.error || 'パートナーシップの解消に失敗しました'
+        );
       } else {
         alert('パートナーシップの解消に失敗しました');
       }
@@ -48,16 +57,17 @@ const DissolvePartnershipModal = ({ isOpen, onClose }: DissolvePartnershipModalP
         <div className="yubi-modal__header">
           <h2>パートナー関係の解消</h2>
         </div>
-        
+
         <div className="yubi-modal__content">
           <div className="yubi-dissolve-warning">
             <p>本当にパートナーとの関係を解消しますか？</p>
             <p className="yubi-dissolve-warning__danger">
-              この操作を行うと、共有していた全ての約束の記録が閲覧できなくなります。<br />
+              この操作を行うと、共有していた全ての約束の記録が閲覧できなくなります。
+              <br />
               この操作は元に戻せません。
             </p>
           </div>
-          
+
           <div className="yubi-modal__actions">
             <button
               type="button"
@@ -82,4 +92,4 @@ const DissolvePartnershipModal = ({ isOpen, onClose }: DissolvePartnershipModalP
   );
 };
 
-export default DissolvePartnershipModal; 
+export default DissolvePartnershipModal;

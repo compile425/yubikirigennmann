@@ -6,7 +6,9 @@ import type { EvaluatedPromise } from '../types';
 import { useAuth } from '../contexts/useAuth';
 
 const PastEvaluationsPage = () => {
-  const [evaluatedPromises, setEvaluatedPromises] = useState<EvaluatedPromise[]>([]);
+  const [evaluatedPromises, setEvaluatedPromises] = useState<
+    EvaluatedPromise[]
+  >([]);
   const { token, currentUser, partner } = useAuth();
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -14,13 +16,15 @@ const PastEvaluationsPage = () => {
     if (!token) return;
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:3001/api/evaluated-promises');
+      const response = await axios.get(
+        'http://localhost:3001/api/evaluated-promises'
+      );
       console.log('API Response:', response.data);
       console.log('First promise data:', response.data[0]);
       console.log('Rating in first promise:', response.data[0]?.rating);
       setEvaluatedPromises(response.data);
     } catch (error) {
-      console.error("評価済み約束の取得に失敗しました:", error);
+      console.error('評価済み約束の取得に失敗しました:', error);
     } finally {
       setLoading(false);
     }
@@ -30,12 +34,22 @@ const PastEvaluationsPage = () => {
     fetchEvaluatedPromises();
   }, [fetchEvaluatedPromises]);
 
-  const myPromisesTitle = currentUser ? `${currentUser.name}の過去の約束` : 'わたしの過去の約束';
-  const partnerPromisesTitle = partner ? `${partner.name}の過去の約束` : 'パートナーの過去の約束';
+  const myPromisesTitle = currentUser
+    ? `${currentUser.name}の過去の約束`
+    : 'わたしの過去の約束';
+  const partnerPromisesTitle = partner
+    ? `${partner.name}の過去の約束`
+    : 'パートナーの過去の約束';
 
-  const myEvaluatedPromises = evaluatedPromises.filter(p => currentUser && p.creator_id === currentUser.id);
-  const partnerEvaluatedPromises = evaluatedPromises.filter(p => partner && p.creator_id === partner.id);
-  const ourEvaluatedPromises = evaluatedPromises.filter(p => p.type === 'our_promise');
+  const myEvaluatedPromises = evaluatedPromises.filter(
+    p => currentUser && p.creator_id === currentUser.id
+  );
+  const partnerEvaluatedPromises = evaluatedPromises.filter(
+    p => partner && p.creator_id === partner.id
+  );
+  const ourEvaluatedPromises = evaluatedPromises.filter(
+    p => p.type === 'our_promise'
+  );
 
   if (loading) {
     return (
@@ -50,22 +64,22 @@ const PastEvaluationsPage = () => {
       <Sidebar />
       <main className="yubi-main">
         <div className="yubi-board">
-          <PromiseColumn 
-            title={myPromisesTitle} 
-            promises={myEvaluatedPromises} 
-            onAdd={() => {}} 
+          <PromiseColumn
+            title={myPromisesTitle}
+            promises={myEvaluatedPromises}
+            onAdd={() => {}}
             showAddButton={false}
           />
-          <PromiseColumn 
-            title="ふたりの過去の約束" 
-            promises={ourEvaluatedPromises} 
-            onAdd={() => {}} 
+          <PromiseColumn
+            title="ふたりの過去の約束"
+            promises={ourEvaluatedPromises}
+            onAdd={() => {}}
             showAddButton={false}
           />
-          <PromiseColumn 
-            title={partnerPromisesTitle} 
-            promises={partnerEvaluatedPromises} 
-            onAdd={() => {}} 
+          <PromiseColumn
+            title={partnerPromisesTitle}
+            promises={partnerEvaluatedPromises}
+            onAdd={() => {}}
             showAddButton={false}
           />
         </div>
@@ -74,4 +88,4 @@ const PastEvaluationsPage = () => {
   );
 };
 
-export default PastEvaluationsPage; 
+export default PastEvaluationsPage;

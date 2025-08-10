@@ -22,8 +22,10 @@ const EvaluationPage = () => {
 
     const fetchPromise = async (): Promise<void> => {
       try {
-        const response = await axios.get(`http://localhost:3001/api/evaluation_pages/${id}?token=${token}`);
-        
+        const response = await axios.get(
+          `http://localhost:3001/api/evaluation_pages/${id}?token=${token}`
+        );
+
         if (response.data.valid_token) {
           setPromise(response.data.promise);
           setIsValidToken(true);
@@ -32,7 +34,7 @@ const EvaluationPage = () => {
           setIsValidToken(false);
         }
       } catch (error) {
-        console.error("約束の取得に失敗しました:", error);
+        console.error('約束の取得に失敗しました:', error);
         setIsValidToken(false);
       } finally {
         setIsLoading(false);
@@ -48,13 +50,15 @@ const EvaluationPage = () => {
 
   if (isLoading) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        height: '100vh',
-        fontSize: '18px'
-      }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
+          fontSize: '18px',
+        }}
+      >
         読み込み中...
       </div>
     );
@@ -62,15 +66,19 @@ const EvaluationPage = () => {
 
   if (!isValidToken) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        height: '100vh',
-        flexDirection: 'column',
-        textAlign: 'center'
-      }}>
-        <h1 style={{ color: '#075763', marginBottom: '20px' }}>無効なリンクです</h1>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
+          flexDirection: 'column',
+          textAlign: 'center',
+        }}
+      >
+        <h1 style={{ color: '#075763', marginBottom: '20px' }}>
+          無効なリンクです
+        </h1>
         <p>このリンクは期限切れか無効です。</p>
         <p>新しい評価リンクをお待ちください。</p>
       </div>
@@ -89,4 +97,4 @@ const EvaluationPage = () => {
   );
 };
 
-export default EvaluationPage; 
+export default EvaluationPage;
