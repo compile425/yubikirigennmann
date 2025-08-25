@@ -6,3 +6,22 @@ inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 # # Use `[a, [b, c]]` not `[ a, [ b, c ] ]`
 # Layout/SpaceInsideArrayLiteralBrackets:
 #   Enabled: false
+
+# インデント設定
+Layout/IndentationWidth:
+  Width: 2
+
+Layout/FirstHashElementIndentation:
+  IndentationWidth: 2
+
+Layout/FirstArrayElementIndentation:
+  IndentationWidth: 2
+
+Layout/AssignmentIndentation:
+  IndentationWidth: 2
+
+Layout/FirstArgumentIndentation:
+  IndentationWidth: 2
+
+Layout/FirstParameterIndentation:
+  IndentationWidth: 2

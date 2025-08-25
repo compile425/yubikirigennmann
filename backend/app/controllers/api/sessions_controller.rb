@@ -14,11 +14,11 @@ class Api::SessionsController < ApplicationController
 
   def guest_login
     # テストユーザー1でゲストログイン
-    guest_user = User.find_by(email: 'test1@example.com')
-    
+    guest_user = User.find_by(email: "test1@example.com")
+
     if guest_user
       token = encode_token(user_id: guest_user.id)
-      render json: { 
+      render json: {
         token: token,
         message: "ゲストユーザーとしてログインしました"
       }, status: :ok
