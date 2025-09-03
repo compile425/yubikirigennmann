@@ -1,24 +1,23 @@
 
-FROM node:24.5.0-alpine AS react-builder
+    FROM node:24.5.0-alpine AS react-builder
 
-WORKDIR /app
 
-COPY ./frontend/package.json ./frontend/yarn.lock ./
-WORKDIR /app/frontend
-RUN yarn install --frozen-lockfile
+    WORKDIR /app
+    
+    COPY ./frontend/package.json ./frontend/yarn.lock ./
+    
+    RUN yarn install --frozen-lockfile
+    
+    COPY ./frontend/ ./
+    
+    RUN yarn build
+    
+    FROM nginx:1.25-alpine
 
-WORKDIR /app
-COPY ./frontend ./
+    COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
+    
+    COPY --from=react-builder /app/build /usr/share/nginx/html
 
-WORKDIR /app/frontend
-RUN yarn build
-
-FROM nginx:1.25-alpine
-
-COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
-
-COPY --from=react-builder /app/frontend/build /usr/share/nginx/html
-
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+    EXPOSE 80
+    
+    CMD ["nginx", "-g", "daemon off;"]
