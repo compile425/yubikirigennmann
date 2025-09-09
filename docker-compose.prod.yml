@@ -1,26 +1,15 @@
 services:
   api:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_API_REPOSITORY }}:latest
     command: bundle exec puma -C config/puma.rb
-    environment:
-      RAILS_ENV: ${RAILS_ENV}
-      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
-      DB_NAME: ${DB_NAME}
-      GMAIL_USERNAME: ${GMAIL_USERNAME}
-      GMAIL_PASSWORD: ${GMAIL_PASSWORD}
+    env_file:
+      - .env
 
-  # Nginx (Webサーバー)
   nginx:
-    build:
-      context: .
-      dockerfile: ./nginx/Dockerfile
+    image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_NGINX_REPOSITORY }}:latest
     ports:
       - "80:80"
     depends_on:
       - api
+    env_file:
+      - .env
