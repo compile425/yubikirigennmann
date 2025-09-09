@@ -1,56 +1,15 @@
-name: Rails CI/CD Pipeline
+name: CD - Deploy to Production
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
-  test:
-    name: Run RSpec & Jest
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    services:
-      db:
-        image: mysql:8.4
-        env:
-          MYSQL_ROOT_PASSWORD: password
-        options: >-
-          --health-cmd "mysqladmin ping -h localhost"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Docker Compose
-        run: docker compose -f docker-compose.yml build api frontend
-
-      - name: Setup database
-        run: docker compose -f docker-compose.yml run --rm api bundle exec rails db:create db:migrate
-        env:
-          MYSQL_ROOT_PASSWORD: password
-          DB_HOST: db
-          RAILS_ENV: test
-
-      - name: Run RSpec
-        run: docker compose -f docker-compose.yml run --rm api bundle exec rspec
-        env:
-          MYSQL_ROOT_PASSWORD: password
-          DB_HOST: db
-          RAILS_ENV: test
-
   deploy:
-    name: Deploy to Production
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    name: Build and Deploy to EC2
     runs-on: ubuntu-latest
-    needs: test
-
+    
     permissions:
       id-token: write
       contents: read
@@ -69,7 +28,8 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build and push API image to ECR
+      - name: Build, tag, and push API image to ECR
+        id: build-api-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
@@ -79,8 +39,8 @@ jobs:
           docker tag $ECR_REGISTRY/${{ secrets.ECR_API_REPOSITORY }}:$IMAGE_TAG $ECR_REGISTRY/${{ secrets.ECR_API_REPOSITORY }}:latest
           docker push $ECR_REGISTRY/${{ secrets.ECR_API_REPOSITORY }}:latest
 
-
-      - name: Build and push Nginx image to ECR
+      - name: Build, tag, and push Nginx image to ECR
+        id: build-nginx-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
@@ -91,29 +51,40 @@ jobs:
           docker push $ECR_REGISTRY/${{ secrets.ECR_NGINX_REPOSITORY }}:latest
 
       - name: Deploy to EC2 instances
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.EC2_HOST_1 }}
+          host: ${{ secrets.EC2_HOST_1 }},${{ secrets.EC2_HOST_2 }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
             cd yubikirigennmann
+            
             echo "${{ secrets.DOT_ENV_PRODUCTION }}" > .env
+            export AWS_ACCOUNT_ID=${{ secrets.AWS_ACCOUNT_ID }}
+            export AWS_REGION=${{ secrets.AWS_REGION }}
+            export ECR_API_REPOSITORY=${{ secrets.ECR_API_REPOSITORY }}
+            export ECR_NGINX_REPOSITORY=${{ secrets.ECR_NGINX_REPOSITORY }}
+            
+            cat << 'EOF' > docker-compose.prod.yml
+            version: '3.8'
+            services:
+              api:
+                image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_API_REPOSITORY}:latest
+                command: bundle exec puma -C config/puma.rb
+                env_file:
+                  - .env
+              nginx:
+                image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_NGINX_REPOSITORY}:latest
+                ports:
+                  - "80:80"
+                depends_on:
+                  - api
+                env_file:
+                  - .env
+            EOF
             
             docker compose -f docker-compose.prod.yml pull
-            
+
             docker compose -f docker-compose.prod.yml run --rm api bundle exec rails db:migrate
 
-            docker compose -f docker-compose.prod.yml up -d
-      
-      - name: Deploy to EC2 instance 2
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST_2 }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.ECR_SSH_PRIVATE_KEY }}
-          script: |
-            cd yubikirigennmann
-            echo "${{ secrets.DOT_ENV_PRODUCTION }}" > .env
-            docker compose -f docker-compose.prod.yml pull
             docker compose -f docker-compose.prod.yml up -d
