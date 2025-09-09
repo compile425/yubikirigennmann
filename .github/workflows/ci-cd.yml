@@ -31,17 +31,17 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Docker Compose
-        run: docker-compose -f docker-compose.yml build
+        run: docker compose -f docker-compose.yml build
 
       - name: Setup database
-        run: docker-compose -f docker-compose.yml run --rm api bundle exec rails db:create db:migrate
+        run: docker compose -f docker-compose.yml run --rm api bundle exec rails db:create db:migrate
         env:
           MYSQL_ROOT_PASSWORD: password
           DB_HOST: db
           RAILS_ENV: test
 
       - name: Run RSpec
-        run: docker-compose -f docker-compose.yml run --rm api bundle exec rspec
+        run: docker compose -f docker-compose.yml run --rm api bundle exec rspec
         env:
           MYSQL_ROOT_PASSWORD: password
           DB_HOST: db
