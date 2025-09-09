@@ -1,0 +1,56 @@
+name: CI - Run Tests
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Run RSpec & Jest Tests
+    runs-on: ubuntu-latest
+    
+    services:
+      db:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: myapp_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping -h 127.0.0.1 -u root --password=password"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build development images
+        run: docker compose -f docker-compose.yml build
+
+      - name: Wait for DB service to be ready
+        run: |
+          until docker exec $(docker compose -f docker-compose.yml ps -q db) mysqladmin ping -h 127.0.0.1 -u root --password=password --silent; do
+            echo "Waiting for database connection..."
+            sleep 2
+          done
+
+      - name: Setup database
+        run: docker compose -f docker-compose.yml run --rm api bundle exec rails db:migrate
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          DB_HOST: db
+          RAILS_ENV: test
+
+      - name: Run RSpec tests
+        run: docker compose -f docker-compose.yml run --rm api bundle exec rspec
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          DB_HOST: db
+          RAILS_ENV: test
+
+      - name: Run Jest tests
+      run: docker compose -f docker-compose.yml run --rm frontend yarn test
