@@ -9,7 +9,7 @@ jobs:
   test:
     name: Run RSpec & Jest Tests
     runs-on: ubuntu-latest
-    
+
     services:
       db:
         image: mysql:8.4
@@ -28,27 +28,38 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Build development images
-        run: docker compose -f docker-compose.yml build
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
 
-      - name: Wait for DB service to be ready
+      - name: Install packages for system tests
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y google-chrome-stable curl default-mysql-client libjemalloc2 libvips
+
+      - name: Prepare test DB
+        env:
+          RAILS_ENV: test
+          DB_HOST: 127.0.0.1
+          MYSQL_ROOT_PASSWORD: password
         run: |
-          DB_HOST_IP=$(docker inspect $(docker compose -f docker-compose.yml ps -q db) | grep "IPAddress" | tail -n 1 | awk -F '"' '{print $4}')
-          until docker exec $(docker compose -f docker-compose.yml ps -q db) mysqladmin ping -h "$DB_HOST_IP" -u root --password=password --silent; do
-            sleep 2
-            echo "..."
-          done
+          bin/rails db:create
+          bin/rails db:migrate
 
-      - name: Setup database
-        run: docker compose -f docker-compose.yml run --rm api bundle exec rails db:migrate
+      - name: Run tests
         env:
-          MYSQL_ROOT_PASSWORD: password
-          DB_HOST: db
           RAILS_ENV: test
+          DB_HOST: 127.0.0.1
+          MYSQL_ROOT_PASSWORD: password
+        run: |
+          bin/rspec
+          # systemテストを実行する場合:
+          # bin/rails test:system
 
-      - name: Run RSpec tests
-        run: docker compose -f docker-compose.yml run --rm api bundle exec rspec
-        env:
-          MYSQL_ROOT_PASSWORD: password
-          DB_HOST: db
-          RAILS_ENV: test
+      - name: Keep screenshots from failed system tests
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: screenshots
+          path: ${{ github.workspace }}/tmp/screenshots
+          if-no-files-found: ignore
