@@ -58,14 +58,14 @@ jobs:
           script: |
             set -euo pipefail
             cd yubikirigennmann
-            
+
             echo "${{ secrets.DOT_ENV_PRODUCTION }}" > .env
-            
+
             export AWS_ACCOUNT_ID=${{ secrets.AWS_ACCOUNT_ID }}
             export AWS_REGION=${{ secrets.AWS_REGION }}
             export ECR_API_REPOSITORY=${{ secrets.ECR_API_REPOSITORY }}
             export ECR_NGINX_REPOSITORY=${{ secrets.ECR_NGINX_REPOSITORY }}
-            
+
             cat << 'EOF' > docker-compose.prod.yml
             services:
               api:
@@ -82,15 +82,13 @@ jobs:
                 env_file:
                   - .env
             EOF
-            
-            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-            
-            # Disk cleanup before pulling large images
+
+            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} \
+              | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+
             docker system df || true
             docker system prune -af --volumes || true
-            
+
             docker compose -f docker-compose.prod.yml pull
-            
             docker compose -f docker-compose.prod.yml run --rm api bundle exec rails db:migrate
-            
             docker compose -f docker-compose.prod.yml up -d --remove-orphans
