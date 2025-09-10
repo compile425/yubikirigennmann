@@ -85,6 +85,10 @@ jobs:
             
             aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
             
+            # Disk cleanup before pulling large images
+            docker system df || true
+            docker system prune -af --volumes || true
+            
             docker compose -f docker-compose.prod.yml pull
             
             docker compose -f docker-compose.prod.yml run --rm api bundle exec rails db:migrate
