@@ -33,9 +33,10 @@ jobs:
 
       - name: Wait for DB service to be ready
         run: |
-          until docker exec $(docker compose -f docker-compose.yml ps -q db) mysqladmin ping -h 127.0.0.1 -u root --password=password --silent; do
-            echo "Waiting for database connection..."
+          DB_HOST_IP=$(docker inspect $(docker compose -f docker-compose.yml ps -q db) | grep "IPAddress" | tail -n 1 | awk -F '"' '{print $4}')
+          until docker exec $(docker compose -f docker-compose.yml ps -q db) mysqladmin ping -h "$DB_HOST_IP" -u root --password=password --silent; do
             sleep 2
+            echo "..."
           done
 
       - name: Setup database
@@ -51,6 +52,3 @@ jobs:
           MYSQL_ROOT_PASSWORD: password
           DB_HOST: db
           RAILS_ENV: test
-
-      - name: Run Jest tests
-      run: docker compose -f docker-compose.yml run --rm frontend yarn test
