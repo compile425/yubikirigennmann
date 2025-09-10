@@ -9,7 +9,6 @@ jobs:
   deploy:
     name: Build and Deploy to EC2
     runs-on: ubuntu-latest
-    
     permissions:
       id-token: write
       contents: read
@@ -58,6 +57,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
             cd yubikirigennmann
+            
             echo "${{ secrets.DOT_ENV_PRODUCTION }}" > .env
             
             export AWS_ACCOUNT_ID=${{ secrets.AWS_ACCOUNT_ID }}
@@ -82,6 +82,10 @@ jobs:
                   - .env
             EOF
             
+            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+            
             docker-compose -f docker-compose.prod.yml pull
+            
             docker-compose -f docker-compose.prod.yml run --rm api bundle exec rails db:migrate
+            
             docker-compose -f docker-compose.prod.yml up -d
