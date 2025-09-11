@@ -71,8 +71,6 @@ jobs:
           else
             bin/rails test
           fi
-          # systemテストを実行する場合:
-          # bin/rails test:system
 
       - name: Keep screenshots from failed system tests
         uses: actions/upload-artifact@v4
