@@ -34,8 +34,18 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      - name: Install packages for system tests
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y google-chrome-stable curl default-mysql-client libjemalloc2 libvips
+      - name: Install system deps for gems
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y \
+            build-essential libmysqlclient-dev \
+            google-chrome-stable curl default-mysql-client libjemalloc2 libvips
+
+      - name: Bundle install (backend)
+        working-directory: backend
+        run: |
+          bundle config set path 'vendor/bundle'
+          bundle install --jobs 4 --retry 3
 
       - name: Prepare test DB
         working-directory: backend
