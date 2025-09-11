@@ -34,8 +34,18 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      - name: Install packages for system tests
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y google-chrome-stable curl default-mysql-client libjemalloc2 libvips
+      - name: Install system deps for gems
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y \
+            build-essential libmysqlclient-dev \
+            google-chrome-stable curl default-mysql-client libjemalloc2 libvips
+
+      - name: Bundle install (backend)
+        working-directory: backend
+        run: |
+          bundle config set path 'vendor/bundle'
+          bundle install --jobs 4 --retry 3
 
       - name: Prepare test DB
         working-directory: backend
@@ -56,9 +66,11 @@ jobs:
           MYSQL_ROOT_PASSWORD: password
           DATABASE_URL: mysql2://root:password@127.0.0.1:3306/myapp_test
         run: |
-          bin/rspec
-          # systemテストを実行する場合:
-          # bin/rails test:system
+          if [ -x bin/rspec ]; then
+            bin/rspec
+          else
+            bin/rails test
+          fi
 
       - name: Keep screenshots from failed system tests
         uses: actions/upload-artifact@v4
