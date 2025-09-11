@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 import { useAuth } from '../contexts/useAuth';
 
 const InvitePartnerPage = () => {
@@ -25,7 +26,7 @@ const InvitePartnerPage = () => {
 
     try {
       const response = await axios.post(
-        'http://localhost:3001/api/invitations',
+        `${API_BASE_URL}/invitations`,
         {},
         {
           headers: {

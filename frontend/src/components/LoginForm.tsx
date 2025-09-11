@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 import { useAuth } from '../contexts/useAuth';
 import RegisterForm from './RegisterForm';
 
@@ -25,7 +26,7 @@ const LoginForm = ({ invitationToken, onAuthSuccess }: LoginFormProps) => {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:3001/api/login', {
+      const response = await axios.post(`${API_BASE_URL}/login`, {
         email,
         password,
       });
@@ -52,9 +53,7 @@ const LoginForm = ({ invitationToken, onAuthSuccess }: LoginFormProps) => {
     setIsGuestLoggingIn(true);
 
     try {
-      const response = await axios.post(
-        'http://localhost:3001/api/guest_login'
-      );
+      const response = await axios.post(`${API_BASE_URL}/guest_login`);
       setToken(response.data.token);
 
       if (invitationToken && onAuthSuccess) {

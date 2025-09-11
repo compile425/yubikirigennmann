@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
 
@@ -21,7 +22,7 @@ const InviteAcceptPage = () => {
       }
 
       try {
-        await axios.get(`http://localhost:3001/api/invite/${token}`);
+        await axios.get(`${API_BASE_URL}/invite/${token}`);
       } catch (error) {
         console.error('招待確認エラー:', error);
         if (axios.isAxiosError(error) && error.response) {
@@ -42,7 +43,7 @@ const InviteAcceptPage = () => {
 
     try {
       const response = await axios.get(
-        `http://localhost:3001/api/invite/${token}`
+        `${API_BASE_URL}/invite/${token}`
       );
       if (response.data.message === 'パートナーシップが作成されました') {
         alert('パートナーシップが作成されました！');

@@ -4,6 +4,8 @@ import axios from 'axios';
 import { AuthContext } from './AuthContext';
 import type { AuthContextType } from './AuthContext';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+
 interface AuthProviderProps {
   children: ReactNode;
 }
@@ -23,7 +25,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         console.log('Token found:', token);
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         console.log('Making request to /api/get_me with token:', token);
-        const response = await axios.get('http://localhost:3001/api/get_me');
+        const response = await axios.get(`${API_BASE_URL}/get_me`);
         console.log('Auth response:', response.data);
         setCurrentUser(response.data.current_user);
         setPartner(response.data.partner);
@@ -53,7 +55,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     if (token && !partner) {
       const interval = setInterval(async (): Promise<void> => {
         try {
-          const response = await axios.get('http://localhost:3001/api/get_me', {
+          const response = await axios.get(`${API_BASE_URL}/get_me`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },

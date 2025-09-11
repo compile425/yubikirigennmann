@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 import Sidebar from './Sidebar';
 import PromiseColumn from './PromiseColumn';
 import type { EvaluatedPromise } from '../types';
@@ -16,9 +17,7 @@ const PastEvaluationsPage = () => {
     if (!token) return;
     try {
       setLoading(true);
-      const response = await axios.get(
-        'http://localhost:3001/api/evaluated-promises'
-      );
+      const response = await axios.get(`${API_BASE_URL}/evaluated-promises`);
       console.log('API Response:', response.data);
       console.log('First promise data:', response.data[0]);
       console.log('Rating in first promise:', response.data[0]?.rating);
