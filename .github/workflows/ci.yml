@@ -38,19 +38,23 @@ jobs:
         run: sudo apt-get update && sudo apt-get install --no-install-recommends -y google-chrome-stable curl default-mysql-client libjemalloc2 libvips
 
       - name: Prepare test DB
+        working-directory: backend
         env:
           RAILS_ENV: test
           DB_HOST: 127.0.0.1
           MYSQL_ROOT_PASSWORD: password
+          DATABASE_URL: mysql2://root:password@127.0.0.1:3306/myapp_test
         run: |
           bin/rails db:create
           bin/rails db:migrate
 
       - name: Run tests
+        working-directory: backend
         env:
           RAILS_ENV: test
           DB_HOST: 127.0.0.1
           MYSQL_ROOT_PASSWORD: password
+          DATABASE_URL: mysql2://root:password@127.0.0.1:3306/myapp_test
         run: |
           bin/rspec
           # systemテストを実行する場合:
