@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 import { useAuth } from '../contexts/useAuth';
 
 interface DissolvePartnershipModalProps {
@@ -26,7 +27,7 @@ const DissolvePartnershipModal = ({
     setIsDissolving(true);
 
     try {
-      await axios.delete('http://localhost:3001/api/partnerships/dissolve', {
+      await axios.delete(`${API_BASE_URL}/partnerships/dissolve`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

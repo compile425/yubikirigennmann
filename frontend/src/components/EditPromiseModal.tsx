@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 import type { PromiseItem } from '../types';
 
 interface EditPromiseModalProps {
@@ -30,7 +31,7 @@ const EditPromiseModal = ({
     if (!promise) return;
 
     try {
-      await axios.put(`http://localhost:3001/api/promises/${promise.id}`, {
+      await axios.put(`${API_BASE_URL}/promises/${promise.id}`, {
         promise: {
           content: content,
           due_date: dueDate || null,

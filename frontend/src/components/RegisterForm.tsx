@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 import { useAuth } from '../contexts/useAuth';
 
 interface AxiosErrorResponse {
@@ -64,10 +65,7 @@ const RegisterForm = ({
         requestData.invitation_token = invitationToken;
       }
 
-      const response = await axios.post(
-        'http://localhost:3001/api/register',
-        requestData
-      );
+      const response = await axios.post(`${API_BASE_URL}/register`, requestData);
 
       console.log('Registration response:', response.data);
       setToken(response.data.token);
@@ -75,9 +73,7 @@ const RegisterForm = ({
       try {
         axios.defaults.headers.common['Authorization'] =
           `Bearer ${response.data.token}`;
-        const userResponse = await axios.get(
-          'http://localhost:3001/api/get_me'
-        );
+        const userResponse = await axios.get(`${API_BASE_URL}/get_me`);
         console.log('User info after registration:', userResponse.data);
       } catch (userError) {
         console.error('Failed to get user info after registration:', userError);

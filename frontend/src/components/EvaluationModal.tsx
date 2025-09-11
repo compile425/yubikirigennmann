@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 import type { PromiseItem } from '../types';
 
 interface EvaluationModalProps {
@@ -33,7 +34,7 @@ const EvaluationModal = ({
 
     try {
       await axios.post(
-        `http://localhost:3001/api/promises/${promise.id}/promise_evaluations`,
+        `${API_BASE_URL}/promises/${promise.id}/promise_evaluations`,
         {
           evaluation: {
             rating: rating,

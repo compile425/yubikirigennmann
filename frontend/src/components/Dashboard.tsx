@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 import Sidebar from './Sidebar';
 import PromiseColumn from './PromiseColumn';
 import AddPromiseModal from './AddPromiseModal';
@@ -29,7 +30,7 @@ const Dashboard = () => {
   const fetchPromises = useCallback(async (): Promise<void> => {
     if (!token) return;
     try {
-      const response = await axios.get('http://localhost:3001/api/promises');
+      const response = await axios.get(`${API_BASE_URL}/promises`);
       setPromises(response.data);
     } catch (error) {
       console.error('約束の取得に失敗しました:', error);
@@ -62,7 +63,7 @@ const Dashboard = () => {
     }
 
     try {
-      await axios.delete(`http://localhost:3001/api/promises/${promise.id}`);
+      await axios.delete(`${API_BASE_URL}/promises/${promise.id}`);
       await fetchPromises();
     } catch (error) {
       console.error('約束の削除に失敗しました:', error);
@@ -79,9 +80,7 @@ const Dashboard = () => {
 
     setIsSendingEmail(true);
     try {
-      const response = await axios.post(
-        'http://localhost:3001/api/evaluation_emails'
-      );
+      const response = await axios.post(`${API_BASE_URL}/evaluation_emails`);
       alert('評価メールを送信しました！');
       console.log('送信結果:', response.data);
     } catch (error) {
@@ -120,7 +119,7 @@ const Dashboard = () => {
   const handleSendDueDateEvaluations = async (): Promise<void> => {
     try {
       const response = await axios.post(
-        'http://localhost:3001/api/scheduled_tasks/send_due_date_evaluations'
+        `${API_BASE_URL}/scheduled_tasks/send_due_date_evaluations`
       );
       alert('期日が来た約束の評価メールを送信しました！');
       console.log('送信結果:', response.data);
@@ -133,7 +132,7 @@ const Dashboard = () => {
   const handleSendWeeklyEvaluations = async (): Promise<void> => {
     try {
       const response = await axios.post(
-        'http://localhost:3001/api/scheduled_tasks/send_weekly_our_promises_evaluation'
+        `${API_BASE_URL}/scheduled_tasks/send_weekly_our_promises_evaluation`
       );
       alert('毎週の二人の約束評価メールを送信しました！');
       console.log('送信結果:', response.data);

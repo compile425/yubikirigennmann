@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 import EvaluationModal from './EvaluationModal';
 import type { PromiseItem } from '../types';
 
@@ -23,7 +24,7 @@ const EvaluationPage = () => {
     const fetchPromise = async (): Promise<void> => {
       try {
         const response = await axios.get(
-          `http://localhost:3001/api/evaluation_pages/${id}?token=${token}`
+          `${API_BASE_URL}/evaluation_pages/${id}?token=${token}`
         );
 
         if (response.data.valid_token) {
