@@ -91,4 +91,5 @@ jobs:
 
             docker compose -f docker-compose.prod.yml pull
             docker compose -f docker-compose.prod.yml run --rm api bundle exec rails db:migrate
+            docker compose -f docker-compose.prod.yml run --rm api bundle exec rails db:seed
             docker compose -f docker-compose.prod.yml up -d --remove-orphans
