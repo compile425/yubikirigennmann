@@ -6,8 +6,37 @@ on:
       - main
 
 jobs:
-  deploy:
-    name: Build and Deploy to EC2
+  deploy-frontend:
+    name: Deploy Frontend to S3 and CloudFront
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Build React App
+        working-directory: ./frontend
+        run: |
+          yarn install
+          CI=false yarn build
+
+      - name: Deploy to S3
+        run: aws s3 sync ./frontend/build s3://${{ secrets.S3_BUCKET_NAME }} --delete
+        
+      - name: Invalidate CloudFront cache
+        run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONTS_DISTRIBUTION_ID }} --paths "/*"
+
+  deploy-backend:
+    name: Deploy Backend to EC2
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -28,7 +57,6 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build, tag, and push API image to ECR
-        id: build-api-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
@@ -38,17 +66,6 @@ jobs:
           docker tag $ECR_REGISTRY/${{ secrets.ECR_API_REPOSITORY }}:$IMAGE_TAG $ECR_REGISTRY/${{ secrets.ECR_API_REPOSITORY }}:latest
           docker push $ECR_REGISTRY/${{ secrets.ECR_API_REPOSITORY }}:latest
 
-      - name: Build, tag, and push Nginx image to ECR
-        id: build-nginx-image
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
-          docker build -t $ECR_REGISTRY/${{ secrets.ECR_NGINX_REPOSITORY }}:$IMAGE_TAG -f ./nginx/Dockerfile .
-          docker push $ECR_REGISTRY/${{ secrets.ECR_NGINX_REPOSITORY }}:$IMAGE_TAG
-          docker tag $ECR_REGISTRY/${{ secrets.ECR_NGINX_REPOSITORY }}:$IMAGE_TAG $ECR_REGISTRY/${{ secrets.ECR_NGINX_REPOSITORY }}:latest
-          docker push $ECR_REGISTRY/${{ secrets.ECR_NGINX_REPOSITORY }}:latest
-
       - name: Deploy to EC2 instances
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -56,40 +73,21 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
-            set -euo pipefail
             cd yubikirigennmann
-
             echo "${{ secrets.DOT_ENV_PRODUCTION }}" > .env
-
-            export AWS_ACCOUNT_ID=${{ secrets.AWS_ACCOUNT_ID }}
-            export AWS_REGION=${{ secrets.AWS_REGION }}
-            export ECR_API_REPOSITORY=${{ secrets.ECR_API_REPOSITORY }}
-            export ECR_NGINX_REPOSITORY=${{ secrets.ECR_NGINX_REPOSITORY }}
-
-            cat << 'EOF' > docker-compose.prod.yml
+            
+            cat << EOF > docker-compose.prod.yml
             services:
               api:
-                image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_API_REPOSITORY}:latest
-                command: bundle exec puma -C config/puma.rb
-                env_file:
-                  - .env
-              nginx:
-                image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_NGINX_REPOSITORY}:latest
+                image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_API_REPOSITORY }}:latest
                 ports:
-                  - "80:80"
-                depends_on:
-                  - api
+                  - "3000:3000"
                 env_file:
                   - .env
             EOF
-
-            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} \
-              | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-
-            docker system df || true
-            docker system prune -af --volumes || true
-
-            docker compose -f docker-compose.prod.yml pull
+            
+            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+            
+            docker compose -f docker-compose.prod.yml pull api
             docker compose -f docker-compose.prod.yml run --rm api bundle exec rails db:migrate
-            docker compose -f docker-compose.prod.yml run --rm api bundle exec rails db:seed
-            docker compose -f docker-compose.prod.yml up -d --remove-orphans
+            docker compose -f docker-compose.prod.yml up -d --remove-orphans api

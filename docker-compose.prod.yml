@@ -4,12 +4,3 @@ services:
     command: bundle exec puma -C config/puma.rb
     env_file:
       - .env
-
-  nginx:
-    image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_NGINX_REPOSITORY }}:latest
-    ports:
-      - "80:80"
-    depends_on:
-      - api
-    env_file:
-      - .env
