@@ -6,37 +6,8 @@ on:
       - main
 
 jobs:
-  deploy-frontend:
-    name: Deploy Frontend to S3 and CloudFront
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Build React App
-        working-directory: ./frontend
-        run: |
-          yarn install
-          CI=false yarn build
-
-      - name: Deploy to S3
-        run: aws s3 sync ./frontend/build s3://${{ secrets.S3_BUCKET_NAME }} --delete
-        
-      - name: Invalidate CloudFront cache
-        run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONTS_DISTRIBUTION_ID }} --paths "/*"
-
-  deploy-backend:
-    name: Deploy Backend to EC2
+  deploy:
+    name: Build and Deploy to EC2 via SSM
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -65,29 +36,41 @@ jobs:
           docker push $ECR_REGISTRY/${{ secrets.ECR_API_REPOSITORY }}:$IMAGE_TAG
           docker tag $ECR_REGISTRY/${{ secrets.ECR_API_REPOSITORY }}:$IMAGE_TAG $ECR_REGISTRY/${{ secrets.ECR_API_REPOSITORY }}:latest
           docker push $ECR_REGISTRY/${{ secrets.ECR_API_REPOSITORY }}:latest
+          
+      - name: Prepare deploy script
+        id: prepare_script
+        run: |
+          script_content=$(cat << 'SCRIPT'
+          set -euo pipefail
+          cd /home/ec2-user/yubikirigennmann
+          git pull origin main
+          
+          echo "${{ secrets.DOT_ENV_PRODUCTION }}" > .env
+          
+          cat << EOF > docker-compose.prod.yml
+          services:
+            api:
+              image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_API_REPOSITORY }}:latest
+              ports:
+                - "3000:3000"
+              env_file:
+                - .env
+          EOF
+          
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+          
+          docker compose -f docker-compose.prod.yml pull api
+          docker compose -f docker-compose.prod.yml run --rm api bundle exec rails db:migrate
+          docker compose -f docker-compose.prod.yml up -d --remove-orphans api
+          SCRIPT
+          )
+          escaped_script_content="${script_content//$'\n'/\\n}"
+          echo "commands=[\"$escaped_script_content\"]" >> $GITHUB_OUTPUT
 
-      - name: Deploy to EC2 instances
-        uses: appleboy/ssh-action@v1.0.3
+      - name: Deploy to EC2 instances via SSM Run Command
+        uses: aws-actions/aws-ssm-send-command@v1
         with:
-          host: ${{ secrets.EC2_HOST_1 }},${{ secrets.EC2_HOST_2 }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          script: |
-            cd yubikirigennmann
-            echo "${{ secrets.DOT_ENV_PRODUCTION }}" > .env
-            
-            cat << EOF > docker-compose.prod.yml
-            services:
-              api:
-                image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_API_REPOSITORY }}:latest
-                ports:
-                  - "3000:3000"
-                env_file:
-                  - .env
-            EOF
-            
-            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-            
-            docker compose -f docker-compose.prod.yml pull api
-            docker compose -f docker-compose.prod.yml run --rm api bundle exec rails db:migrate
-            docker compose -f docker-compose.prod.yml up -d --remove-orphans api
+          instance-ids: ${{ secrets.EC2_INSTANCE_ID_1 }},${{ secrets.EC2_INSTANCE_ID_2 }}
+          command: ${{ steps.prepare_script.outputs.commands }}
+          working-directory: /home/ec2-user/yubikirigennmann
+          comment: Deploying latest version from GitHub Actions
