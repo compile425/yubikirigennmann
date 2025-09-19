@@ -64,13 +64,15 @@ jobs:
           docker compose -f docker-compose.prod.yml up -d --remove-orphans api
           SCRIPT
           )
-          escaped_script_content="${script_content//$'\n'/\\n}"
-          echo "commands=[\"$escaped_script_content\"]" >> $GITHUB_OUTPUT
+          echo "script_content<<EOF" >> $GITHUB_OUTPUT
+          echo "$script_content" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Deploy to EC2 instances via SSM Run Command
-        uses: aws-actions/amazon-ssm-send-command@v1
+        uses: Castlenine/aws-ssm-command@v1
         with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
           instance-ids: ${{ secrets.EC2_INSTANCE_ID_1 }},${{ secrets.EC2_INSTANCE_ID_2 }}
-          commands: ${{ steps.prepare_script.outputs.commands }}
-          working-directory: /home/ec2-user/yubikirigennmann
-          comment: Deploying latest version from GitHub Actions
+          command: ${{ steps.prepare_script.outputs.script_content }}
