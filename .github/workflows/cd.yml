@@ -68,7 +68,7 @@ jobs:
           echo "commands=[\"$escaped_script_content\"]" >> $GITHUB_OUTPUT
 
       - name: Deploy to EC2 instances via SSM Run Command
-        uses: aws-actions/aws-ssm-send-command@v1
+        uses: aws-actions/amazon-ssm-send-command@v1
         with:
           instance-ids: ${{ secrets.EC2_INSTANCE_ID_1 }},${{ secrets.EC2_INSTANCE_ID_2 }}
           command: ${{ steps.prepare_script.outputs.commands }}
