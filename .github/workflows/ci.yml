@@ -99,7 +99,8 @@ jobs:
     name: Build and Push Docker Images
     runs-on: ubuntu-latest
     needs: test
-    if: needs.test.outputs.should-build == 'true' && github.event_name == 'push'
+    outputs:
+      image-built: ${{ steps.build.outcome == 'success' }}
 
     steps:
       - name: Checkout repository
@@ -116,7 +117,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build and push backend image
-        if: needs.test.outputs.should-build == 'true'
+        id: build
         run: |
           cd backend
           docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_API_REPOSITORY }}:latest .
