@@ -39,7 +39,15 @@ jobs:
                 --parameters 'commands=[
                   "set -euo pipefail",
                   "cd /home/ec2-user/yubikirigennmann",
-                  "git pull origin main",
+                  "echo \"Current directory: $(pwd)\"",
+                  "echo \"Git status before pull:\"",
+                  "git status",
+                  "git fetch origin",
+                  "git reset --hard origin/main",
+                  "echo \"Git status after pull:\"",
+                  "git status",
+                  "echo \"Files in directory:\"",
+                  "ls -la",
                   "cat > .env << '\''ENVEOF'\''",
                   "${{ secrets.DOT_ENV_PRODUCTION }}",
                   "ENVEOF",
@@ -52,10 +60,14 @@ jobs:
                   "    env_file:",
                   "      - .env",
                   "DOCKEREOF",
+                  "echo \"Docker compose file created:\"",
+                  "cat docker-compose.prod.yml",
                   "aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com",
                   "docker compose -f docker-compose.prod.yml pull api",
                   "docker compose -f docker-compose.prod.yml run --rm api bundle exec rails db:migrate",
-                  "docker compose -f docker-compose.prod.yml up -d --remove-orphans api"
+                  "docker compose -f docker-compose.prod.yml up -d --remove-orphans api",
+                  "echo \"Docker containers:\"",
+                  "docker ps -a"
                 ]' \
                 --timeout-seconds 600 \
                 --query "Command.CommandId" \
