@@ -1,7 +1,10 @@
 name: CD - Deploy to Production
 
 on:
-  push:
+  workflow_run:
+    workflows: ["CI - Run Tests and Build Images"]
+    types:
+      - completed
     branches:
       - main
 
@@ -9,6 +12,7 @@ jobs:
   deploy:
     name: Build and Deploy to EC2 via SSM
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     permissions:
       id-token: write
       contents: read
