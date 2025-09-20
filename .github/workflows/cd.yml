@@ -26,43 +26,36 @@ jobs:
             if [ -n "$instance_id" ]; then
               echo "Deploying to instance: $instance_id"
 
-              # Create a temporary JSON file with proper escaping
-              cat > /tmp/ssm-params.json << 'EOF'
-          {
-              "commands": [
-                  "set -euo pipefail",
-                  "cd /home/ec2-user/yubikirigennmann",
-                  "git pull origin main",
-                  "echo \"$DOT_ENV_PRODUCTION\" > .env",
-                  "cat << 'DOCKER_COMPOSE_EOF' > docker-compose.prod.yml",
-                  "services:",
-                  "  api:",
-                  "    image: $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_API_REPOSITORY:latest",
-                  "    ports:",
-                  "      - \"3000:3000\"",
-                  "    env_file:",
-                  "      - .env",
-                  "DOCKER_COMPOSE_EOF",
-                  "aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com",
-                  "docker compose -f docker-compose.prod.yml pull api",
-                  "docker compose -f docker-compose.prod.yml run --rm api bundle exec rails db:migrate",
-                  "docker compose -f docker-compose.prod.yml up -d --remove-orphans api"
-              ],
-              "workingDirectory": ["/home/ec2-user/yubikirigennmann"]
-          }
-          EOF
+              # Create commands array directly
+              commands=(
+                "set -euo pipefail"
+                "cd /home/ec2-user/yubikirigennmann"
+                "git pull origin main"
+                "echo '${{ secrets.DOT_ENV_PRODUCTION }}' > .env"
+                "cat << 'DOCKER_COMPOSE_EOF' > docker-compose.prod.yml"
+                "services:"
+                "  api:"
+                "    image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_API_REPOSITORY }}:latest"
+                "    ports:"
+                "      - \"3000:3000\""
+                "    env_file:"
+                "      - .env"
+                "DOCKER_COMPOSE_EOF"
+                "aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com"
+                "docker compose -f docker-compose.prod.yml pull api"
+                "docker compose -f docker-compose.prod.yml run --rm api bundle exec rails db:migrate"
+                "docker compose -f docker-compose.prod.yml up -d --remove-orphans api"
+              )
 
-              # Replace placeholders with actual values using different delimiter
-              sed -i "s|\$DOT_ENV_PRODUCTION|${{ secrets.DOT_ENV_PRODUCTION }}|g" /tmp/ssm-params.json
-              sed -i "s|\$AWS_ACCOUNT_ID|${{ secrets.AWS_ACCOUNT_ID }}|g" /tmp/ssm-params.json
-              sed -i "s|\$AWS_REGION|${{ secrets.AWS_REGION }}|g" /tmp/ssm-params.json
-              sed -i "s|\$ECR_API_REPOSITORY|${{ secrets.ECR_API_REPOSITORY }}|g" /tmp/ssm-params.json
+              # Convert array to JSON format
+              printf -v commands_json '%s,' "${commands[@]}"
+              commands_json="[${commands_json%,}]"
 
               aws ssm send-command \
                 --region ${{ secrets.AWS_REGION }} \
                 --instance-ids "$instance_id" \
                 --document-name "AWS-RunShellScript" \
-                --parameters file:///tmp/ssm-params.json \
+                --parameters "commands=$commands_json" \
                 --timeout-seconds 600 \
                 --query "Command.CommandId" \
                 --output text
