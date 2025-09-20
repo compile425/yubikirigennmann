@@ -52,11 +52,11 @@ jobs:
           }
           EOF
 
-              # Replace placeholders with actual values
-              sed -i "s/\$DOT_ENV_PRODUCTION/${{ secrets.DOT_ENV_PRODUCTION }}/g" /tmp/ssm-params.json
-              sed -i "s/\$AWS_ACCOUNT_ID/${{ secrets.AWS_ACCOUNT_ID }}/g" /tmp/ssm-params.json
-              sed -i "s/\$AWS_REGION/${{ secrets.AWS_REGION }}/g" /tmp/ssm-params.json
-              sed -i "s/\$ECR_API_REPOSITORY/${{ secrets.ECR_API_REPOSITORY }}/g" /tmp/ssm-params.json
+              # Replace placeholders with actual values using different delimiter
+              sed -i "s|\$DOT_ENV_PRODUCTION|${{ secrets.DOT_ENV_PRODUCTION }}|g" /tmp/ssm-params.json
+              sed -i "s|\$AWS_ACCOUNT_ID|${{ secrets.AWS_ACCOUNT_ID }}|g" /tmp/ssm-params.json
+              sed -i "s|\$AWS_REGION|${{ secrets.AWS_REGION }}|g" /tmp/ssm-params.json
+              sed -i "s|\$ECR_API_REPOSITORY|${{ secrets.ECR_API_REPOSITORY }}|g" /tmp/ssm-params.json
 
               aws ssm send-command \
                 --region ${{ secrets.AWS_REGION }} \
