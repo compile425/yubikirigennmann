@@ -4,6 +4,9 @@ Rails.application.routes.draw do
     mount LetterOpenerWeb::Engine, at: "/letter_opener"
   end
 
+  # Health check endpoint for ALB
+  get "/health", to: "health#show"
+
   namespace :api do
     post "/login", to: "sessions#create"
     post "/guest_login", to: "sessions#guest_login"
