@@ -1,6 +1,6 @@
 services:
   api:
-    image: 123456789012.dkr.ecr.ap-northeast-1.amazonaws.com/yubikirigennmann-api:latest
+    image: 061256352997.dkr.ecr.ap-northeast-1.amazonaws.com/yubikirigennmann-api:latest
     ports:
       - "3000:3000"
     env_file:
