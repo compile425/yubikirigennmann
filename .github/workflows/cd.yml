@@ -35,11 +35,7 @@ jobs:
             if [ -n "$instance_id" ]; then
               echo "--- Deploying to instance: $instance_id ---"
 
-              command_id=$(aws ssm send-command \
-                --region ${{ secrets.AWS_REGION }} \
-                --instance-ids "$instance_id" \
-                --document-name "AWS-RunShellScript" \
-                --parameters file://<(cat <<EOF
+              cat <<EOF > /tmp/ssm_parameters.json
           {
               "commands": [
                   "set -euo pipefail",
@@ -55,4 +51,41 @@ jobs:
                   "    env_file:",
                   "      - .env",
                   "DOCKEREOF",
-                  "aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazona
+                  "aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com",
+                  "docker compose -f docker-compose.prod.yml pull api",
+                  "docker compose -f docker-compose.prod.yml run --rm api bundle exec rails db:migrate",
+                  "docker compose -f docker-compose.prod.yml up -d --force-recreate --remove-orphans api"
+              ]
+          }
+          EOF
+
+              command_id=$(aws ssm send-command \
+                --region ${{ secrets.AWS_REGION }} \
+                --instance-ids "$instance_id" \
+                --document-name "AWS-RunShellScript" \
+                --parameters file:///tmp/ssm_parameters.json \
+                --timeout-seconds 600 \
+                --query "Command.CommandId" \
+                --output text)
+              
+              echo "Command ID: $command_id"
+              
+              echo "Waiting for command to complete..."
+              aws ssm wait command-executed \
+                --region ${{ secrets.AWS_REGION }} \
+                --command-id "$command_id" \
+                --instance-id "$instance_id" || ( \
+                  echo "Command failed. Fetching details..." >&2 && \
+                  aws ssm get-command-invocation --region ${{ secrets.AWS_REGION }} --command-id "$command_id" --instance-id "$instance_id" --query "StandardErrorContent" --output text >&2 && \
+                  exit 1 \
+                )
+              
+              echo "Command completed successfully. Fetching output..."
+              aws ssm get-command-invocation \
+                --region ${{ secrets.AWS_REGION }} \
+                --command-id "$command_id" \
+                --instance-id "$instance_id" \
+                --query "StandardOutputContent" \
+                --output text
+            fi
+          done
