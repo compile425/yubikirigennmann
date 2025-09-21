@@ -35,7 +35,7 @@ jobs:
             if [ -n "$instance_id" ]; then
               echo "Deploying to instance: $instance_id"
 
-              aws ssm send-command \
+              command_id=$(aws ssm send-command \
                 --region ${{ secrets.AWS_REGION }} \
                 --instance-ids "$instance_id" \
                 --document-name "AWS-RunShellScript" \
@@ -50,7 +50,7 @@ jobs:
                   "cat > docker-compose.prod.yml << '\''DOCKEREOF'\''",
                   "services:",
                   "  api:",
-                  "    image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_API_REPOSITORY }}:latest",
+                  "    image: yubi-api:latest",
                   "    ports:",
                   "      - \"3000:3000\"",
                   "    env_file:",
@@ -58,14 +58,16 @@ jobs:
                   "DOCKEREOF",
                   "echo \"Stopping and removing old containers...\"",
                   "docker compose -f docker-compose.prod.yml down --remove-orphans || true",
+                  "echo \"Removing old images to free space...\"",
+                  "docker image prune -f || true",
                   "echo \"Logging into ECR...\"",
                   "aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com",
                   "echo \"Pulling latest Docker image...\"",
-                  "docker compose -f docker-compose.prod.yml pull api --no-cache",
+                  "docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_API_REPOSITORY }}:latest",
                   "echo \"Verifying image pull...\"",
                   "docker images | grep yubi-api",
-                  "echo \"Removing old images to free space...\"",
-                  "docker image prune -f || true",
+                  "echo \"Tagging image for docker-compose...\"",
+                  "docker tag ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_API_REPOSITORY }}:latest yubi-api:latest",
                   "echo \"Running database migrations...\"",
                   "docker compose -f docker-compose.prod.yml run --rm api bundle exec rails db:migrate",
                   "echo \"Starting application with latest image...\"",
@@ -76,6 +78,34 @@ jobs:
                   "sleep 10",
                   "curl -f http://localhost:3000/health || echo \"Health check failed\""
                 ]' \
-                --timeout-seconds 600
+                --timeout-seconds 600 \
+                --query "Command.CommandId" \
+                --output text)
+              
+              echo "Command ID: $command_id"
+              
+              # Wait for command to complete and get results
+              echo "Waiting for command to complete..."
+              aws ssm wait command-executed \
+                --region ${{ secrets.AWS_REGION }} \
+                --command-id "$command_id" \
+                --instance-id "$instance_id"
+              
+              # Get command output
+              echo "Getting command output..."
+              aws ssm get-command-invocation \
+                --region ${{ secrets.AWS_REGION }} \
+                --command-id "$command_id" \
+                --instance-id "$instance_id" \
+                --query "StandardOutputContent" \
+                --output text
+              
+              # Get command error output
+              aws ssm get-command-invocation \
+                --region ${{ secrets.AWS_REGION }} \
+                --command-id "$command_id" \
+                --instance-id "$instance_id" \
+                --query "StandardErrorContent" \
+                --output text
             fi
           done
