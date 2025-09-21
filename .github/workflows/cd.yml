@@ -33,93 +33,26 @@ jobs:
           
           for instance_id in "${instance_ids[@]}"; do
             if [ -n "$instance_id" ]; then
-              echo "Deploying to instance: $instance_id"
+              echo "--- Deploying to instance: $instance_id ---"
 
               command_id=$(aws ssm send-command \
                 --region ${{ secrets.AWS_REGION }} \
                 --instance-ids "$instance_id" \
                 --document-name "AWS-RunShellScript" \
-                --parameters 'commands=[
+                --parameters file://<(cat <<EOF
+          {
+              "commands": [
                   "set -euo pipefail",
                   "cd /home/ec2-user/yubikirigennmann",
-                  "git fetch origin",
-                  "git reset --hard origin/main",
-                  "cat > .env << '\''ENVEOF'\''",
-                  "${{ secrets.DOT_ENV_PRODUCTION }}",
-                  "ENVEOF",
-                  "cat > docker-compose.prod.yml << '\''DOCKEREOF'\''",
+                  "git pull origin main",
+                  "echo \"${{ secrets.DOT_ENV_PRODUCTION }}\" > .env",
+                  "cat << DOCKEREOF > docker-compose.prod.yml",
                   "services:",
                   "  api:",
-                  "    image: yubi-api:latest",
+                  "    image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_API_REPOSITORY }}:latest",
                   "    ports:",
-                  "      - \"3000:3000\"",
+                  "      - \\\"3000:3000\\\"",
                   "    env_file:",
                   "      - .env",
                   "DOCKEREOF",
-                  "echo \"Stopping and removing old containers...\"",
-                  "docker compose -f docker-compose.prod.yml down --remove-orphans || true",
-                  "echo \"Removing old images to free space...\"",
-                  "docker image prune -f || true",
-                  "echo \"Logging into ECR...\"",
-                  "aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com",
-                  "echo \"Pulling latest Docker image...\"",
-                  "docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_API_REPOSITORY }}:latest",
-                  "echo \"Verifying image pull...\"",
-                  "docker images | grep yubi-api",
-                  "echo \"Tagging image for docker-compose...\"",
-                  "docker tag ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_API_REPOSITORY }}:latest yubi-api:latest",
-                  "echo \"Running database migrations...\"",
-                  "docker compose -f docker-compose.prod.yml run --rm api bundle exec rails db:migrate",
-                  "echo \"Starting application with latest image...\"",
-                  "docker compose -f docker-compose.prod.yml up -d --remove-orphans api",
-                  "echo \"Checking application status...\"",
-                  "docker compose -f docker-compose.prod.yml ps",
-                  "echo \"Testing health check...\"",
-                  "sleep 10",
-                  "curl -f http://localhost:3000/health || echo \"Health check failed\""
-                ]' \
-                --timeout-seconds 600 \
-                --query "Command.CommandId" \
-                --output text)
-              
-              echo "Command ID: $command_id"
-              
-              # Wait for command to complete and get results
-              echo "Waiting for command to complete..."
-              if aws ssm wait command-executed \
-                --region ${{ secrets.AWS_REGION }} \
-                --command-id "$command_id" \
-                --instance-id "$instance_id"; then
-                echo "Command completed successfully"
-              else
-                echo "Command failed, getting error details..."
-              fi
-              
-              # Get command status and output
-              echo "Getting command status..."
-              aws ssm get-command-invocation \
-                --region ${{ secrets.AWS_REGION }} \
-                --command-id "$command_id" \
-                --instance-id "$instance_id" \
-                --query "Status" \
-                --output text
-              
-              # Get command output
-              echo "Getting command output..."
-              aws ssm get-command-invocation \
-                --region ${{ secrets.AWS_REGION }} \
-                --command-id "$command_id" \
-                --instance-id "$instance_id" \
-                --query "StandardOutputContent" \
-                --output text
-              
-              # Get command error output
-              echo "Getting command error output..."
-              aws ssm get-command-invocation \
-                --region ${{ secrets.AWS_REGION }} \
-                --command-id "$command_id" \
-                --instance-id "$instance_id" \
-                --query "StandardErrorContent" \
-                --output text
-            fi
-          done
+                  "aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazona
