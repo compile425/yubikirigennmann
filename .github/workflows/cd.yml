@@ -86,10 +86,23 @@ jobs:
               
               # Wait for command to complete and get results
               echo "Waiting for command to complete..."
-              aws ssm wait command-executed \
+              if aws ssm wait command-executed \
                 --region ${{ secrets.AWS_REGION }} \
                 --command-id "$command_id" \
-                --instance-id "$instance_id"
+                --instance-id "$instance_id"; then
+                echo "Command completed successfully"
+              else
+                echo "Command failed, getting error details..."
+              fi
+              
+              # Get command status and output
+              echo "Getting command status..."
+              aws ssm get-command-invocation \
+                --region ${{ secrets.AWS_REGION }} \
+                --command-id "$command_id" \
+                --instance-id "$instance_id" \
+                --query "Status" \
+                --output text
               
               # Get command output
               echo "Getting command output..."
@@ -101,6 +114,7 @@ jobs:
                 --output text
               
               # Get command error output
+              echo "Getting command error output..."
               aws ssm get-command-invocation \
                 --region ${{ secrets.AWS_REGION }} \
                 --command-id "$command_id" \
