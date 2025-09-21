@@ -56,10 +56,19 @@ jobs:
                   "    env_file:",
                   "      - .env",
                   "DOCKEREOF",
+                  "echo \"Logging into ECR...\"",
                   "aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com",
+                  "echo \"Pulling latest Docker image...\"",
                   "docker compose -f docker-compose.prod.yml pull api",
+                  "echo \"Running database migrations...\"",
                   "docker compose -f docker-compose.prod.yml run --rm api bundle exec rails db:migrate",
-                  "docker compose -f docker-compose.prod.yml up -d --remove-orphans api"
+                  "echo \"Starting application...\"",
+                  "docker compose -f docker-compose.prod.yml up -d --remove-orphans api",
+                  "echo \"Checking application status...\"",
+                  "docker compose -f docker-compose.prod.yml ps",
+                  "echo \"Testing health check...\"",
+                  "sleep 10",
+                  "curl -f http://localhost:3000/health || echo \"Health check failed\""
                 ]' \
                 --timeout-seconds 600
             fi
