@@ -12,7 +12,15 @@ jobs:
   test-backend:
     name: Test Backend
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && contains(github.event.pull_request.changed_files, 'backend/'))
+    if: |
+      github.event_name == 'push' || 
+      (github.event_name == 'pull_request' && (
+        contains(github.event.pull_request.changed_files, 'backend/') ||
+        contains(github.event.pull_request.changed_files, 'frontend/') ||
+        contains(github.event.pull_request.changed_files, '.github/workflows/') ||
+        contains(github.event.pull_request.changed_files, 'docker-compose') ||
+        contains(github.event.pull_request.changed_files, 'Dockerfile')
+      ))
 
     services:
       db:
@@ -96,7 +104,15 @@ jobs:
   test-frontend:
     name: Test Frontend
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && contains(github.event.pull_request.changed_files, 'frontend/'))
+    if: |
+      github.event_name == 'push' || 
+      (github.event_name == 'pull_request' && (
+        contains(github.event.pull_request.changed_files, 'frontend/') ||
+        contains(github.event.pull_request.changed_files, 'backend/') ||
+        contains(github.event.pull_request.changed_files, '.github/workflows/') ||
+        contains(github.event.pull_request.changed_files, 'docker-compose') ||
+        contains(github.event.pull_request.changed_files, 'Dockerfile')
+      ))
 
     steps:
       - name: Checkout repository
