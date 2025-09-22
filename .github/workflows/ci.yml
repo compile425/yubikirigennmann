@@ -84,10 +84,12 @@ jobs:
         run: |
           if [ -x bin/rspec ]; then
             # RSpecの並列実行を設定
+            echo "Running RSpec tests in parallel..."
             bin/rspec --format progress --format RspecJunitFormatter --out rspec.xml --parallel --workers 4
           else
-            # Rails testの並列実行
-            bin/rails test --parallel
+            # Rails testの実行（並列実行は環境変数で制御）
+            echo "Running Rails tests..."
+            bin/rails test --verbose
           fi
 
       - name: Upload test results
