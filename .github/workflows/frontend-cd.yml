@@ -5,6 +5,7 @@ on:
     workflows: ["CI - Run Tests and Build Images"]
     types: [completed]
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   deploy-frontend:
