@@ -52,7 +52,18 @@ jobs:
                   "export HOME=/home/ec2-user",
                   "export PATH=/usr/local/bin:/usr/bin:/bin",
                   "cd /home/ec2-user/yubikirigennmann",
+                  "git config --global --add safe.directory /home/ec2-user/yubikirigennmann",
+                  "git config --global user.name 'EC2 Deploy'",
+                  "git config --global user.email 'deploy@ec2.local'",
+                  "echo 'Fetching latest changes...'",
+                  "git fetch origin main",
+                  "echo 'Resetting to latest main branch...'",
+                  "git reset --hard origin/main",
+                  "echo 'Checking if deploy script exists...'",
+                  "if [ ! -f '.github/scripts/deploy.sh' ]; then echo 'Deploy script not found!'; exit 1; fi",
+                  "echo 'Making deploy script executable...'",
                   "chmod +x .github/scripts/deploy.sh",
+                  "echo 'Running deploy script...'",
                   ".github/scripts/deploy.sh '${{ env.DOT_ENV_ESCAPED }}' '${{ secrets.AWS_ACCOUNT_ID }}' '${{ secrets.AWS_REGION }}' '${{ secrets.ECR_API_REPOSITORY }}'"
               ]
           }
