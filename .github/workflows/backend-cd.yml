@@ -1,12 +1,6 @@
 name: CD - Deploy Backend to Production
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'backend/**'
-      - '.github/workflows/cd.yml'
-      - '.github/workflows/backend-cd.yml'
   workflow_run:
     workflows: ["CI - Run Tests and Build Images"]
     types: [completed]
@@ -16,7 +10,7 @@ jobs:
   deploy:
     name: Build and Deploy to EC2 via SSM
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'push' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     permissions:
       id-token: write
       contents: read
