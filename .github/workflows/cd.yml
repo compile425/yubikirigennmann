@@ -51,6 +51,7 @@ jobs:
               "commands": [
                   "set -euo pipefail",
                   "cd /home/ec2-user/yubikirigennmann",
+                  "git config --global --add safe.directory /home/ec2-user/yubikirigennmann",
                   "git pull origin main",
                   "echo '$(cat /tmp/env_base64)' | base64 -d > .env",
                   "echo '$(cat /tmp/docker_compose_base64)' | base64 -d > docker-compose.prod.yml",
