@@ -35,15 +35,15 @@ jobs:
             if [ -n "$instance_id" ]; then
               echo "--- Deploying to instance: $instance_id ---"
 
-              # Use base64 encoding to avoid JSON escaping issues
-              echo "${{ secrets.DOT_ENV_PRODUCTION }}" | base64 -w 0 > /tmp/env_base64
+              # Create files directly without base64 encoding
+              echo "${{ secrets.DOT_ENV_PRODUCTION }}" > /tmp/env_content
               echo "services:
             api:
               image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_API_REPOSITORY }}:latest
               ports:
                 - \"3000:3000\"
               env_file:
-                - .env" | base64 -w 0 > /tmp/docker_compose_base64
+                - .env" > /tmp/docker_compose_content
 
               # Create SSM parameters JSON
               cat << 'SSMEOF' > /tmp/ssm_parameters.json
@@ -60,8 +60,14 @@ jobs:
                   "git fetch origin main",
                   "echo 'Resetting to latest main branch...'",
                   "git reset --hard origin/main",
-                  "echo '$(cat /tmp/env_base64)' | base64 -d > .env",
-                  "echo '$(cat /tmp/docker_compose_base64)' | base64 -d > docker-compose.prod.yml",
+                  "echo 'Creating .env file...'",
+                  "cat > .env << 'ENVEOF'",
+                  "$(cat /tmp/env_content)",
+                  "ENVEOF",
+                  "echo 'Creating docker-compose.prod.yml...'",
+                  "cat > docker-compose.prod.yml << 'DOCKEREOF'",
+                  "$(cat /tmp/docker_compose_content)",
+                  "DOCKEREOF",
                   "aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com",
                   "docker compose -f docker-compose.prod.yml pull api",
                   "docker compose -f docker-compose.prod.yml run --rm api bundle exec rails db:migrate",
