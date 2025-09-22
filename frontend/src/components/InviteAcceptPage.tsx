@@ -42,9 +42,7 @@ const InviteAcceptPage = () => {
     if (!token) return;
 
     try {
-      const response = await axios.get(
-        `${API_BASE_URL}/invite/${token}`
-      );
+      const response = await axios.get(`${API_BASE_URL}/invite/${token}`);
       if (response.data.message === 'パートナーシップが作成されました') {
         alert('パートナーシップが作成されました！');
         navigate('/');

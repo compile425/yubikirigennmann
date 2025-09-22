@@ -65,7 +65,10 @@ const RegisterForm = ({
         requestData.invitation_token = invitationToken;
       }
 
-      const response = await axios.post(`${API_BASE_URL}/register`, requestData);
+      const response = await axios.post(
+        `${API_BASE_URL}/register`,
+        requestData
+      );
 
       console.log('Registration response:', response.data);
       setToken(response.data.token);
