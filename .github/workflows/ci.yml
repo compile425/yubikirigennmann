@@ -71,6 +71,7 @@ jobs:
         run: |
           bin/rails db:create
           bin/rails db:migrate
+          bin/rails db:seed
 
       - name: Run tests
         working-directory: backend
@@ -79,12 +80,26 @@ jobs:
           DB_HOST: 127.0.0.1
           MYSQL_ROOT_PASSWORD: password
           DATABASE_URL: mysql2://root:password@127.0.0.1:3306/myapp_test
+          PARALLEL_WORKERS: 4
         run: |
           if [ -x bin/rspec ]; then
-            bin/rspec
+            # RSpecの並列実行を設定
+            bin/rspec --format progress --format RspecJunitFormatter --out rspec.xml --parallel --workers 4
           else
-            bin/rails test
+            # Rails testの並列実行
+            bin/rails test --parallel
           fi
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ github.run_id }}
+          path: |
+            ${{ github.workspace }}/backend/rspec.xml
+            ${{ github.workspace }}/tmp/screenshots
+          retention-days: 7
+          if-no-files-found: ignore
 
       - name: Keep screenshots from failed system tests
         uses: actions/upload-artifact@v4
