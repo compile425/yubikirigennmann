@@ -9,15 +9,14 @@ on:
       - main
 
 jobs:
-  test:
-    name: Run RSpec & Jest Tests
+  test-backend:
+    name: Test Backend
     runs-on: ubuntu-latest
-    outputs:
-      should-build: ${{ steps.changes.outputs.backend || steps.changes.outputs.frontend }}
+    if: github.event_name == 'push' || contains(github.event.pull_request.changed_files, 'backend/')
 
     services:
       db:
-        image: mysql:8.4
+        image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: password
           MYSQL_DATABASE: myapp_test
@@ -25,29 +24,27 @@ jobs:
           - 3306:3306
         options: >-
           --health-cmd "mysqladmin ping -h 127.0.0.1 -u root --password=password"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 3
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Check for changes
-        uses: dorny/paths-filter@v2
-        id: changes
-        with:
-          filters: |
-            backend:
-              - 'backend/**'
-            frontend:
-              - 'frontend/**'
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: .ruby-version
           bundler-cache: true
+
+      - name: Cache system packages
+        uses: actions/cache@v4
+        with:
+          path: /var/cache/apt
+          key: ${{ runner.os }}-apt-${{ hashFiles('**/Dockerfile') }}
+          restore-keys: |
+            ${{ runner.os }}-apt-
 
       - name: Install system deps for gems
         run: |
@@ -91,15 +88,44 @@ jobs:
         uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: screenshots
+          name: screenshots-${{ github.run_id }}
           path: ${{ github.workspace }}/tmp/screenshots
+          retention-days: 3
           if-no-files-found: ignore
+
+  test-frontend:
+    name: Test Frontend
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || contains(github.event.pull_request.changed_files, 'frontend/')
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'yarn'
+          cache-dependency-path: frontend/yarn.lock
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: yarn install --frozen-lockfile
+
+      - name: Run linting
+        working-directory: frontend
+        run: yarn lint
+
+      - name: Run tests
+        working-directory: frontend
+        run: yarn test --coverage --watchAll=false
 
   build-and-push:
     name: Build and Push Docker Images
     runs-on: ubuntu-latest
-    needs: test
-    if: github.ref == 'refs/heads/main'
+    needs: [test-backend, test-frontend]
+    if: github.ref == 'refs/heads/main' && (needs.test-backend.result == 'success' || needs.test-frontend.result == 'success')
     permissions:
       id-token: write
       contents: read
@@ -109,6 +135,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -122,7 +151,10 @@ jobs:
 
       - name: Build and push backend image
         id: build
-        run: |
-          cd backend
-          docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_API_REPOSITORY }}:latest .
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_API_REPOSITORY }}:latest
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          push: true
+          tags: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_API_REPOSITORY }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
