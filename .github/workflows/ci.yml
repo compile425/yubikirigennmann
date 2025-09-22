@@ -58,7 +58,6 @@ jobs:
 
       - name: Install system deps for gems
         run: |
-          # Check if packages are already installed
           if ! dpkg -l | grep -q "build-essential\|libmysqlclient-dev"; then
             echo "Installing system dependencies..."
             sudo apt-get update
@@ -73,7 +72,6 @@ jobs:
         working-directory: backend
         run: |
           bundle config set path 'vendor/bundle'
-          # Check if gems are already installed
           if [ ! -f "vendor/bundle/.bundle/config" ] || [ "backend/Gemfile.lock" -nt "vendor/bundle/.bundle/config" ]; then
             echo "Installing gems..."
             bundle install --jobs 4 --retry 3
@@ -103,11 +101,9 @@ jobs:
           PARALLEL_WORKERS: 4
         run: |
           if [ -x bin/rspec ]; then
-            # RSpecの並列実行を設定
             echo "Running RSpec tests in parallel..."
             bin/rspec --format progress --format RspecJunitFormatter --out rspec.xml --parallel --workers 4
           else
-            # Rails testの実行（並列実行は環境変数で制御）
             echo "Running Rails tests..."
             bin/rails test --verbose
           fi
