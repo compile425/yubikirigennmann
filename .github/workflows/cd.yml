@@ -27,6 +27,12 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: Prepare SSM parameters
+        run: |
+          # Escape environment variables for JSON
+          DOT_ENV_ESCAPED=$(echo "${{ secrets.DOT_ENV_PRODUCTION }}" | sed 's/\\/\\\\/g; s/"/\\"/g; s/$/\\n/' | tr -d '\n')
+          echo "Environment variables escaped successfully"
+
       - name: Deploy to EC2 instances
         run: |
           instance_ids=("${{ secrets.EC2_INSTANCE_ID_1 }}" "${{ secrets.EC2_INSTANCE_ID_2 }}")
@@ -35,15 +41,14 @@ jobs:
             if [ -n "$instance_id" ]; then
               echo "--- Deploying to instance: $instance_id ---"
 
-              # Files will be created directly on EC2
-
               # Create SSM parameters JSON
-              cat << 'SSMEOF' > /tmp/ssm_parameters.json
+              cat << SSMEOF > /tmp/ssm_parameters.json
           {
               "commands": [
                   "set -euo pipefail",
                   "export HOME=/home/ec2-user",
                   "export PATH=/usr/local/bin:/usr/bin:/bin",
+                  "export DOT_ENV_ESCAPED='$DOT_ENV_ESCAPED'",
                   "cd /home/ec2-user/yubikirigennmann",
                   "git config --global --add safe.directory /home/ec2-user/yubikirigennmann",
                   "git config --global user.name 'EC2 Deploy'",
@@ -53,7 +58,9 @@ jobs:
                   "echo 'Resetting to latest main branch...'",
                   "git reset --hard origin/main",
                   "echo 'Creating .env file...'",
-                  "cat > .env << 'ENVEOF'\\n${{ secrets.DOT_ENV_PRODUCTION }}\\nENVEOF",
+                  "cat > .env << 'ENVEOF'",
+                  "$DOT_ENV_ESCAPED",
+                  "ENVEOF",
                   "echo 'Verifying .env file...'",
                   "head -5 .env",
                   "echo 'Creating docker-compose.prod.yml...'",
