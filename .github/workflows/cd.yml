@@ -51,13 +51,9 @@ jobs:
                   'git config --global --add safe.directory /home/ec2-user/yubikirigennmann',
                   'git config --global user.name \"EC2 Deploy\"',
                   'git config --global user.email \"deploy@ec2.local\"',
-                  'echo \"Fetching latest changes...\"',
                   'git fetch origin main',
-                  'echo \"Resetting to latest main branch...\"',
                   'git reset --hard origin/main',
-                  'echo \"Creating .env file...\"',
                   'echo \"$DOT_ENV_BASE64\" | base64 -d > .env',
-                  'echo \"Creating docker-compose.prod.yml...\"',
                   'cat > docker-compose.prod.yml << \"EOF\"',
                   'services:',
                   '  api:',
@@ -67,26 +63,17 @@ jobs:
                   '    env_file:',
                   '      - .env',
                   'EOF',
-                  'echo \"Logging into ECR...\"',
                   'aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com',
-                  'echo \"Pulling latest image...\"',
                   'docker compose -f docker-compose.prod.yml pull api',
-                  'echo \"Running database migration...\"',
                   'docker compose -f docker-compose.prod.yml run --rm api bundle exec rails db:migrate',
-                  'echo \"Starting application...\"',
                   'docker compose -f docker-compose.prod.yml up -d --force-recreate --remove-orphans api',
-                  'echo \"Deployment completed. Checking status...\"',
-                  'sleep 5',
-                  'docker compose -f docker-compose.prod.yml ps',
-                  'echo \"Deployment successful!\"'
+                  'true'
                 ]" \
                 --timeout-seconds 1800 \
                 --query "Command.CommandId" \
                 --output text)
               
-              echo "Command ID: $command_id"
-              
-              echo "Waiting for command to complete..."
+              # Wait for completion
               aws ssm wait command-executed \
                 --region ${{ secrets.AWS_REGION }} \
                 --command-id "$command_id" \
@@ -96,12 +83,5 @@ jobs:
                   exit 1 \
                 )
               
-              echo "Command completed successfully. Fetching output..."
-              aws ssm get-command-invocation \
-                --region ${{ secrets.AWS_REGION }} \
-                --command-id "$command_id" \
-                --instance-id "$instance_id" \
-                --query "StandardOutputContent" \
-                --output text
             fi
           done
