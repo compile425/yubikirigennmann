@@ -6,7 +6,7 @@ export HOME=/home/ec2-user
 export PATH=/usr/local/bin:/usr/bin:/bin
 
 # 引数から環境変数を取得
-DOT_ENV_CONTENT="$1"
+DOT_ENV_BASE64="$1"
 AWS_ACCOUNT_ID="$2"
 AWS_REGION="$3"
 ECR_REPOSITORY="$4"
@@ -24,10 +24,11 @@ git fetch origin main
 echo "Resetting to latest main branch..."
 git reset --hard origin/main
 
-echo "Creating .env file..."
-cat > .env << ENVEOF
-$DOT_ENV_CONTENT
-ENVEOF
+echo "Creating .env file from Base64 encoded content..."
+echo "$DOT_ENV_BASE64" | base64 -d > .env
+
+echo "Verifying .env file content..."
+head -5 .env
 
 echo "Creating docker-compose.prod.yml..."
 cat > docker-compose.prod.yml << DOCKEREOF
@@ -39,6 +40,9 @@ services:
     env_file:
       - .env
 DOCKEREOF
+
+echo "Verifying docker-compose.prod.yml..."
+head -5 docker-compose.prod.yml
 
 echo "Logging into ECR..."
 aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
