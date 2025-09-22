@@ -25,12 +25,12 @@ echo "Resetting to latest main branch..."
 git reset --hard origin/main
 
 echo "Creating .env file..."
-cat > .env << 'ENVEOF'
+cat > .env << ENVEOF
 $DOT_ENV_CONTENT
 ENVEOF
 
 echo "Creating docker-compose.prod.yml..."
-cat > docker-compose.prod.yml << 'DOCKEREOF'
+cat > docker-compose.prod.yml << DOCKEREOF
 services:
   api:
     image: $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:latest
