@@ -50,15 +50,27 @@ jobs:
           {
               "commands": [
                   "set -euo pipefail",
+                  "export HOME=/home/ec2-user",
+                  "export PATH=/usr/local/bin:/usr/bin:/bin",
                   "cd /home/ec2-user/yubikirigennmann",
                   "git config --global --add safe.directory /home/ec2-user/yubikirigennmann",
-                  "git pull origin main",
+                  "git config --global user.name 'EC2 Deploy'",
+                  "git config --global user.email 'deploy@ec2.local'",
+                  "echo 'Fetching latest changes...'",
+                  "git fetch origin main",
+                  "echo 'Resetting to latest main branch...'",
+                  "git reset --hard origin/main",
                   "echo '$(cat /tmp/env_base64)' | base64 -d > .env",
                   "echo '$(cat /tmp/docker_compose_base64)' | base64 -d > docker-compose.prod.yml",
                   "aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com",
                   "docker compose -f docker-compose.prod.yml pull api",
                   "docker compose -f docker-compose.prod.yml run --rm api bundle exec rails db:migrate",
-                  "docker compose -f docker-compose.prod.yml up -d --force-recreate --remove-orphans api"
+                  "docker compose -f docker-compose.prod.yml up -d --force-recreate --remove-orphans api",
+                  "echo 'Deployment completed. Checking application status...'",
+                  "sleep 10",
+                  "docker compose -f docker-compose.prod.yml ps",
+                  "echo 'Testing health check...'",
+                  "curl -f http://localhost:3000/health || echo 'Health check failed'"
               ]
           }
           SSMEOF
