@@ -35,20 +35,7 @@ jobs:
             if [ -n "$instance_id" ]; then
               echo "--- Deploying to instance: $instance_id ---"
 
-              # Create files directly without base64 encoding
-              cat << 'ENVEOF' > /tmp/env_content
-          ${{ secrets.DOT_ENV_PRODUCTION }}
-          ENVEOF
-              
-              cat << 'DOCKEREOF' > /tmp/docker_compose_content
-          services:
-            api:
-              image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_API_REPOSITORY }}:latest
-              ports:
-                - "3000:3000"
-              env_file:
-                - .env
-          DOCKEREOF
+              # Files will be created directly on EC2
 
               # Create SSM parameters JSON
               cat << 'SSMEOF' > /tmp/ssm_parameters.json
@@ -66,11 +53,21 @@ jobs:
                   "echo 'Resetting to latest main branch...'",
                   "git reset --hard origin/main",
                   "echo 'Creating .env file...'",
-                  "cat /tmp/env_content > .env",
+                  "cat > .env << 'ENVEOF'",
+                  "${{ secrets.DOT_ENV_PRODUCTION }}",
+                  "ENVEOF",
                   "echo 'Verifying .env file...'",
                   "head -5 .env",
                   "echo 'Creating docker-compose.prod.yml...'",
-                  "cat /tmp/docker_compose_content > docker-compose.prod.yml",
+                  "cat > docker-compose.prod.yml << 'DOCKEREOF'",
+                  "services:",
+                  "  api:",
+                  "    image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_API_REPOSITORY }}:latest",
+                  "    ports:",
+                  "      - \"3000:3000\"",
+                  "    env_file:",
+                  "      - .env",
+                  "DOCKEREOF",
                   "echo 'Verifying docker-compose.prod.yml...'",
                   "head -5 docker-compose.prod.yml",
                   "aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com",
