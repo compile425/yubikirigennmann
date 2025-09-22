@@ -51,42 +51,9 @@ jobs:
                   "set -euo pipefail",
                   "export HOME=/home/ec2-user",
                   "export PATH=/usr/local/bin:/usr/bin:/bin",
-                  "export DOT_ENV_ESCAPED='${{ env.DOT_ENV_ESCAPED }}'",
                   "cd /home/ec2-user/yubikirigennmann",
-                  "git config --global --add safe.directory /home/ec2-user/yubikirigennmann",
-                  "git config --global user.name 'EC2 Deploy'",
-                  "git config --global user.email 'deploy@ec2.local'",
-                  "echo 'Fetching latest changes...'",
-                  "git fetch origin main",
-                  "echo 'Resetting to latest main branch...'",
-                  "git reset --hard origin/main",
-                  "echo 'Creating .env file...'",
-                  "cat > .env << 'ENVEOF'",
-                  "$DOT_ENV_ESCAPED",
-                  "ENVEOF",
-                  "echo 'Verifying .env file...'",
-                  "head -5 .env",
-                  "echo 'Creating docker-compose.prod.yml...'",
-                  "cat > docker-compose.prod.yml << 'DOCKEREOF'",
-                  "services:",
-                  "  api:",
-                  "    image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_API_REPOSITORY }}:latest",
-                  "    ports:",
-                  "      - \"3000:3000\"",
-                  "    env_file:",
-                  "      - .env",
-                  "DOCKEREOF",
-                  "echo 'Verifying docker-compose.prod.yml...'",
-                  "head -5 docker-compose.prod.yml",
-                  "aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com",
-                  "docker compose -f docker-compose.prod.yml pull api",
-                  "docker compose -f docker-compose.prod.yml run --rm api bundle exec rails db:migrate",
-                  "docker compose -f docker-compose.prod.yml up -d --force-recreate --remove-orphans api",
-                  "echo 'Deployment completed. Checking application status...'",
-                  "sleep 10",
-                  "docker compose -f docker-compose.prod.yml ps",
-                  "echo 'Testing health check...'",
-                  "curl -f http://localhost:3000/health || echo 'Health check failed'"
+                  "chmod +x .github/scripts/deploy.sh",
+                  ".github/scripts/deploy.sh '${{ env.DOT_ENV_ESCAPED }}' '${{ secrets.AWS_ACCOUNT_ID }}' '${{ secrets.AWS_REGION }}' '${{ secrets.ECR_API_REPOSITORY }}'"
               ]
           }
           SSMEOF
@@ -96,7 +63,7 @@ jobs:
                 --instance-ids "$instance_id" \
                 --document-name "AWS-RunShellScript" \
                 --parameters file:///tmp/ssm_parameters.json \
-                --timeout-seconds 600 \
+                --timeout-seconds 1200 \
                 --query "Command.CommandId" \
                 --output text)
               
