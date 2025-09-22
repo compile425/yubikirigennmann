@@ -27,15 +27,6 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Prepare SSM parameters
-        run: |
-          # Base64エンコードで環境変数を安全に転送
-          DOT_ENV_BASE64=$(echo "${{ secrets.DOT_ENV_PRODUCTION }}" | base64 -w 0)
-          echo "Environment variables encoded successfully"
-          echo "DOT_ENV_BASE64<<EOF" >> $GITHUB_ENV
-          echo "$DOT_ENV_BASE64" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
-
       - name: Deploy to EC2 instances
         run: |
           instance_ids=("${{ secrets.EC2_INSTANCE_ID_1 }}" "${{ secrets.EC2_INSTANCE_ID_2 }}")
@@ -44,37 +35,52 @@ jobs:
             if [ -n "$instance_id" ]; then
               echo "--- Deploying to instance: $instance_id ---"
 
-              # Create SSM parameters JSON
-              cat << SSMEOF > /tmp/ssm_parameters.json
-          {
-              "commands": [
-                  "set -euo pipefail",
-                  "export HOME=/home/ec2-user",
-                  "export PATH=/usr/local/bin:/usr/bin:/bin",
-                  "cd /home/ec2-user/yubikirigennmann",
-                  "git config --global --add safe.directory /home/ec2-user/yubikirigennmann",
-                  "git config --global user.name 'EC2 Deploy'",
-                  "git config --global user.email 'deploy@ec2.local'",
-                  "echo 'Fetching latest changes...'",
-                  "git fetch origin main",
-                  "echo 'Resetting to latest main branch...'",
-                  "git reset --hard origin/main",
-                  "echo 'Checking if deploy script exists...'",
-                  "if [ ! -f '.github/scripts/deploy.sh' ]; then echo 'Deploy script not found!'; exit 1; fi",
-                  "echo 'Making deploy script executable...'",
-                  "chmod +x .github/scripts/deploy.sh",
-                  "echo 'Running deploy script...'",
-                  ".github/scripts/deploy.sh '${{ env.DOT_ENV_BASE64 }}' '${{ secrets.AWS_ACCOUNT_ID }}' '${{ secrets.AWS_REGION }}' '${{ secrets.ECR_API_REPOSITORY }}'"
-              ]
-          }
-          SSMEOF
+              # 環境変数をBase64エンコード
+              DOT_ENV_BASE64=$(echo "${{ secrets.DOT_ENV_PRODUCTION }}" | base64 -w 0)
 
+              # SSMコマンドを直接実行（スクリプト分離なし）
               command_id=$(aws ssm send-command \
                 --region ${{ secrets.AWS_REGION }} \
                 --instance-ids "$instance_id" \
                 --document-name "AWS-RunShellScript" \
-                --parameters file:///tmp/ssm_parameters.json \
-                --timeout-seconds 1200 \
+                --parameters "commands=[
+                  'set -euo pipefail',
+                  'export HOME=/home/ec2-user',
+                  'export PATH=/usr/local/bin:/usr/bin:/bin',
+                  'cd /home/ec2-user/yubikirigennmann',
+                  'git config --global --add safe.directory /home/ec2-user/yubikirigennmann',
+                  'git config --global user.name \"EC2 Deploy\"',
+                  'git config --global user.email \"deploy@ec2.local\"',
+                  'echo \"Fetching latest changes...\"',
+                  'git fetch origin main',
+                  'echo \"Resetting to latest main branch...\"',
+                  'git reset --hard origin/main',
+                  'echo \"Creating .env file...\"',
+                  'echo \"$DOT_ENV_BASE64\" | base64 -d > .env',
+                  'echo \"Creating docker-compose.prod.yml...\"',
+                  'cat > docker-compose.prod.yml << \"EOF\"',
+                  'services:',
+                  '  api:',
+                  '    image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_API_REPOSITORY }}:latest',
+                  '    ports:',
+                  '      - \"3000:3000\"',
+                  '    env_file:',
+                  '      - .env',
+                  'EOF',
+                  'echo \"Logging into ECR...\"',
+                  'aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com',
+                  'echo \"Pulling latest image...\"',
+                  'docker compose -f docker-compose.prod.yml pull api',
+                  'echo \"Running database migration...\"',
+                  'docker compose -f docker-compose.prod.yml run --rm api bundle exec rails db:migrate',
+                  'echo \"Starting application...\"',
+                  'docker compose -f docker-compose.prod.yml up -d --force-recreate --remove-orphans api',
+                  'echo \"Deployment completed. Checking status...\"',
+                  'sleep 5',
+                  'docker compose -f docker-compose.prod.yml ps',
+                  'echo \"Deployment successful!\"'
+                ]" \
+                --timeout-seconds 1800 \
                 --query "Command.CommandId" \
                 --output text)
               
