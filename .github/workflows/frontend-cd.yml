@@ -8,12 +8,29 @@ on:
   workflow_dispatch:
 
 jobs:
+  gate:
+    name: Evaluate conditions
+    runs-on: ubuntu-latest
+    outputs:
+      should_run: ${{ steps.check.outputs.should_run }}
+    steps:
+      - id: check
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_run" ] && [ "${{ github.event.workflow_run.conclusion }}" = "success" ]; then
+            echo "should_run=true" >> $GITHUB_OUTPUT
+          else
+            echo "should_run=false" >> $GITHUB_OUTPUT
+          fi
+
   deploy-frontend:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    needs: gate
+    if: ${{ needs.gate.outputs.should_run == 'true' }}
     runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: read
+    env:
+      CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
 
     steps:
       - name: Checkout repository
@@ -50,8 +67,8 @@ jobs:
           aws s3 cp ./frontend/dist/index.html s3://${{ secrets.S3_BUCKET_FRONTEND }}/index.html --cache-control no-cache,private,max-age=0,must-revalidate --content-type text/html
 
       - name: Invalidate CloudFront
-        if: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID != '' }}
+        if: ${{ env.CLOUDFRONT_DISTRIBUTION_ID != '' }}
         run: |
-          aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+          aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
 
 
