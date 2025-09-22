@@ -1,6 +1,11 @@
 name: CD - Deploy Frontend to S3/CloudFront
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend-cd.yml'
   workflow_run:
     workflows: ["CI - Run Tests and Build Images"]
     types: [completed]
@@ -8,7 +13,9 @@ on:
 
 jobs:
   deploy-frontend:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: |
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') ||
+      (github.event_name == 'push' && github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
     permissions:
       id-token: write
