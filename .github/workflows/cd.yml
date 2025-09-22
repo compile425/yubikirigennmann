@@ -32,6 +32,9 @@ jobs:
           # Escape environment variables for JSON
           DOT_ENV_ESCAPED=$(echo "${{ secrets.DOT_ENV_PRODUCTION }}" | sed 's/\\/\\\\/g; s/"/\\"/g; s/$/\\n/' | tr -d '\n')
           echo "Environment variables escaped successfully"
+          echo "DOT_ENV_ESCAPED<<EOF" >> $GITHUB_ENV
+          echo "$DOT_ENV_ESCAPED" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
       - name: Deploy to EC2 instances
         run: |
@@ -48,7 +51,7 @@ jobs:
                   "set -euo pipefail",
                   "export HOME=/home/ec2-user",
                   "export PATH=/usr/local/bin:/usr/bin:/bin",
-                  "export DOT_ENV_ESCAPED='$DOT_ENV_ESCAPED'",
+                  "export DOT_ENV_ESCAPED='${{ env.DOT_ENV_ESCAPED }}'",
                   "cd /home/ec2-user/yubikirigennmann",
                   "git config --global --add safe.directory /home/ec2-user/yubikirigennmann",
                   "git config --global user.name 'EC2 Deploy'",
