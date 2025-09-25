@@ -4,7 +4,7 @@ Rails.application.routes.draw do
     mount LetterOpenerWeb::Engine, at: "/letter_opener"
   end
 
-  # Health check endpoint for ALB
+  # ALB用のヘルスチェックのためAPIルート外
   get "/health", to: "health#show"
 
   namespace :api do
