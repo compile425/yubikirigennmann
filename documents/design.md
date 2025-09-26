@@ -309,3 +309,5 @@ graph TD
     %% フロントエンドとバックエンドの連携
     F_API -- "HTTPリクエスト / JSONレスポンス" --> B_Router
 ```
+# インフラ構成図
+<img width="579" height="639" alt="Image" src="https://github.com/user-attachments/assets/9783cebd-f849-40ba-8915-ec38da1facb0" />
