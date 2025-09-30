@@ -102,7 +102,7 @@ const Sidebar = ({ onDissolvePartnership }: SidebarProps) => {
             過去の評価
           </Link>
           <Link
-            to="/"
+            to="/hitokoto"
             className="yubi-sidebar__link"
             onClick={handleNavLinkClick}
           >
