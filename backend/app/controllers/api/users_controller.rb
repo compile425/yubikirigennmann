@@ -17,7 +17,8 @@ class Api::UsersController < ApplicationController
               current_user: {
                 id: user.id,
                 name: user.name,
-                email: user.email
+                email: user.email,
+                is_inviter: partnership ? (partnership.user_id == user.id) : nil
               },
               partner: partner ? {
                 id: partner.id,
