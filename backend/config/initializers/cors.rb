@@ -2,7 +2,7 @@
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   if Rails.env.development?
     allow do
-      origins %r{\Ahttp://localhost:\d+\z}, %r{\Ahttp://127\.0\.0\.1:\d+\z}
+      origins /^http:\/\/localhost:\d+/, /^http:\/\/127\.0\.0\.1:\d+/
       resource "*", headers: :any,
                methods: [:get, :post, :put, :patch, :delete, :options, :head],
                credentials: true
