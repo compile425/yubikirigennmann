@@ -25,7 +25,6 @@ const Dashboard = () => {
   const [promiseTypeToAdd, setPromiseTypeToAdd] = useState<
     'my_promise' | 'our_promise' | 'partner_promise' | ''
   >('');
-  const [isSendingEmail, setIsSendingEmail] = useState<boolean>(false);
 
   const fetchPromises = useCallback(async (): Promise<void> => {
     if (!token) return;
@@ -73,73 +72,6 @@ const Dashboard = () => {
 
   const handlePromiseUpdated = async (): Promise<void> => {
     await fetchPromises();
-  };
-
-  const handleSendEvaluationEmail = async (): Promise<void> => {
-    if (isSendingEmail) return;
-
-    setIsSendingEmail(true);
-    try {
-      const response = await axios.post(`${API_BASE_URL}/evaluation_emails`);
-      alert('評価メールを送信しました！');
-      console.log('送信結果:', response.data);
-    } catch (error) {
-      console.error('評価メールの送信に失敗しました:', error);
-
-      if (axios.isAxiosError(error) && error.response) {
-        const errorData = error.response.data;
-        console.log('エラー詳細:', errorData);
-
-        let errorMessage = '評価メールの送信に失敗しました。';
-        if (errorData.error) {
-          errorMessage += `\n\n理由: ${errorData.error}`;
-        }
-        if (errorData.details) {
-          errorMessage += `\n\n詳細: ${errorData.details}`;
-        }
-        if (errorData.user_id) {
-          errorMessage += `\n\nユーザーID: ${errorData.user_id}`;
-        }
-        if (errorData.partnership_id) {
-          errorMessage += `\n\nパートナーシップID: ${errorData.partnership_id}`;
-        }
-        if (errorData.available_promises) {
-          errorMessage += `\n\n利用可能な約束: ${JSON.stringify(errorData.available_promises)}`;
-        }
-
-        alert(errorMessage);
-      } else {
-        alert('評価メールの送信に失敗しました。');
-      }
-    } finally {
-      setIsSendingEmail(false);
-    }
-  };
-
-  const handleSendDueDateEvaluations = async (): Promise<void> => {
-    try {
-      const response = await axios.post(
-        `${API_BASE_URL}/scheduled_tasks/send_due_date_evaluations`
-      );
-      alert('期日が来た約束の評価メールを送信しました！');
-      console.log('送信結果:', response.data);
-    } catch (error) {
-      console.error('期日評価メールの送信に失敗しました:', error);
-      alert('期日評価メールの送信に失敗しました。');
-    }
-  };
-
-  const handleSendWeeklyEvaluations = async (): Promise<void> => {
-    try {
-      const response = await axios.post(
-        `${API_BASE_URL}/scheduled_tasks/send_weekly_our_promises_evaluation`
-      );
-      alert('毎週の二人の約束評価メールを送信しました！');
-      console.log('送信結果:', response.data);
-    } catch (error) {
-      console.error('毎週評価メールの送信に失敗しました:', error);
-      alert('毎週評価メールの送信に失敗しました。');
-    }
   };
 
   const handleOpenEvaluationModal = (promise: PromiseItem): void => {
@@ -202,30 +134,6 @@ const Dashboard = () => {
             onEdit={handleEditPromise}
             onDelete={handleDeletePromise}
           />
-        </div>
-
-        <div className="yubi-evaluation-email-section">
-          <button
-            onClick={handleSendEvaluationEmail}
-            disabled={isSendingEmail}
-            className="yubi-button yubi-button--primary yubi-button--email"
-          >
-            {isSendingEmail ? '送信中...' : '評価メールを送信'}
-          </button>
-          <button
-            onClick={handleSendDueDateEvaluations}
-            className="yubi-button yubi-button--primary yubi-button--email"
-            style={{ marginLeft: '10px' }}
-          >
-            期日評価メールを送信
-          </button>
-          <button
-            onClick={handleSendWeeklyEvaluations}
-            className="yubi-button yubi-button--primary yubi-button--email"
-            style={{ marginLeft: '10px' }}
-          >
-            毎週評価メールを送信
-          </button>
         </div>
       </main>
 

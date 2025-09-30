@@ -13,6 +13,8 @@ export interface User {
   id: number;
   name: string;
   email: string;
+  avatar_url?: string;
+  is_inviter?: boolean;
 }
 
 export interface EvaluatedPromise {

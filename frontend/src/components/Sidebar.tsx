@@ -56,7 +56,26 @@ const Sidebar = ({ onDissolvePartnership }: SidebarProps) => {
         <div className="yubi-sidebar__header">
           <div className="yubi-sidebar__user-icon">
             <div className="yubi-sidebar__user-avatar">
-              {currentUser?.name?.charAt(0) || 'U'}
+              {currentUser?.avatar_url ? (
+                <img
+                  src={currentUser.avatar_url}
+                  alt={currentUser.name}
+                  className="yubi-sidebar__user-avatar-img"
+                />
+              ) : (
+                <img
+                  src={
+                    currentUser?.is_inviter
+                      ? '/icon_user.png'
+                      : '/icon_partner.png'
+                  }
+                  alt="デフォルトアイコン"
+                  className="yubi-sidebar__user-avatar-img"
+                />
+              )}
+            </div>
+            <div className="yubi-sidebar__user-name">
+              {currentUser?.name || 'ゲストユーザー'}
             </div>
           </div>
         </div>
