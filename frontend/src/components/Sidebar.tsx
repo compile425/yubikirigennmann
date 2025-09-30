@@ -88,7 +88,7 @@ const Sidebar = ({ onDissolvePartnership }: SidebarProps) => {
             約束一覧
           </Link>
           <Link
-            to="/"
+            to="/record"
             className="yubi-sidebar__link"
             onClick={handleNavLinkClick}
           >
