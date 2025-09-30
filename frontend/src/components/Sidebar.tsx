@@ -109,7 +109,7 @@ const Sidebar = ({ onDissolvePartnership }: SidebarProps) => {
             ちょっと一言
           </Link>
           <Link
-            to="/"
+            to="/about"
             className="yubi-sidebar__link"
             onClick={handleNavLinkClick}
           >
