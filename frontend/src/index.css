@@ -230,11 +230,11 @@ body.page-about {
   justify-content: space-between;
   align-items: center;
   font-weight: 800;
-  font-size: 22px;
+  font-size: 18px;
   color: #fff;
   background-color: var(--heading-color);
   margin: 0 0 -10px 0;
-  padding: 8px 15px 8px 25px;
+  padding: 6px 15px 6px 20px;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   position: relative;
@@ -802,25 +802,32 @@ body.page-about {
 
 /*11. 「ちょっと一言」画面のスタイル*/
 .yubi-hitokoto-container {
-  max-width: 680px;
+  max-width: 600px;
   margin: 0 auto;
 }
 
+.yubi-hitokoto-container .yubi-column__header {
+  font-size: 16px;
+  padding: 10px 10px 10px 10px;
+  height: 60px;
+  justify-content: center;
+}
+
 .yubi-form-section {
-  margin-bottom: 50px;
+  margin-bottom: 70px;
 }
 
 .yubi-form-panel {
   background-color: var(--panel-bg);
   border-radius: 12px;
-  padding: 30px;
+  padding: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
 }
 
 .yubi-form-panel textarea {
   width: 100%;
-  height: 25vh;
+  height: 120px;
   border: 2px solid #ddd;
   border-radius: 12px;
   padding: 15px;
@@ -828,7 +835,8 @@ body.page-about {
   font-family: var(--font-rounded);
   color: var(--text-color-brown);
   resize: vertical;
-  margin-bottom: 20px;
+  margin-top: 30px;
+  margin-bottom: 15px;
   box-sizing: border-box;
 }
 
@@ -840,13 +848,13 @@ body.page-about {
 
 .yubi-send-button {
   display: inline-block;
-  padding: 15px;
-  margin-top: 10px;
+  padding: 12px 24px;
+  margin-top: 5px;
   background-color: var(--heading-color);
   color: white;
   text-decoration: none;
   border-radius: 99px;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   text-align: center;
   border: none;
@@ -871,7 +879,7 @@ body.page-about {
 
 .yubi-received-messages .yubi-column__content {
   height: auto;
-  min-height: 30vh;
+  min-height: 200px;
 }
 
 .yubi-received-messages .yubi-card {

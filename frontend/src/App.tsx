@@ -5,6 +5,7 @@ import Dashboard from './components/Dashboard';
 import EvaluationPage from './components/EvaluationPage';
 import PastEvaluationsPage from './components/PastEvaluationsPage';
 import RecordPage from './components/RecordPage';
+import HitokotoPage from './components/HitokotoPage';
 import InviteAcceptPage from './components/InviteAcceptPage';
 import InvitePartnerPage from './components/InvitePartnerPage';
 import { useAuth } from './contexts/useAuth';
@@ -39,6 +40,10 @@ function App() {
         <Route
           path="/record"
           element={token ? <RecordPage /> : <LoginForm />}
+        />
+        <Route
+          path="/hitokoto"
+          element={token ? <HitokotoPage /> : <LoginForm />}
         />
         <Route path="*" element={token ? <Dashboard /> : <LoginForm />} />
       </Routes>
