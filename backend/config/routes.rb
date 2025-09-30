@@ -26,6 +26,9 @@ Rails.application.routes.draw do
     # パートナーシップ機能のルート
     delete "/partnerships/dissolve", to: "partnerships#dissolve"
 
+    # ちょっと一言のルート
+    resources :one_words, only: [:index, :create]
+
     # スケジュールタスク用のルーティング
     post "/scheduled_tasks/send_due_date_evaluations", to: "scheduled_tasks#send_due_date_evaluations"
     post "/scheduled_tasks/send_weekly_our_promises_evaluation", to: "scheduled_tasks#send_weekly_our_promises_evaluation"

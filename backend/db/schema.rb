@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_07_31_090421) do
+ActiveRecord::Schema[7.2].define(version: 2025_09_30_101101) do
   create_table "invitations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "inviter_id", null: false
     t.string "token", null: false
@@ -25,7 +25,11 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_31_090421) do
     t.text "content"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "sender_id", null: false
+    t.bigint "receiver_id", null: false
     t.index ["partnership_id"], name: "index_one_words_on_partnership_id"
+    t.index ["receiver_id"], name: "index_one_words_on_receiver_id"
+    t.index ["sender_id"], name: "index_one_words_on_sender_id"
   end
 
   create_table "one_words_reads", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -109,6 +113,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_31_090421) do
 
   add_foreign_key "invitations", "users", column: "inviter_id"
   add_foreign_key "one_words", "partnerships"
+  add_foreign_key "one_words", "users", column: "receiver_id"
+  add_foreign_key "one_words", "users", column: "sender_id"
   add_foreign_key "one_words_reads", "one_words"
   add_foreign_key "one_words_reads", "users"
   add_foreign_key "partnerships", "users"
