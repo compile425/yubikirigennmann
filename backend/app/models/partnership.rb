@@ -6,4 +6,12 @@ class Partnership < ApplicationRecord
   belongs_to :invitation, optional: true
   belongs_to :user, class_name: "User", foreign_key: "user_id"
   belongs_to :partner, class_name: "User", foreign_key: "partner_id"
+
+  def partner_of(user)
+    if user_id == user.id
+      partner
+    else
+      self.user
+    end
+  end
 end
