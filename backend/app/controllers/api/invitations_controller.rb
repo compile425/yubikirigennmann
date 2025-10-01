@@ -13,12 +13,14 @@ class Api::InvitationsController < ApplicationController
     )
 
     if invitation.save
+      frontend_base_url = ENV.fetch('FRONTEND_BASE_URL', 'http://localhost:3000')
+      
       render json: {
         message: "招待を作成しました",
         invitation: {
           id: invitation.id,
           token: invitation.token,
-          invite_url: "#{request.base_url}/invite/#{invitation.token}"
+          invite_url: "#{frontend_base_url}/invite/#{invitation.token}"
         }
       }, status: :created
     else
