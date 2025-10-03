@@ -1,4 +1,3 @@
-// frontend/src/components/PendingEvaluationsPage.tsx
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Sidebar from './Sidebar';
