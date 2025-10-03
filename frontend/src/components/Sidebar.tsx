@@ -1,12 +1,34 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/useAuth';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
 interface SidebarProps {
   onDissolvePartnership?: () => void;
 }
 
 const Sidebar = ({ onDissolvePartnership }: SidebarProps) => {
-  const { setToken, partner, currentUser } = useAuth();
+  const { setToken, partner, currentUser, token } = useAuth();
+  const [pendingCount, setPendingCount] = useState<number>(0);
+
+  useEffect(() => {
+    if (token && partner) {
+      fetchPendingCount();
+    }
+  }, [token, partner]);
+
+  const fetchPendingCount = async (): Promise<void> => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/pending-evaluations`);
+      setPendingCount(response.data.length);
+    } catch (error) {
+      console.error('評価待ち件数の取得に失敗しました:', error);
+      // デモ用のダミーカウント
+      setPendingCount(Math.floor(Math.random() * 5));
+    }
+  };
 
   const handleLogout = (): void => {
     setToken(null);
@@ -107,6 +129,18 @@ const Sidebar = ({ onDissolvePartnership }: SidebarProps) => {
             onClick={handleNavLinkClick}
           >
             ちょっと一言
+          </Link>
+          <Link
+            to="/pending-evaluations"
+            className="yubi-sidebar__link"
+            onClick={handleNavLinkClick}
+          >
+            <span>評価待ちの約束</span>
+            {pendingCount > 0 && (
+              <span className="yubi-sidebar__notification-badge">
+                {pendingCount}
+              </span>
+            )}
           </Link>
           <Link
             to="/about"

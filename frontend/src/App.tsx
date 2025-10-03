@@ -10,6 +10,7 @@ import About from './components/About';
 import InviteAcceptPage from './components/InviteAcceptPage';
 import InvitePartnerPage from './components/InvitePartnerPage';
 import { useAuth } from './contexts/useAuth';
+import PendingEvaluationsPage from './components/PendingEvaluationsPage';
 
 function App() {
   const { token } = useAuth();
@@ -48,6 +49,10 @@ function App() {
         />
         <Route path="/about" element={token ? <About /> : <LoginForm />} />
         <Route path="*" element={token ? <Dashboard /> : <LoginForm />} />
+        <Route
+          path="/pending-evaluations"
+          element={token ? <PendingEvaluationsPage /> : <LoginForm />}
+        />
       </Routes>
     </Router>
   );

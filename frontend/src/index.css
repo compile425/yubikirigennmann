@@ -138,6 +138,19 @@ body.page-about {
   margin: 0;
 }
 
+.yubi-sidebar__notification-badge {
+  background-color: #ff4757;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 12px;
+  margin-left: 8px;
+  min-width: 18px;
+  text-align: center;
+  line-height: 1;
+}
+
 /* --- メニュー開閉の仕組み --- */
 #yubi-nav-toggle {
   display: none;
@@ -1548,4 +1561,88 @@ body.page-about .yubi-main {
   color: var(--text-color-brown);
   font-style: italic;
   line-height: 1.4;
+}
+
+/* 評価待ちページ専用のスタイル */
+.yubi-page-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.yubi-page-title {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.yubi-page-description {
+  color: #666;
+  font-size: 1rem;
+}
+
+.yubi-badge {
+  background: #ff6b6b;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.yubi-badge--pending {
+  background: #ff6b6b;
+}
+
+.yubi-card--pending {
+  border-left: 4px solid #ff6b6b;
+  background: #fff5f5;
+}
+
+.yubi-card__meta {
+  margin: 0.5rem 0;
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.yubi-card__actions {
+  margin-top: 1rem;
+  text-align: right;
+}
+
+.yubi-button--evaluate {
+  background: #ffd93d;
+  color: #333;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.yubi-button--evaluate:hover {
+  background: #ffc107;
+}
+
+.yubi-empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: #999;
+}
+
+.yubi-success-message {
+  text-align: center;
+  padding: 3rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin: 2rem 0;
+}
+
+.yubi-success-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.yubi-loading {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
 }
