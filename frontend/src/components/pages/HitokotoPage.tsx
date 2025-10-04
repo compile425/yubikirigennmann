@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { apiClient, type ApiResponse } from '../../lib/api';
 import Sidebar from '../ui/Sidebar';
 import DissolvePartnershipModal from '../modals/DissolvePartnershipModal';
-import { useAuth } from '../../contexts/useAuth';
 
 interface OneWord {
   id: number;
@@ -13,12 +12,13 @@ interface OneWord {
 const HitokotoPage = () => {
   const [oneWords, setOneWords] = useState<OneWord[]>([]);
   const [newOneWord, setNewOneWord] = useState<string>('');
-  const [isDissolveModalOpen, setIsDissolveModalOpen] = useState<boolean>(false);
-  const { partner } = useAuth();
+  const [isDissolveModalOpen, setIsDissolveModalOpen] =
+    useState<boolean>(false);
 
   const fetchOneWords = async () => {
     try {
-      const response: ApiResponse<OneWord[]> = await apiClient.get('/one_words');
+      const response: ApiResponse<OneWord[]> =
+        await apiClient.get('/one_words');
 
       if (response.error) {
         console.error('一言の取得に失敗しました:', response.error);
@@ -39,9 +39,12 @@ const HitokotoPage = () => {
     if (!newOneWord.trim()) return;
 
     try {
-      const response: ApiResponse<OneWord> = await apiClient.post('/one_words', {
-        content: newOneWord,
-      });
+      const response: ApiResponse<OneWord> = await apiClient.post(
+        '/one_words',
+        {
+          content: newOneWord,
+        }
+      );
 
       if (response.error) {
         console.error('一言の投稿に失敗しました:', response.error);
@@ -55,42 +58,52 @@ const HitokotoPage = () => {
   };
 
   return (
-    <div className="yubi-app">
+    <div className="app-wrapper">
       <Sidebar />
-      <main className="yubi-main">
-        <div className="hitokoto-page">
-          <h1>ちょっと一言</h1>
-          
-          <form onSubmit={handleSubmit} className="hitokoto-form">
-            <textarea
-              value={newOneWord}
-              onChange={(e) => setNewOneWord(e.target.value)}
-              placeholder="パートナーに一言メッセージを送りましょう"
-              className="hitokoto-textarea"
-              rows={3}
-            />
-            <button type="submit" className="yubi-button yubi-button--primary">
-              送信
-            </button>
-          </form>
-
-          <div className="hitokoto-list">
-            {oneWords.map((word) => (
-              <div key={word.id} className="hitokoto-item">
-                <p>{word.content}</p>
-                <small>{new Date(word.created_at).toLocaleString()}</small>
-              </div>
-            ))}
+      <main className="board-container">
+        <div className="yubi-hitokoto-container">
+          <div className="yubi-hitokoto-form-section">
+            <div className="yubi-column__header">
+              <h2 className="yubi-column__title">
+                パートナーへメッセージを送る
+              </h2>
+            </div>
+            <div className="yubi-hitokoto-form-panel">
+              <form onSubmit={handleSubmit}>
+                <textarea
+                  value={newOneWord}
+                  onChange={e => setNewOneWord(e.target.value)}
+                  placeholder="日頃の感謝や、ふと思ったことを手紙に書いてみよう..."
+                  rows={3}
+                />
+                <button type="submit" className="yubi-hitokoto-send-button">
+                  手紙を送る
+                </button>
+              </form>
+            </div>
           </div>
 
-          {partner && (
-            <button
-              onClick={() => setIsDissolveModalOpen(true)}
-              className="yubi-button yubi-button--danger"
-            >
-              パートナーシップを解除
-            </button>
-          )}
+          <div className="yubi-hitokoto-received-messages">
+            <div className="yubi-column__header">
+              <h2 className="yubi-column__title">もらった一言</h2>
+            </div>
+            <div className="yubi-column__content">
+              {oneWords.map(word => (
+                <div key={word.id} className="yubi-card">
+                  {word.content}
+                  <footer className="yubi-card__footer">
+                    {new Date(word.created_at)
+                      .toLocaleDateString('ja-JP', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                      })
+                      .replace(/\//g, '.')}
+                  </footer>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </main>
 

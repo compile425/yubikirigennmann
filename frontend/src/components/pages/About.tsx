@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import Sidebar from '../ui/Sidebar';
 import DissolvePartnershipModal from '../modals/DissolvePartnershipModal';
 
@@ -59,12 +58,6 @@ const About = () => {
             </div>
           </div>
 
-          <div className="yubi-about-actions">
-            <Link to="/" className="yubi-back-to-board-button">
-              <span className="yubi-leaf-icon">🍃</span>
-              ボードにもどる
-            </Link>
-          </div>
         </div>
       </main>
 
