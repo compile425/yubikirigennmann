@@ -3,8 +3,7 @@ import type { ReactNode } from 'react';
 import axios from 'axios';
 import { AuthContext } from './AuthContext';
 import type { AuthContextType } from './AuthContext';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+import { API_BASE_URL } from '../lib/config';
 
 interface AuthProviderProps {
   children: ReactNode;

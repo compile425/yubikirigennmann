@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Sidebar from './Sidebar';
-import DissolvePartnershipModal from './DissolvePartnershipModal';
+import Sidebar from '../ui/Sidebar';
+import DissolvePartnershipModal from '../modals/DissolvePartnershipModal';
 
 const About = () => {
   const [isDissolveModalOpen, setIsDissolveModalOpen] =

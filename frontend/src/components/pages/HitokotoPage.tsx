@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import Sidebar from './Sidebar';
-import DissolvePartnershipModal from './DissolvePartnershipModal';
-import { useAuth } from '../contexts/useAuth';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+import Sidebar from '../ui/Sidebar';
+import DissolvePartnershipModal from '../modals/DissolvePartnershipModal';
+import { useAuth } from '../../contexts/useAuth';
+import { API_BASE_URL } from '../../lib/config';
 
 interface Message {
   id: number;

@@ -1,7 +1,7 @@
+import React from 'react';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
-import type { PromiseItem } from '../types';
+import { apiClient } from '../../lib/api';
+import type { PromiseItem, ApiResponse } from '../../lib/api';
 
 interface EditPromiseModalProps {
   isOpen: boolean;
@@ -26,24 +26,41 @@ const EditPromiseModal = ({
     }
   }, [promise, isOpen]);
 
-  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     e.preventDefault();
     if (!promise) return;
 
-    try {
-      await axios.put(`${API_BASE_URL}/promises/${promise.id}`, {
+    const response: ApiResponse<PromiseItem> = await apiClient.put(
+      `/promises/${promise.id}`,
+      {
         promise: {
           content: content,
           due_date: dueDate || null,
         },
-      });
+      }
+    );
 
-      onPromiseUpdated();
-      onClose();
-    } catch (error) {
-      console.error('約束の更新に失敗しました:', error);
-      alert('約束の更新に失敗しました。');
+    if (response.error) {
+      console.error('約束の更新に失敗しました:', response.error);
+
+      let errorMessage = '約束の更新に失敗しました。';
+
+      if (response.error.errors && response.error.errors.length > 0) {
+        errorMessage += `\n\nエラー詳細:\n${response.error.errors.join('\n')}`;
+      } else if (response.error.error) {
+        errorMessage += `\n\nエラー詳細: ${response.error.error}`;
+      } else if (response.error.message) {
+        errorMessage += `\n\nエラー詳細: ${response.error.message}`;
+      }
+
+      alert(errorMessage);
+      return;
     }
+
+    onPromiseUpdated();
+    onClose();
   };
 
   const overlayClassName = isOpen

@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
-import Sidebar from './Sidebar';
-import PromiseColumn from './PromiseColumn';
-import type { EvaluatedPromise } from '../types';
-import { useAuth } from '../contexts/useAuth';
+import { API_BASE_URL } from '../../lib/config';
+import Sidebar from '../ui/Sidebar';
+import PromiseColumn from '../ui/PromiseColumn';
+import type { EvaluatedPromise } from '../../lib/api';
+import { useAuth } from '../../contexts/useAuth';
 
 const PastEvaluationsPage = () => {
   const [evaluatedPromises, setEvaluatedPromises] = useState<

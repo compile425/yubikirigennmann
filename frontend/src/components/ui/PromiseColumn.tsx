@@ -1,5 +1,5 @@
 import PostIt from './PostIt';
-import type { PromiseItem } from '../types';
+import type { PromiseItem } from '../../lib/api';
 
 interface PromiseColumnProps {
   title: string;

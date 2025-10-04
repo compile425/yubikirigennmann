@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
-import LoginForm from './LoginForm';
-import RegisterForm from './RegisterForm';
+import { API_BASE_URL } from '../../lib/config';
+import LoginForm from '../forms/LoginForm';
+import RegisterForm from '../forms/RegisterForm';
 
 const InviteAcceptPage = () => {
   const { token } = useParams<{ token: string }>();

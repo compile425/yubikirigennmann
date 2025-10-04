@@ -1,14 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
-import Sidebar from './Sidebar';
-import PromiseColumn from './PromiseColumn';
-import AddPromiseModal from './AddPromiseModal';
-import EditPromiseModal from './EditPromiseModal';
-import EvaluationModal from './EvaluationModal';
-import DissolvePartnershipModal from './DissolvePartnershipModal';
-import type { PromiseItem } from '../types';
-import { useAuth } from '../contexts/useAuth';
+import { apiClient } from '../../lib/api';
+import Sidebar from '../ui/Sidebar';
+import PromiseColumn from '../ui/PromiseColumn';
+import AddPromiseModal from '../modals/AddPromiseModal';
+import EditPromiseModal from '../modals/EditPromiseModal';
+import EvaluationModal from '../modals/EvaluationModal';
+import DissolvePartnershipModal from '../modals/DissolvePartnershipModal';
+import type { PromiseItem, ApiResponse } from '../../lib/api';
+import { useAuth } from '../../contexts/useAuth';
 
 const Dashboard = () => {
   const [promises, setPromises] = useState<PromiseItem[]>([]);
@@ -28,11 +27,15 @@ const Dashboard = () => {
 
   const fetchPromises = useCallback(async (): Promise<void> => {
     if (!token) return;
-    try {
-      const response = await axios.get(`${API_BASE_URL}/promises`);
-      setPromises(response.data);
-    } catch (error) {
-      console.error('約束の取得に失敗しました:', error);
+
+    const response: ApiResponse<PromiseItem[]> =
+      await apiClient.get('/promises');
+
+    if (response.error) {
+      console.error('約束の取得に失敗しました:', response.error);
+      setPromises([]);
+    } else {
+      setPromises(response.data || []);
     }
   }, [token]);
 
@@ -61,13 +64,28 @@ const Dashboard = () => {
       return;
     }
 
-    try {
-      await axios.delete(`${API_BASE_URL}/promises/${promise.id}`);
-      await fetchPromises();
-    } catch (error) {
-      console.error('約束の削除に失敗しました:', error);
-      alert('約束の削除に失敗しました。');
+    const response: ApiResponse = await apiClient.delete(
+      `/promises/${promise.id}`
+    );
+
+    if (response.error) {
+      console.error('約束の削除に失敗しました:', response.error);
+
+      let errorMessage = '約束の削除に失敗しました。';
+
+      if (response.error.errors && response.error.errors.length > 0) {
+        errorMessage += `\n\nエラー詳細:\n${response.error.errors.join('\n')}`;
+      } else if (response.error.error) {
+        errorMessage += `\n\nエラー詳細: ${response.error.error}`;
+      } else if (response.error.message) {
+        errorMessage += `\n\nエラー詳細: ${response.error.message}`;
+      }
+
+      alert(errorMessage);
+      return;
     }
+
+    await fetchPromises();
   };
 
   const handlePromiseUpdated = async (): Promise<void> => {

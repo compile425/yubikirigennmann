@@ -1,12 +1,18 @@
+import React from 'react';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
-import type { PromiseItem } from '../types';
+import { apiClient } from '../../lib/api';
+import type { ApiResponse, EvaluationData } from '../../lib/api';
+
+// 評価可能な約束の共通プロパティを定義
+interface EvaluablePromise {
+  id: number;
+  content: string;
+}
 
 interface EvaluationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  promise: PromiseItem | null;
+  promise: EvaluablePromise | null;
   onEvaluationSubmitted: () => void;
 }
 
@@ -28,27 +34,43 @@ const EvaluationModal = ({
     }
   }, [isOpen]);
 
-  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     e.preventDefault();
     if (!promise || rating === 0) return;
 
-    try {
-      await axios.post(
-        `${API_BASE_URL}/promises/${promise.id}/promise_evaluations`,
-        {
-          evaluation: {
-            rating: rating,
-            evaluation_text: evaluationText,
-          },
-        }
-      );
+    const evaluationData: EvaluationData = {
+      rating: rating,
+      evaluation_text: evaluationText,
+    };
 
-      onEvaluationSubmitted();
-      onClose();
-    } catch (error) {
-      console.error('評価の送信に失敗しました:', error);
-      alert('評価の送信に失敗しました。');
+    const response: ApiResponse = await apiClient.post(
+      `/promises/${promise.id}/promise_evaluations`,
+      {
+        evaluation: evaluationData,
+      }
+    );
+
+    if (response.error) {
+      console.error('評価の送信に失敗しました:', response.error);
+
+      let errorMessage = '評価の送信に失敗しました。';
+
+      if (response.error.errors && response.error.errors.length > 0) {
+        errorMessage += `\n\nエラー詳細:\n${response.error.errors.join('\n')}`;
+      } else if (response.error.error) {
+        errorMessage += `\n\nエラー詳細: ${response.error.error}`;
+      } else if (response.error.message) {
+        errorMessage += `\n\nエラー詳細: ${response.error.message}`;
+      }
+
+      alert(errorMessage);
+      return;
     }
+
+    onEvaluationSubmitted();
+    onClose();
   };
 
   const overlayClassName = isOpen

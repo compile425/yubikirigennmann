@@ -1,16 +1,16 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import LoginForm from './components/LoginForm';
-import Dashboard from './components/Dashboard';
-import EvaluationPage from './components/EvaluationPage';
-import PastEvaluationsPage from './components/PastEvaluationsPage';
-import RecordPage from './components/RecordPage';
-import HitokotoPage from './components/HitokotoPage';
-import About from './components/About';
-import InviteAcceptPage from './components/InviteAcceptPage';
-import InvitePartnerPage from './components/InvitePartnerPage';
+import LoginForm from './components/forms/LoginForm';
+import Dashboard from './components/pages/Dashboard';
+import EvaluationPage from './components/pages/EvaluationPage';
+import PastEvaluationsPage from './components/pages/PastEvaluationsPage';
+import RecordPage from './components/pages/RecordPage';
+import HitokotoPage from './components/pages/HitokotoPage';
+import About from './components/pages/About';
+import InviteAcceptPage from './components/pages/InviteAcceptPage';
+import InvitePartnerPage from './components/pages/InvitePartnerPage';
 import { useAuth } from './contexts/useAuth';
-import PendingEvaluationsPage from './components/PendingEvaluationsPage';
+import PendingEvaluationsPage from './components/pages/PendingEvaluationsPage';
 
 function App() {
   const { token } = useAuth();

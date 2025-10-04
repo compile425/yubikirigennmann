@@ -1,11 +1,17 @@
+import React from 'react';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+import { apiClient } from '../../lib/api';
+import type {
+  PromiseType,
+  CreatePromiseData,
+  ApiResponse,
+  PromiseItem,
+} from '../../lib/api';
 
 interface AddPromiseModalProps {
   isOpen: boolean;
   onClose: () => void;
-  promiseType: 'my_promise' | 'our_promise' | 'partner_promise' | '';
+  promiseType: PromiseType | '';
   onPromiseCreated: () => void;
 }
 
@@ -27,42 +33,45 @@ const AddPromiseModal = ({
     }
   }, [isOpen]);
 
-  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     e.preventDefault();
     if (!promiseType) return;
 
-    try {
-      const promiseData = {
-        content: content,
-        due_date: isOurPromise ? null : dueDate || null,
-        type: promiseType,
-        promise_id: null,
-      };
+    const promiseData: CreatePromiseData = {
+      content: content,
+      due_date: isOurPromise ? null : dueDate || null,
+      type: promiseType,
+      promise_id: null,
+    };
 
-      await axios.post(`${API_BASE_URL}/promises`, {
+    const response: ApiResponse<PromiseItem> = await apiClient.post(
+      '/promises',
+      {
         promise: promiseData,
-      });
-
-      onPromiseCreated();
-      onClose();
-    } catch (error) {
-      console.error('約束の作成に失敗しました:', error);
-
-      if (axios.isAxiosError(error) && error.response) {
-        const errorData = error.response.data;
-        let errorMessage = '約束の作成に失敗しました。';
-
-        if (errorData.errors) {
-          errorMessage += `\n\nエラー詳細:\n${errorData.errors.join('\n')}`;
-        } else if (errorData.error) {
-          errorMessage += `\n\nエラー詳細: ${errorData.error}`;
-        }
-
-        alert(errorMessage);
-      } else {
-        alert('約束の作成に失敗しました。');
       }
+    );
+
+    if (response.error) {
+      console.error('約束の作成に失敗しました:', response.error);
+
+      let errorMessage = '約束の作成に失敗しました。';
+
+      if (response.error.errors && response.error.errors.length > 0) {
+        errorMessage += `\n\nエラー詳細:\n${response.error.errors.join('\n')}`;
+      } else if (response.error.error) {
+        errorMessage += `\n\nエラー詳細: ${response.error.error}`;
+      } else if (response.error.message) {
+        errorMessage += `\n\nエラー詳細: ${response.error.message}`;
+      }
+
+      alert(errorMessage);
+      return;
     }
+
+    onPromiseCreated();
+    onClose();
   };
 
   const overlayClassName = isOpen

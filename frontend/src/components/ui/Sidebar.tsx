@@ -1,9 +1,9 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../contexts/useAuth';
+import { useAuth } from '../../contexts/useAuth';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+import { apiClient } from '../../lib/api';
+import type { ApiResponse, PendingPromise } from '../../lib/api';
 
 interface SidebarProps {
   onDissolvePartnership?: () => void;
@@ -21,16 +21,19 @@ const Sidebar = ({ onDissolvePartnership }: SidebarProps) => {
 
   const fetchPendingCount = async (): Promise<void> => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/pending-evaluations`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setPendingCount(response.data.length);
+      const response: ApiResponse<PendingPromise[]> = await apiClient.get(
+        '/pending-evaluations'
+      );
+
+      if (response.error) {
+        console.error('評価待ち件数の取得に失敗しました:', response.error);
+        setPendingCount(0);
+      } else {
+        setPendingCount(response.data?.length || 0);
+      }
     } catch (error) {
       console.error('評価待ち件数の取得に失敗しました:', error);
-      // デモ用のダミーカウント
-      setPendingCount(Math.floor(Math.random() * 5));
+      setPendingCount(0);
     }
   };
 

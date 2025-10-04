@@ -1,12 +1,10 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import Sidebar from './Sidebar';
-import DissolvePartnershipModal from './DissolvePartnershipModal';
-import EvaluationModal from './EvaluationModal';
-import { useAuth } from '../contexts/useAuth';
-import type { PromiseItem } from '../types';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+import { useState, useEffect, useCallback } from 'react';
+import { apiClient } from '../../lib/api';
+import Sidebar from '../ui/Sidebar';
+import DissolvePartnershipModal from '../modals/DissolvePartnershipModal';
+import EvaluationModal from '../modals/EvaluationModal';
+import { useAuth } from '../../contexts/useAuth';
+import type { PendingPromise, ApiResponse } from '../../lib/api';
 
 const PendingEvaluationsPage = () => {
   const { token, currentUser, partner } = useAuth();
@@ -14,52 +12,35 @@ const PendingEvaluationsPage = () => {
     useState<boolean>(false);
   const [isEvaluationModalOpen, setIsEvaluationModalOpen] =
     useState<boolean>(false);
-  const [selectedPromise, setSelectedPromise] = useState<PromiseItem | null>(
+  const [selectedPromise, setSelectedPromise] = useState<PendingPromise | null>(
     null
   );
-  const [pendingPromises, setPendingPromises] = useState<PromiseItem[]>([]);
+  const [pendingPromises, setPendingPromises] = useState<PendingPromise[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    fetchPendingPromises();
-  }, []);
-
-  const fetchPendingPromises = async (): Promise<void> => {
+  const fetchPendingPromises = useCallback(async (): Promise<void> => {
     if (!token) return;
 
     setIsLoading(true);
-    try {
-      const response = await axios.get(`${API_BASE_URL}/pending-evaluations`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setPendingPromises(response.data);
-    } catch (error) {
-      console.error('評価待ちの約束の取得に失敗しました:', error);
-      // デモ用のダミーデータ
-      setPendingPromises([
-        {
-          id: 1,
-          content: '毎日おはようメッセージを送る',
-          due_date: '2024-01-15',
-          type: 'our_promise',
-          creator_id: currentUser?.id || 1,
-        },
-        {
-          id: 2,
-          content: '週末は一緒に散歩する',
-          due_date: '2024-01-20',
-          type: 'our_promise',
-          creator_id: partner?.id || 2,
-        },
-      ]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    const response: ApiResponse<PendingPromise[]> = await apiClient.get(
+      '/pending-evaluations'
+    );
 
-  const handleOpenEvaluationModal = (promise: PromiseItem): void => {
+    if (response.error) {
+      console.error('評価待ちの約束の取得に失敗しました:', response.error);
+      setPendingPromises([]);
+    } else {
+      setPendingPromises(response.data || []);
+    }
+
+    setIsLoading(false);
+  }, [token]);
+
+  useEffect(() => {
+    fetchPendingPromises();
+  }, [fetchPendingPromises]);
+
+  const handleOpenEvaluationModal = (promise: PendingPromise): void => {
     setSelectedPromise(promise);
     setIsEvaluationModalOpen(true);
   };
