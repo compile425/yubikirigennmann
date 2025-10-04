@@ -1,118 +1,96 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { apiClient, type ApiResponse } from '../../lib/api';
 import Sidebar from '../ui/Sidebar';
 import DissolvePartnershipModal from '../modals/DissolvePartnershipModal';
 import { useAuth } from '../../contexts/useAuth';
-import { API_BASE_URL } from '../../lib/config';
 
-interface Message {
+interface OneWord {
   id: number;
   content: string;
   created_at: string;
-  sender_name: string;
 }
 
 const HitokotoPage = () => {
+  const [oneWords, setOneWords] = useState<OneWord[]>([]);
+  const [newOneWord, setNewOneWord] = useState<string>('');
+  const [isDissolveModalOpen, setIsDissolveModalOpen] = useState<boolean>(false);
   const { partner } = useAuth();
-  const [isDissolveModalOpen, setIsDissolveModalOpen] =
-    useState<boolean>(false);
-  const [message, setMessage] = useState<string>('');
-  const [receivedMessages, setReceivedMessages] = useState<Message[]>([]);
-  const [isSending, setIsSending] = useState<boolean>(false);
+
+  const fetchOneWords = async () => {
+    try {
+      const response: ApiResponse<OneWord[]> = await apiClient.get('/one_words');
+
+      if (response.error) {
+        console.error('一言の取得に失敗しました:', response.error);
+      } else {
+        setOneWords(response.data || []);
+      }
+    } catch (error) {
+      console.error('一言の取得エラー:', error);
+    }
+  };
 
   useEffect(() => {
-    fetchMessages();
+    fetchOneWords();
   }, []);
 
-  const fetchMessages = async (): Promise<void> => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/one_words`);
-      setReceivedMessages(response.data);
-    } catch (error) {
-      console.error('メッセージの取得に失敗しました:', error);
-    }
-  };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newOneWord.trim()) return;
 
-  const handleSendMessage = async (): Promise<void> => {
-    if (!message.trim() || isSending) return;
-
-    setIsSending(true);
     try {
-      await axios.post(`${API_BASE_URL}/one_words`, {
-        one_word: {
-          content: message,
-        },
+      const response: ApiResponse<OneWord> = await apiClient.post('/one_words', {
+        content: newOneWord,
       });
-      setMessage('');
-      alert('手紙を送信しました！');
-      await fetchMessages();
-    } catch (error) {
-      console.error('メッセージの送信に失敗しました:', error);
-      alert('メッセージの送信に失敗しました。');
-    } finally {
-      setIsSending(false);
-    }
-  };
 
-  const formatDate = (dateString: string): string => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('ja-JP', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    });
+      if (response.error) {
+        console.error('一言の投稿に失敗しました:', response.error);
+      } else {
+        setNewOneWord('');
+        fetchOneWords();
+      }
+    } catch (error) {
+      console.error('一言の投稿エラー:', error);
+    }
   };
 
   return (
     <div className="yubi-app">
-      <Sidebar onDissolvePartnership={() => setIsDissolveModalOpen(true)} />
-
+      <Sidebar />
       <main className="yubi-main">
-        <div className="yubi-hitokoto-container">
-          <div className="yubi-form-section">
-            <div className="yubi-column__header">
-              <h2 className="yubi-column__title">
-                {partner?.name || 'パートナー'}へメッセージを送る
-              </h2>
-            </div>
-            <div className="yubi-form-panel">
-              <textarea
-                value={message}
-                onChange={e => setMessage(e.target.value)}
-                placeholder="日頃の感謝や、ふと思ったことを手紙に書いてみよう..."
-              />
-              <button
-                type="button"
-                className="yubi-send-button"
-                onClick={handleSendMessage}
-                disabled={isSending || !message.trim()}
-              >
-                {isSending ? '送信中...' : '手紙を送る'}
-              </button>
-            </div>
+        <div className="hitokoto-page">
+          <h1>ちょっと一言</h1>
+          
+          <form onSubmit={handleSubmit} className="hitokoto-form">
+            <textarea
+              value={newOneWord}
+              onChange={(e) => setNewOneWord(e.target.value)}
+              placeholder="パートナーに一言メッセージを送りましょう"
+              className="hitokoto-textarea"
+              rows={3}
+            />
+            <button type="submit" className="yubi-button yubi-button--primary">
+              送信
+            </button>
+          </form>
+
+          <div className="hitokoto-list">
+            {oneWords.map((word) => (
+              <div key={word.id} className="hitokoto-item">
+                <p>{word.content}</p>
+                <small>{new Date(word.created_at).toLocaleString()}</small>
+              </div>
+            ))}
           </div>
 
-          <div className="yubi-received-messages">
-            <div className="yubi-column__header">
-              <h2 className="yubi-column__title">もらった一言</h2>
-            </div>
-            <div className="yubi-column__content">
-              {receivedMessages.length === 0 ? (
-                <p style={{ textAlign: 'center', color: '#999' }}>
-                  まだメッセージがありません
-                </p>
-              ) : (
-                receivedMessages.map(msg => (
-                  <div key={msg.id} className="yubi-card">
-                    <div className="yubi-card__content">{msg.content}</div>
-                    <footer className="yubi-card__footer">
-                      {formatDate(msg.created_at)}
-                    </footer>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
+          {partner && (
+            <button
+              onClick={() => setIsDissolveModalOpen(true)}
+              className="yubi-button yubi-button--danger"
+            >
+              パートナーシップを解除
+            </button>
+          )}
         </div>
       </main>
 

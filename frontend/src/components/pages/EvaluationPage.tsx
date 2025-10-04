@@ -1,99 +1,50 @@
 import { useState, useEffect } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
-import axios from 'axios';
-import { API_BASE_URL } from '../../lib/config';
+import { useParams } from 'react-router-dom';
+import { apiClient, type ApiResponse, type PromiseItem } from '../../lib/api';
 import EvaluationModal from '../modals/EvaluationModal';
-import type { PromiseItem } from '../../lib/api';
 
 const EvaluationPage = () => {
   const { id } = useParams<{ id: string }>();
-  const [searchParams] = useSearchParams();
   const [promise, setPromise] = useState<PromiseItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [isValidToken, setIsValidToken] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const token = searchParams.get('token');
-    if (!token || !id) {
-      setIsValidToken(false);
-      setIsLoading(false);
-      return;
-    }
+    const fetchPromise = async () => {
+      if (!id) return;
 
-    const fetchPromise = async (): Promise<void> => {
       try {
-        const response = await axios.get(
-          `${API_BASE_URL}/evaluation_pages/${id}?token=${token}`
-        );
+        const response: ApiResponse<PromiseItem> = await apiClient.get(`/evaluation_pages/${id}`);
 
-        if (response.data.valid_token) {
-          setPromise(response.data.promise);
-          setIsValidToken(true);
-          setIsModalOpen(true);
+        if (response.error) {
+          console.error('約束の取得に失敗しました:', response.error);
         } else {
-          setIsValidToken(false);
+          setPromise(response.data || null);
+          setIsModalOpen(true);
         }
       } catch (error) {
-        console.error('約束の取得に失敗しました:', error);
-        setIsValidToken(false);
-      } finally {
-        setIsLoading(false);
+        console.error('約束の取得エラー:', error);
       }
     };
 
     fetchPromise();
-  }, [id, searchParams]);
+  }, [id]);
 
-  const handleEvaluationSubmitted = (): void => {
+  const handleEvaluationSubmitted = () => {
     setIsModalOpen(false);
+    // 評価完了後の処理
+    window.close();
   };
 
-  if (isLoading) {
-    return (
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100vh',
-          fontSize: '18px',
-        }}
-      >
-        読み込み中...
-      </div>
-    );
-  }
-
-  if (!isValidToken) {
-    return (
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100vh',
-          flexDirection: 'column',
-          textAlign: 'center',
-        }}
-      >
-        <h1 style={{ color: '#075763', marginBottom: '20px' }}>
-          無効なリンクです
-        </h1>
-        <p>このリンクは期限切れか無効です。</p>
-        <p>新しい評価リンクをお待ちください。</p>
-      </div>
-    );
-  }
-
   return (
-    <div>
-      <EvaluationModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        promise={promise}
-        onEvaluationSubmitted={handleEvaluationSubmitted}
-      />
+    <div className="evaluation-page">
+      {promise && (
+        <EvaluationModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          promise={promise}
+          onEvaluationSubmitted={handleEvaluationSubmitted}
+        />
+      )}
     </div>
   );
 };
