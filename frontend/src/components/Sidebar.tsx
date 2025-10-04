@@ -21,7 +21,11 @@ const Sidebar = ({ onDissolvePartnership }: SidebarProps) => {
 
   const fetchPendingCount = async (): Promise<void> => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/pending-evaluations`);
+      const response = await axios.get(`${API_BASE_URL}/pending-evaluations`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setPendingCount(response.data.length);
     } catch (error) {
       console.error('評価待ち件数の取得に失敗しました:', error);
