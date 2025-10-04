@@ -2011,18 +2011,6 @@ body.page-about .yubi-main {
   background: #4a7c4d;
 }
 
-/* InviteAcceptPage用 */
-.invite-accept-page {
-  padding: 40px 20px;
-  max-width: 600px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.invite-accept-page h1 {
-  color: var(--heading-color);
-  margin-bottom: 20px;
-}
 
 /* RecordPage用 */
 .record-page {
@@ -2104,7 +2092,6 @@ body.page-about .yubi-main {
   
   .hitokoto-page,
   .invite-partner-page,
-  .invite-accept-page,
   .record-page {
     padding: 20px 15px;
   }

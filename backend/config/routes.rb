@@ -20,9 +20,9 @@ Rails.application.routes.draw do
     get "/get_me", to: "users#me"
     post "/evaluation_emails", to: "evaluation_emails#create"
 
-    # 招待機能のルート
-    resources :invitations, only: [ :create, :index ]
-    get "/invite/:token", to: "invitations#accept"
+    # 招待コード機能のルート
+    post "/invitation-codes", to: "invitation_codes#create"
+    post "/join-partnership", to: "invitation_codes#join_partnership"
 
     # パートナーシップ機能のルート
     delete "/partnerships/dissolve", to: "partnerships#dissolve"

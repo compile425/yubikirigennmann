@@ -14,11 +14,11 @@ interface GuestLoginResponse {
 }
 
 interface LoginFormProps {
-  invitationToken?: string;
+  invitationCode?: string;
   onAuthSuccess?: () => void;
 }
 
-const LoginForm = ({ invitationToken, onAuthSuccess }: LoginFormProps) => {
+const LoginForm = ({ invitationCode, onAuthSuccess }: LoginFormProps) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>('');
@@ -41,7 +41,7 @@ const LoginForm = ({ invitationToken, onAuthSuccess }: LoginFormProps) => {
       } else {
         setToken(response.data?.token || null);
 
-        if (invitationToken && onAuthSuccess) {
+        if (invitationCode && onAuthSuccess) {
           onAuthSuccess();
         }
       }
@@ -63,7 +63,7 @@ const LoginForm = ({ invitationToken, onAuthSuccess }: LoginFormProps) => {
       } else {
         setToken(response.data?.token || null);
 
-        if (invitationToken && onAuthSuccess) {
+        if (invitationCode && onAuthSuccess) {
           onAuthSuccess();
         }
       }
@@ -79,7 +79,7 @@ const LoginForm = ({ invitationToken, onAuthSuccess }: LoginFormProps) => {
     return (
       <RegisterForm
         onBackToLogin={() => setIsRegisterMode(false)}
-        invitationToken={invitationToken}
+        invitationCode={invitationCode}
         onAuthSuccess={onAuthSuccess}
       />
     );

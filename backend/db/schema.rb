@@ -10,14 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_09_30_101101) do
-  create_table "invitations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+ActiveRecord::Schema[7.2].define(version: 2025_10_04_060710) do
+  create_table "invitation_codes", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "inviter_id", null: false
-    t.string "token", null: false
+    t.string "code", limit: 8, null: false
+    t.boolean "used", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["inviter_id"], name: "index_invitations_on_inviter_id"
-    t.index ["token"], name: "index_invitations_on_token", unique: true
+    t.index ["code"], name: "index_invitation_codes_on_code", unique: true
+    t.index ["inviter_id"], name: "idx_invitation_codes_inviter"
+    t.index ["inviter_id"], name: "index_invitation_codes_on_inviter_id"
   end
 
   create_table "one_words", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -95,11 +97,9 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_30_101101) do
 
   create_table "user_credentials", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.string "invite_token"
     t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["invite_token"], name: "index_user_credentials_on_invite_token", unique: true
     t.index ["user_id"], name: "index_user_credentials_on_user_id"
   end
 
@@ -111,7 +111,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_30_101101) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
-  add_foreign_key "invitations", "users", column: "inviter_id"
+  add_foreign_key "invitation_codes", "users", column: "inviter_id"
   add_foreign_key "one_words", "partnerships"
   add_foreign_key "one_words", "users", column: "receiver_id"
   add_foreign_key "one_words", "users", column: "sender_id"

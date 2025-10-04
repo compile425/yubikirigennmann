@@ -7,7 +7,6 @@ import PastEvaluationsPage from './components/pages/PastEvaluationsPage';
 import RecordPage from './components/pages/RecordPage';
 import HitokotoPage from './components/pages/HitokotoPage';
 import About from './components/pages/About';
-import InviteAcceptPage from './components/pages/InviteAcceptPage';
 import InvitePartnerPage from './components/pages/InvitePartnerPage';
 import { useAuth } from './contexts/useAuth';
 import PendingEvaluationsPage from './components/pages/PendingEvaluationsPage';
@@ -47,7 +46,6 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/invite/:token" element={<InviteAcceptPage />} />
         <Route
           path="/invite-partner"
           element={token && currentUser ? <InvitePartnerPage /> : <LoginForm />}
