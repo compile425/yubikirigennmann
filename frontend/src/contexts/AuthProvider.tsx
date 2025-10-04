@@ -28,7 +28,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
         if (storedToken) {
           // トークンがある場合、検証
-          const response: ApiResponse<UserMeResponse> = await apiClient.get('/get_me');
+          const response: ApiResponse<UserMeResponse> =
+            await apiClient.get('/get_me');
 
           if (response.error) {
             // エラーの場合はクリア
@@ -42,7 +43,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             setPartner(response.data?.partner || null);
           }
         }
-      } catch (error) {
+      } catch {
         // トークンが無効な場合、クリア
         localStorage.removeItem('authToken');
         setTokenState(null);
@@ -63,7 +64,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       localStorage.setItem('authToken', newToken);
 
       // ユーザー情報を取得
-      apiClient.get<UserMeResponse>('/get_me')
+      apiClient
+        .get<UserMeResponse>('/get_me')
         .then(response => {
           if (response.error) {
             // エラーの場合はクリア

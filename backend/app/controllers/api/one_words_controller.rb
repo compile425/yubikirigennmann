@@ -7,7 +7,7 @@ class Api::OneWordsController < ApplicationController
         .includes(:sender)
         .where(receiver_id: current_user.id)
         .order(created_at: :desc)
-      
+
       render json: one_words.map { |word|
         {
           id: word.id,
@@ -23,7 +23,7 @@ class Api::OneWordsController < ApplicationController
 
   def create
     unless current_user.partnership
-      render json: { error: 'パートナーシップが存在しません' }, status: :unprocessable_entity
+      render json: { error: "パートナーシップが存在しません" }, status: :unprocessable_entity
       return
     end
 
@@ -36,9 +36,9 @@ class Api::OneWordsController < ApplicationController
     )
 
     if one_word.save
-      render json: { message: 'メッセージを送信しました' }, status: :created
+      render json: { message: "メッセージを送信しました" }, status: :created
     else
-      render json: { error: one_word.errors.full_messages.join(', ') }, status: :unprocessable_entity
+      render json: { error: one_word.errors.full_messages.join(", ") }, status: :unprocessable_entity
     end
   end
 

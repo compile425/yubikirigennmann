@@ -7,21 +7,30 @@ interface DissolvePartnershipModalProps {
   onClose: () => void;
 }
 
-const DissolvePartnershipModal = ({ isOpen, onClose }: DissolvePartnershipModalProps) => {
+const DissolvePartnershipModal = ({
+  isOpen,
+  onClose,
+}: DissolvePartnershipModalProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { setToken } = useAuth();
 
   if (!isOpen) return null;
 
   const handleDissolve = async () => {
-    if (!confirm('本当にパートナーシップを解消しますか？この操作は元に戻せません。')) {
+    if (
+      !confirm(
+        '本当にパートナーシップを解消しますか？この操作は元に戻せません。'
+      )
+    ) {
       return;
     }
 
     setIsLoading(true);
 
     try {
-      const response: ApiResponse = await apiClient.delete('/partnerships/dissolve');
+      const response: ApiResponse = await apiClient.delete(
+        '/partnerships/dissolve'
+      );
 
       if (response.error) {
         console.error('パートナーシップ解消に失敗しました:', response.error);
@@ -41,14 +50,14 @@ const DissolvePartnershipModal = ({ isOpen, onClose }: DissolvePartnershipModalP
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-content" onClick={e => e.stopPropagation()}>
         <h2>パートナーシップの解消</h2>
         <p>
           パートナーシップを解消すると、すべての約束と評価データが削除され、
           この操作は元に戻すことができません。
         </p>
         <p>本当に解消しますか？</p>
-        
+
         <div className="modal-actions">
           <button
             onClick={onClose}

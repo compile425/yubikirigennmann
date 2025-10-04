@@ -13,14 +13,14 @@ class Api::SessionsController < ApplicationController
   end
 
   def guest_login
-    guest_user = User.find_or_create_by!(email: 'test1@example.com') do |u|
-      u.name = 'テストユーザー1'
+    guest_user = User.find_or_create_by!(email: "test1@example.com") do |u|
+      u.name = "テストユーザー1"
     end
     UserCredential.find_or_create_by!(user: guest_user) do |cred|
-      cred.password = 'password123'
-      cred.password_confirmation = 'password123'
+      cred.password = "password123"
+      cred.password_confirmation = "password123"
     end
-  
+
     token = encode_token(user_id: guest_user.id)
     render json: { token:, message: "ゲストユーザーとしてログインしました" }, status: :ok
   end

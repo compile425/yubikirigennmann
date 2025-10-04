@@ -17,7 +17,7 @@ class InvitationCode < ApplicationRecord
 
   def generate_code
     return if code.present?
-    
+
     loop do
       self.code = generate_random_code
       break unless InvitationCode.exists?(code: code)
@@ -26,7 +26,7 @@ class InvitationCode < ApplicationRecord
 
   def generate_random_code
     # 英数字8文字のランダムコードを生成
-    charset = Array('A'..'Z') + Array('0'..'9')
+    charset = Array("A".."Z") + Array("0".."9")
     Array.new(8) { charset.sample }.join
   end
 end

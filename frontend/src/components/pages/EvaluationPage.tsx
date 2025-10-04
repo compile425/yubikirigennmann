@@ -13,7 +13,9 @@ const EvaluationPage = () => {
       if (!id) return;
 
       try {
-        const response: ApiResponse<PromiseItem> = await apiClient.get(`/evaluation_pages/${id}`);
+        const response: ApiResponse<PromiseItem> = await apiClient.get(
+          `/evaluation_pages/${id}`
+        );
 
         if (response.error) {
           console.error('約束の取得に失敗しました:', response.error);

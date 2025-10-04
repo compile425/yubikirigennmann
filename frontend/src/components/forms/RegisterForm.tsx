@@ -65,7 +65,10 @@ const RegisterForm = ({
         requestData.invitation_code = invitationCode;
       }
 
-      const response: ApiResponse<RegisterResponse> = await apiClient.post('/register', requestData);
+      const response: ApiResponse<RegisterResponse> = await apiClient.post(
+        '/register',
+        requestData
+      );
 
       if (response.error) {
         if (response.error.errors && response.error.errors.length > 0) {
@@ -140,7 +143,10 @@ const RegisterForm = ({
         </div>
 
         <div className="yubi-form-group">
-          <label htmlFor="passwordConfirmation" className="yubi-form-group__label">
+          <label
+            htmlFor="passwordConfirmation"
+            className="yubi-form-group__label"
+          >
             パスワード確認
           </label>
           <input
