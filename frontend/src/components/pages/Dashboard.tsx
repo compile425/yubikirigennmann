@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { apiClient } from '../../lib/api';
 import Sidebar from '../ui/Sidebar';
 import PromiseColumn from '../ui/PromiseColumn';
@@ -25,23 +25,26 @@ const Dashboard = () => {
     'my_promise' | 'our_promise' | 'partner_promise' | ''
   >('');
 
-  const fetchPromises = useCallback(async (): Promise<void> => {
+  const fetchPromises = async () => {
     if (!token) return;
 
-    const response: ApiResponse<PromiseItem[]> =
-      await apiClient.get('/promises');
-
-    if (response.error) {
-      console.error('約束の取得に失敗しました:', response.error);
+    try {
+      const response: ApiResponse<PromiseItem[]> = await apiClient.get('/promises');
+      if (response.error) {
+        console.error('約束の取得に失敗しました:', response.error);
+        setPromises([]);
+      } else {
+        setPromises(response.data || []);
+      }
+    } catch (error) {
+      console.error('約束の取得エラー:', error);
       setPromises([]);
-    } else {
-      setPromises(response.data || []);
     }
-  }, [token]);
+  };
 
   useEffect(() => {
     fetchPromises();
-  }, [fetchPromises]);
+  }, [token]); // tokenのみに依存
 
   const handleOpenModal = (
     type: 'my_promise' | 'our_promise' | 'partner_promise'

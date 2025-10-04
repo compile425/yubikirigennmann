@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import axios from 'axios';
 import { AuthContext } from './AuthContext';
@@ -10,92 +10,71 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [token, setTokenState] = useState<string | null>(
-    localStorage.getItem('authToken')
-  );
+  const [token, setTokenState] = useState<string | null>(null);
   const [currentUser, setCurrentUser] =
     useState<AuthContextType['currentUser']>(null);
   const [partner, setPartner] = useState<AuthContextType['partner']>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const fetchUserData = useCallback(async (): Promise<void> => {
-    if (token) {
+  // 初回のみ実行される認証チェック
+  useEffect(() => {
+    const checkAuth = async () => {
       try {
-        console.log('Token found:', token);
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        console.log('Making request to /api/get_me with token:', token);
-        const response = await axios.get(`${API_BASE_URL}/get_me`);
-        console.log('Auth response:', response.data);
-        setCurrentUser(response.data.current_user);
-        setPartner(response.data.partner);
+        const storedToken = localStorage.getItem('authToken');
+
+        if (storedToken) {
+          // トークンがある場合、検証
+          axios.defaults.headers.common['Authorization'] =
+            `Bearer ${storedToken}`;
+          const response = await axios.get(`${API_BASE_URL}/get_me`);
+
+          setTokenState(storedToken);
+          setCurrentUser(response.data.current_user);
+          setPartner(response.data.partner);
+        }
       } catch (error) {
-        console.error('認証に失敗しました。トークンを削除します:', error);
+        // トークンが無効な場合、クリア
         localStorage.removeItem('authToken');
+        delete axios.defaults.headers.common['Authorization'];
         setTokenState(null);
         setCurrentUser(null);
         setPartner(null);
+      } finally {
+        setIsLoading(false);
       }
-    } else {
-      console.log('No token found');
-    }
-  }, [token]);
-
-  useEffect(() => {
-    const initializeAuth = async (): Promise<void> => {
-      await fetchUserData();
-      setIsLoading(false);
     };
 
-    initializeAuth();
-  }, [fetchUserData]);
+    checkAuth();
+  }, []); // 空の依存配列で初回のみ実行
 
-  // パートナーシップの状態を定期的にチェック（10秒ごと）
-  useEffect(() => {
-    if (token && !partner) {
-      const interval = setInterval(async (): Promise<void> => {
-        try {
-          const response = await axios.get(`${API_BASE_URL}/get_me`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-
-          if (response.data.partner && !partner) {
-            console.log(
-              'パートナーシップが作成されました:',
-              response.data.partner
-            );
-            setPartner(response.data.partner);
-          }
-        } catch (error) {
-          console.error('パートナーシップ状態チェックエラー:', error);
-        }
-      }, 10000);
-
-      return () => clearInterval(interval);
-    }
-  }, [token, partner]);
-
-  const setToken = (newToken: string | null): void => {
-    console.log('Setting token:', newToken);
+  const setToken = (newToken: string | null) => {
     setTokenState(newToken);
+
     if (newToken) {
       localStorage.setItem('authToken', newToken);
       axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+
+      // ユーザー情報を取得
+      axios
+        .get(`${API_BASE_URL}/get_me`)
+        .then(response => {
+          setCurrentUser(response.data.current_user);
+          setPartner(response.data.partner);
+        })
+        .catch(() => {
+          // エラーの場合はクリア
+          setToken(null);
+        });
     } else {
-      // ログアウト時の処理
       localStorage.removeItem('authToken');
       delete axios.defaults.headers.common['Authorization'];
       setCurrentUser(null);
       setPartner(null);
-
-      // 確実にユーザー情報をクリア
-      console.log('ログアウト処理完了');
     }
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>読み込み中...</div>;
   }
 
   return (

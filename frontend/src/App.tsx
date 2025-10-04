@@ -13,10 +13,10 @@ import { useAuth } from './contexts/useAuth';
 import PendingEvaluationsPage from './components/pages/PendingEvaluationsPage';
 
 function App() {
-  const { token } = useAuth();
+  const { token, currentUser } = useAuth();
 
   React.useEffect(() => {
-    if (token) {
+    if (token && currentUser) {
       document.body.className = 'page-board';
     } else {
       document.body.className = 'page-login';
@@ -24,7 +24,7 @@ function App() {
     return () => {
       document.body.className = '';
     };
-  }, [token]);
+  }, [token, currentUser]);
 
   return (
     <Router>
@@ -32,26 +32,26 @@ function App() {
         <Route path="/invite/:token" element={<InviteAcceptPage />} />
         <Route
           path="/invite-partner"
-          element={token ? <InvitePartnerPage /> : <LoginForm />}
+          element={token && currentUser ? <InvitePartnerPage /> : <LoginForm />}
         />
         <Route path="/evaluate/:id" element={<EvaluationPage />} />
         <Route
           path="/past-evaluations"
-          element={token ? <PastEvaluationsPage /> : <LoginForm />}
+          element={token && currentUser ? <PastEvaluationsPage /> : <LoginForm />}
         />
         <Route
           path="/record"
-          element={token ? <RecordPage /> : <LoginForm />}
+          element={token && currentUser ? <RecordPage /> : <LoginForm />}
         />
         <Route
           path="/hitokoto"
-          element={token ? <HitokotoPage /> : <LoginForm />}
+          element={token && currentUser ? <HitokotoPage /> : <LoginForm />}
         />
-        <Route path="/about" element={token ? <About /> : <LoginForm />} />
-        <Route path="*" element={token ? <Dashboard /> : <LoginForm />} />
+        <Route path="/about" element={token && currentUser ? <About /> : <LoginForm />} />
+        <Route path="*" element={token && currentUser ? <Dashboard /> : <LoginForm />} />
         <Route
           path="/pending-evaluations"
-          element={token ? <PendingEvaluationsPage /> : <LoginForm />}
+          element={token && currentUser ? <PendingEvaluationsPage /> : <LoginForm />}
         />
       </Routes>
     </Router>
