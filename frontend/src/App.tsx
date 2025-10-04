@@ -16,13 +16,31 @@ function App() {
   const { token, currentUser } = useAuth();
 
   React.useEffect(() => {
-    if (token && currentUser) {
-      document.body.className = 'page-board';
-    } else {
-      document.body.className = 'page-login';
-    }
+    const setBodyClass = () => {
+      const path = window.location.pathname;
+      if (token && currentUser) {
+        if (path === '/record') {
+          document.body.className = 'page-report';
+        } else {
+          document.body.className = 'page-board';
+        }
+      } else {
+        document.body.className = 'page-login';
+      }
+    };
+
+    setBodyClass();
+
+    // ルート変更時のリスナーを追加
+    const handleRouteChange = () => {
+      setBodyClass();
+    };
+
+    window.addEventListener('popstate', handleRouteChange);
+
     return () => {
       document.body.className = '';
+      window.removeEventListener('popstate', handleRouteChange);
     };
   }, [token, currentUser]);
 
@@ -37,7 +55,9 @@ function App() {
         <Route path="/evaluate/:id" element={<EvaluationPage />} />
         <Route
           path="/past-evaluations"
-          element={token && currentUser ? <PastEvaluationsPage /> : <LoginForm />}
+          element={
+            token && currentUser ? <PastEvaluationsPage /> : <LoginForm />
+          }
         />
         <Route
           path="/record"
@@ -47,11 +67,19 @@ function App() {
           path="/hitokoto"
           element={token && currentUser ? <HitokotoPage /> : <LoginForm />}
         />
-        <Route path="/about" element={token && currentUser ? <About /> : <LoginForm />} />
-        <Route path="*" element={token && currentUser ? <Dashboard /> : <LoginForm />} />
+        <Route
+          path="/about"
+          element={token && currentUser ? <About /> : <LoginForm />}
+        />
+        <Route
+          path="*"
+          element={token && currentUser ? <Dashboard /> : <LoginForm />}
+        />
         <Route
           path="/pending-evaluations"
-          element={token && currentUser ? <PendingEvaluationsPage /> : <LoginForm />}
+          element={
+            token && currentUser ? <PendingEvaluationsPage /> : <LoginForm />
+          }
         />
       </Routes>
     </Router>
