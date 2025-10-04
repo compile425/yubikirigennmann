@@ -31,13 +31,18 @@ const LoginForm = ({ invitationCode, onAuthSuccess }: LoginFormProps) => {
     setError('');
 
     try {
-      const response: ApiResponse<LoginResponse> = await apiClient.post('/login', {
-        email,
-        password,
-      });
+      const response: ApiResponse<LoginResponse> = await apiClient.post(
+        '/login',
+        {
+          email,
+          password,
+        }
+      );
 
       if (response.error) {
-        setError(response.error.error || 'メールアドレスまたはパスワードが違います。');
+        setError(
+          response.error.error || 'メールアドレスまたはパスワードが違います。'
+        );
       } else {
         setToken(response.data?.token || null);
 
@@ -56,7 +61,8 @@ const LoginForm = ({ invitationCode, onAuthSuccess }: LoginFormProps) => {
     setIsGuestLoggingIn(true);
 
     try {
-      const response: ApiResponse<GuestLoginResponse> = await apiClient.post('/guest_login');
+      const response: ApiResponse<GuestLoginResponse> =
+        await apiClient.post('/guest_login');
 
       if (response.error) {
         setError(response.error.error || 'ゲストログインに失敗しました。');

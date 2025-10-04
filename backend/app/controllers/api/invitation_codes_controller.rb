@@ -17,15 +17,15 @@ class Api::InvitationCodesController < ApplicationController
         invitation_code: invitation_code.code
       }, status: :created
     else
-      render json: { 
-        error: invitation_code.errors.full_messages.join(", ") 
+      render json: {
+        error: invitation_code.errors.full_messages.join(", ")
       }, status: :unprocessable_entity
     end
   end
 
   def join_partnership
     code = params[:invitation_code]
-    
+
     unless code.present?
       render json: { error: "招待コードを入力してください" }, status: :unprocessable_entity
       return
@@ -71,8 +71,8 @@ class Api::InvitationCodesController < ApplicationController
         }
       }
     rescue ActiveRecord::RecordInvalid => e
-      render json: { 
-        error: "パートナーシップの作成に失敗しました: #{e.message}" 
+      render json: {
+        error: "パートナーシップの作成に失敗しました: #{e.message}"
       }, status: :unprocessable_entity
     end
   end
