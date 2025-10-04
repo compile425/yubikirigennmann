@@ -1,117 +1,91 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { API_BASE_URL } from '../../lib/config';
+import { apiClient, type ApiResponse } from '../../lib/api';
 import LoginForm from '../forms/LoginForm';
-import RegisterForm from '../forms/RegisterForm';
+import { useAuth } from '../../contexts/useAuth';
 
 const InviteAcceptPage = () => {
-  const { token } = useParams<{ token: string }>();
+  const { token: invitationToken } = useParams<{ token: string }>();
+  const [isValidToken, setIsValidToken] = useState<boolean | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const { token } = useAuth();
   const navigate = useNavigate();
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>('');
-  const [isLoginMode, setIsLoginMode] = useState<boolean>(true);
-
   useEffect(() => {
-    const checkInvitation = async (): Promise<void> => {
-      if (!token) {
-        setError('無効な招待リンクです');
-        setIsLoading(false);
+    const validateInvitation = async () => {
+      if (token) {
+        // 既にログインしている場合はダッシュボードへ
+        navigate('/dashboard');
         return;
       }
 
-      try {
-        await axios.get(`${API_BASE_URL}/invite/${token}`);
-      } catch (error) {
-        console.error('招待確認エラー:', error);
-        if (axios.isAxiosError(error) && error.response) {
-          setError(error.response.data.error || '無効な招待リンクです');
-        } else {
-          setError('招待の確認に失敗しました');
+      if (invitationToken) {
+        try {
+          const response: ApiResponse = await apiClient.get(`/invite/${invitationToken}`);
+          
+          if (response.error) {
+            console.error('招待トークンの検証に失敗しました:', response.error);
+            setIsValidToken(false);
+          } else {
+            setIsValidToken(true);
+          }
+        } catch (error) {
+          console.error('招待トークンの検証エラー:', error);
+          setIsValidToken(false);
+        } finally {
+          setIsLoading(false);
         }
-      } finally {
+      } else {
+        setIsValidToken(false);
         setIsLoading(false);
       }
     };
+    validateInvitation();
+  }, [invitationToken, navigate, token]);
 
-    checkInvitation();
-  }, [token]);
-
-  const handleAuthSuccess = async (): Promise<void> => {
-    if (!token) return;
-
-    try {
-      const response = await axios.get(`${API_BASE_URL}/invite/${token}`);
-      if (response.data.message === 'パートナーシップが作成されました') {
-        alert('パートナーシップが作成されました！');
-        navigate('/');
+  const handleAuthSuccess = async () => {
+    if (invitationToken) {
+      try {
+        const response: ApiResponse = await apiClient.get(`/invite/${invitationToken}`);
+        
+        if (response.error) {
+          console.error('招待承認後の処理に失敗しました:', response.error);
+          alert('招待の承認に失敗しました。');
+        } else {
+          console.log('招待承認成功:', response.data);
+          navigate('/dashboard');
+        }
+      } catch (error) {
+        console.error('招待承認後の処理エラー:', error);
+        alert('招待の承認に失敗しました。');
       }
-    } catch (error) {
-      console.error('パートナーシップ作成エラー:', error);
-      alert('パートナーシップの作成に失敗しました');
+    } else {
+      navigate('/dashboard');
     }
   };
 
   if (isLoading) {
-    return (
-      <div className="yubi-loading">
-        <p>招待を確認中...</p>
-      </div>
-    );
+    return <div>読み込み中...</div>;
   }
 
-  if (error) {
+  if (isValidToken === false) {
     return (
-      <div className="yubi-error">
-        <h2>エラー</h2>
-        <p>{error}</p>
-        <button
-          onClick={() => navigate('/')}
-          className="yubi-button yubi-button--primary"
-        >
-          ホームに戻る
-        </button>
+      <div className="invite-accept-page">
+        <h1>無効な招待リンク</h1>
+        <p>この招待リンクは無効または期限切れです。</p>
       </div>
     );
   }
 
   return (
-    <div className="yubi-invite-accept">
-      <div className="yubi-invite-accept__card">
-        <h1>パートナーを招待しよう！</h1>
-        <p>「ゆびきりげんまん」は、ふたりで使うアプリです。</p>
-
-        <div className="yubi-invite-accept__auth">
-          <div className="yubi-invite-accept__tabs">
-            <button
-              className={`yubi-tab ${isLoginMode ? 'yubi-tab--active' : ''}`}
-              onClick={() => setIsLoginMode(true)}
-            >
-              ログイン
-            </button>
-            <button
-              className={`yubi-tab ${!isLoginMode ? 'yubi-tab--active' : ''}`}
-              onClick={() => setIsLoginMode(false)}
-            >
-              新規登録
-            </button>
-          </div>
-
-          {isLoginMode ? (
-            <LoginForm
-              invitationToken={token}
-              onAuthSuccess={handleAuthSuccess}
-            />
-          ) : (
-            <RegisterForm
-              onBackToLogin={() => setIsLoginMode(true)}
-              invitationToken={token}
-              onAuthSuccess={handleAuthSuccess}
-            />
-          )}
-        </div>
-      </div>
+    <div className="invite-accept-page">
+      <h1>パートナーシップ招待</h1>
+      <p>ログインまたは新規登録してパートナーシップに参加してください。</p>
+      
+      <LoginForm
+        invitationToken={invitationToken}
+        onAuthSuccess={handleAuthSuccess}
+      />
     </div>
   );
 };

@@ -1,106 +1,71 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { apiClient, type ApiResponse } from '../../lib/api';
 import Sidebar from '../ui/Sidebar';
 import DissolvePartnershipModal from '../modals/DissolvePartnershipModal';
 import { useAuth } from '../../contexts/useAuth';
-import { API_BASE_URL } from '../../lib/config';
 
-interface MonthlyStats {
-  current_month_apples: number;
-  user_average_score: number;
-  partner_average_score: number;
-  user_trend: number;
-  partner_trend: number;
+interface MonthlyStat {
+  month: string;
+  total_promises: number;
+  completed_promises: number;
+  average_rating: number;
 }
 
 const RecordPage = () => {
-  const { currentUser, partner } = useAuth();
-  const [isDissolveModalOpen, setIsDissolveModalOpen] =
-    useState<boolean>(false);
-  const [stats, setStats] = useState<MonthlyStats>({
-    current_month_apples: 0,
-    user_average_score: 0,
-    partner_average_score: 0,
-    user_trend: 0,
-    partner_trend: 0,
-  });
-
-  const fetchStats = async (): Promise<void> => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/monthly_stats`);
-      setStats(response.data);
-    } catch (error) {
-      console.error('統計情報の取得に失敗しました:', error);
-    }
-  };
+  const [monthlyStats, setMonthlyStats] = useState<MonthlyStat[]>([]);
+  const [isDissolveModalOpen, setIsDissolveModalOpen] = useState<boolean>(false);
+  const { partner } = useAuth();
 
   useEffect(() => {
-    fetchStats();
-  }, []);
+    const fetchMonthlyStats = async () => {
+      try {
+        const response: ApiResponse<MonthlyStat[]> = await apiClient.get('/monthly_stats');
 
-  const userAvatar =
-    currentUser?.avatar_url ||
-    (currentUser?.is_inviter ? '/icon_user.png' : '/icon_partner.png');
-  const partnerAvatar = partner?.avatar_url || '/icon_partner.png';
+        if (response.error) {
+          console.error('月間統計の取得に失敗しました:', response.error);
+        } else {
+          setMonthlyStats(response.data || []);
+        }
+      } catch (error) {
+        console.error('月間統計の取得エラー:', error);
+      }
+    };
+    fetchMonthlyStats();
+  }, []);
 
   return (
     <div className="yubi-app">
-      <Sidebar onDissolvePartnership={() => setIsDissolveModalOpen(true)} />
-
-      <main className="yubi-report-fullscreen-container">
-        <div className="yubi-report-top-info">
-          <h1 className="yubi-report-page-title">ふたりの記録</h1>
-          <div className="yubi-apple-count">
-            今月のりんご <span>{stats.current_month_apples}</span>個
-          </div>
-        </div>
-
-        <div className="yubi-tree-and-scores">
-          <div className="yubi-score-plate">
-            <img
-              className="yubi-avatar"
-              src={userAvatar}
-              alt="あなたのアイコン"
-            />
-            <div className="yubi-user-name">
-              {currentUser?.name || 'あなた'}
-            </div>
-            <div className="yubi-score-label">これまでの平均スコア</div>
-            <div className="yubi-score-value">
-              {stats.user_average_score.toFixed(1)}
-            </div>
-            <div className="yubi-trend">
-              先月から {stats.user_trend >= 0 ? '+' : ''}
-              {stats.user_trend.toFixed(1)}{' '}
-              {stats.user_trend >= 0 ? 'UP!' : 'DOWN'}
-            </div>
+      <Sidebar />
+      <main className="yubi-main">
+        <div className="record-page">
+          <h1>記録</h1>
+          
+          <div className="monthly-stats">
+            <h2>月間統計</h2>
+            {monthlyStats.length > 0 ? (
+              <div className="stats-grid">
+                {monthlyStats.map((stat, index) => (
+                  <div key={index} className="stat-card">
+                    <h3>{stat.month}</h3>
+                    <p>総約束数: {stat.total_promises}</p>
+                    <p>完了数: {stat.completed_promises}</p>
+                    <p>平均評価: {stat.average_rating.toFixed(1)}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p>データがありません</p>
+            )}
           </div>
 
-          <img
-            className="yubi-tree-background"
-            src="/tree2.png"
-            alt="りんごの木"
-          />
-
-          <div className="yubi-score-plate">
-            <img
-              className="yubi-avatar"
-              src={partnerAvatar}
-              alt="パートナーのアイコン"
-            />
-            <div className="yubi-user-name">
-              {partner?.name || 'パートナー'}
-            </div>
-            <div className="yubi-score-label">これまでの平均スコア</div>
-            <div className="yubi-score-value">
-              {stats.partner_average_score.toFixed(1)}
-            </div>
-            <div className="yubi-trend">
-              先月から {stats.partner_trend >= 0 ? '+' : ''}
-              {stats.partner_trend.toFixed(1)}{' '}
-              {stats.partner_trend >= 0 ? 'UP!' : 'DOWN'}
-            </div>
-          </div>
+          {partner && (
+            <button
+              onClick={() => setIsDissolveModalOpen(true)}
+              className="yubi-button yubi-button--danger"
+            >
+              パートナーシップを解除
+            </button>
+          )}
         </div>
       </main>
 

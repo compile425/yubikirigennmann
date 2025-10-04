@@ -1,10 +1,11 @@
 import React from 'react';
 import { useState } from 'react';
+import axios from 'axios';
+import { API_BASE_URL } from '../../lib/config';
 import { useAuth } from '../../contexts/useAuth';
-import { apiClient, type ApiResponse } from '../../lib/api';
 
-interface RegisterResponse {
-  token: string;
+interface AxiosErrorResponse {
+  error: string;
 }
 
 interface RegisterFormProps {
@@ -65,24 +66,34 @@ const RegisterForm = ({
         requestData.invitation_token = invitationToken;
       }
 
-      const response: ApiResponse<RegisterResponse> = await apiClient.post('/register', requestData);
+      const response = await axios.post(
+        `${API_BASE_URL}/register`,
+        requestData
+      );
 
-      if (response.error) {
-        if (response.error.errors && response.error.errors.length > 0) {
-          setError(response.error.errors.join(', '));
-        } else {
-          setError(response.error.error || '登録に失敗しました。');
-        }
-      } else {
-        setToken(response.data?.token || null);
+      console.log('Registration response:', response.data);
+      setToken(response.data.token);
 
-        if (invitationToken && onAuthSuccess) {
-          onAuthSuccess();
-        }
+      try {
+        axios.defaults.headers.common['Authorization'] =
+          `Bearer ${response.data.token}`;
+        const userResponse = await axios.get(`${API_BASE_URL}/get_me`);
+        console.log('User info after registration:', userResponse.data);
+      } catch (userError) {
+        console.error('Failed to get user info after registration:', userError);
+      }
+
+      if (invitationToken && onAuthSuccess) {
+        onAuthSuccess();
       }
     } catch (err) {
       console.error('登録失敗:', err);
-      setError('予期せぬエラーが発生しました。');
+      if (axios.isAxiosError(err) && err.response) {
+        const errorData = err.response.data as AxiosErrorResponse;
+        setError(errorData.error || '登録に失敗しました。');
+      } else {
+        setError('予期せぬエラーが発生しました。');
+      }
     }
   };
 
@@ -95,7 +106,7 @@ const RegisterForm = ({
       <form className="yubi-login__form" onSubmit={handleSubmit}>
         <div className="yubi-form-group">
           <label htmlFor="name" className="yubi-form-group__label">
-            名前
+            お名前
           </label>
           <input
             type="text"
@@ -107,7 +118,6 @@ const RegisterForm = ({
             required
           />
         </div>
-
         <div className="yubi-form-group">
           <label htmlFor="email" className="yubi-form-group__label">
             メールアドレス
@@ -122,7 +132,6 @@ const RegisterForm = ({
             required
           />
         </div>
-
         <div className="yubi-form-group">
           <label htmlFor="password" className="yubi-form-group__label">
             パスワード
@@ -138,10 +147,12 @@ const RegisterForm = ({
             minLength={6}
           />
         </div>
-
         <div className="yubi-form-group">
-          <label htmlFor="passwordConfirmation" className="yubi-form-group__label">
-            パスワード確認
+          <label
+            htmlFor="passwordConfirmation"
+            className="yubi-form-group__label"
+          >
+            パスワード（確認）
           </label>
           <input
             type="password"
@@ -154,9 +165,7 @@ const RegisterForm = ({
             minLength={6}
           />
         </div>
-
         {error && <p className="yubi-login__error">{error}</p>}
-
         <button
           type="submit"
           className="yubi-button yubi-button--primary yubi-button--login"
@@ -171,7 +180,7 @@ const RegisterForm = ({
           className="yubi-login__link yubi-login__link--button"
           onClick={onBackToLogin}
         >
-          ログインに戻る
+          ← ログインに戻る
         </button>
       </div>
     </div>

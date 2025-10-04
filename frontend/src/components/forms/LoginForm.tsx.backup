@@ -1,16 +1,12 @@
 import React from 'react';
 import { useState } from 'react';
+import axios from 'axios';
+import { API_BASE_URL } from '../../lib/config';
 import { useAuth } from '../../contexts/useAuth';
-import { apiClient, type ApiResponse } from '../../lib/api';
 import RegisterForm from './RegisterForm';
 
-interface LoginResponse {
-  token: string;
-}
-
-interface GuestLoginResponse {
-  token: string;
-  message: string;
+interface AxiosErrorResponse {
+  error: string;
 }
 
 interface LoginFormProps {
@@ -31,23 +27,25 @@ const LoginForm = ({ invitationToken, onAuthSuccess }: LoginFormProps) => {
     setError('');
 
     try {
-      const response: ApiResponse<LoginResponse> = await apiClient.post('/login', {
+      const response = await axios.post(`${API_BASE_URL}/login`, {
         email,
         password,
       });
+      setToken(response.data.token);
 
-      if (response.error) {
-        setError(response.error.error || 'メールアドレスまたはパスワードが違います。');
-      } else {
-        setToken(response.data?.token || null);
-
-        if (invitationToken && onAuthSuccess) {
-          onAuthSuccess();
-        }
+      if (invitationToken && onAuthSuccess) {
+        onAuthSuccess();
       }
     } catch (err) {
       console.error('ログイン失敗:', err);
-      setError('予期せぬエラーが発生しました。');
+      if (axios.isAxiosError(err) && err.response) {
+        const errorData = err.response.data as AxiosErrorResponse;
+        setError(
+          errorData.error || 'メールアドレスまたはパスワードが違います。'
+        );
+      } else {
+        setError('予期せぬエラーが発生しました。');
+      }
     }
   };
 
@@ -56,20 +54,20 @@ const LoginForm = ({ invitationToken, onAuthSuccess }: LoginFormProps) => {
     setIsGuestLoggingIn(true);
 
     try {
-      const response: ApiResponse<GuestLoginResponse> = await apiClient.post('/guest_login');
+      const response = await axios.post(`${API_BASE_URL}/guest_login`);
+      setToken(response.data.token);
 
-      if (response.error) {
-        setError(response.error.error || 'ゲストログインに失敗しました。');
-      } else {
-        setToken(response.data?.token || null);
-
-        if (invitationToken && onAuthSuccess) {
-          onAuthSuccess();
-        }
+      if (invitationToken && onAuthSuccess) {
+        onAuthSuccess();
       }
     } catch (err) {
       console.error('ゲストログイン失敗:', err);
-      setError('予期せぬエラーが発生しました。');
+      if (axios.isAxiosError(err) && err.response) {
+        const errorData = err.response.data as AxiosErrorResponse;
+        setError(errorData.error || 'ゲストログインに失敗しました。');
+      } else {
+        setError('予期せぬエラーが発生しました。');
+      }
     } finally {
       setIsGuestLoggingIn(false);
     }
