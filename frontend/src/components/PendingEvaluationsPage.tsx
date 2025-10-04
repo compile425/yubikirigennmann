@@ -29,8 +29,11 @@ const PendingEvaluationsPage = () => {
 
     setIsLoading(true);
     try {
-      // TODO: 実際のAPIエンドポイントに変更
-      const response = await axios.get(`${API_BASE_URL}/pending-evaluations`);
+      const response = await axios.get(`${API_BASE_URL}/pending-evaluations`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setPendingPromises(response.data);
     } catch (error) {
       console.error('評価待ちの約束の取得に失敗しました:', error);

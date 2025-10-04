@@ -4,7 +4,7 @@ Rails.application.routes.draw do
     mount LetterOpenerWeb::Engine, at: "/letter_opener"
   end
 
-  # ALB用のヘルスチェックのためAPIルート外
+  # ALB用のヘルスチェックのためAPIルート
   get "/health", to: "health#show"
 
   namespace :api do
@@ -15,6 +15,7 @@ Rails.application.routes.draw do
       resources :promise_evaluations, only: [ :create ]
     end
     get "/evaluated-promises", to: "evaluated_promises#index"
+    get "/pending-evaluations", to: "pending_evaluations#index"
     get "/evaluation_pages/:id", to: "evaluation_pages#show"
     get "/get_me", to: "users#me"
     post "/evaluation_emails", to: "evaluation_emails#create"
