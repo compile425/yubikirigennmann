@@ -55,15 +55,15 @@ class Api::UsersController < ApplicationController
           # メール送信に失敗してもユーザー登録は成功とする
         end
 
-        # 招待トークンが存在する場合はパートナーシップを作成
-        if params[:invitation_token].present?
-          invitation = Invitation.find_by(token: params[:invitation_token])
-          if invitation && invitation.inviter_id != user.id
+        # 招待コードが存在する場合はパートナーシップを作成
+        if params[:invitation_code].present?
+          invitation_code = InvitationCode.find_by(code: params[:invitation_code].upcase, used: false)
+          if invitation_code && invitation_code.inviter_id != user.id
             partnership = Partnership.create!(
-              user: invitation.inviter,
+              user: invitation_code.inviter,
               partner: user
             )
-            invitation.destroy
+            invitation_code.update!(used: true)
             Rails.logger.info "パートナーシップを作成しました: #{partnership.id}"
           end
         end

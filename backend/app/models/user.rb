@@ -6,8 +6,7 @@ class User < ApplicationRecord
   has_many :evaluated_promises, class_name: "PromiseEvaluation", foreign_key: "evaluator_id", dependent: :destroy
   has_many :sent_one_words, class_name: "OneWord", foreign_key: "sender_id", dependent: :destroy
   has_many :read_one_words, class_name: "OneWordRead", foreign_key: "reader_id", dependent: :destroy
-  has_many :sent_invitations, class_name: "Invitation", foreign_key: "inviter_id", dependent: :destroy
-  has_many :invitations, foreign_key: "inviter_id", dependent: :destroy
+  has_many :invitation_codes, foreign_key: "inviter_id", dependent: :destroy
 
   validates :email, presence: true, uniqueness: true
   validates :name, presence: true

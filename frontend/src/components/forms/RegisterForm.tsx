@@ -9,13 +9,13 @@ interface RegisterResponse {
 
 interface RegisterFormProps {
   onBackToLogin: () => void;
-  invitationToken?: string;
+  invitationCode?: string;
   onAuthSuccess?: () => void;
 }
 
 const RegisterForm = ({
   onBackToLogin,
-  invitationToken,
+  invitationCode,
   onAuthSuccess,
 }: RegisterFormProps) => {
   const [name, setName] = useState<string>('');
@@ -49,7 +49,7 @@ const RegisterForm = ({
           password: string;
           password_confirmation: string;
         };
-        invitation_token?: string;
+        invitation_code?: string;
       } = {
         user: {
           name,
@@ -61,8 +61,8 @@ const RegisterForm = ({
         },
       };
 
-      if (invitationToken) {
-        requestData.invitation_token = invitationToken;
+      if (invitationCode) {
+        requestData.invitation_code = invitationCode;
       }
 
       const response: ApiResponse<RegisterResponse> = await apiClient.post('/register', requestData);
@@ -76,7 +76,7 @@ const RegisterForm = ({
       } else {
         setToken(response.data?.token || null);
 
-        if (invitationToken && onAuthSuccess) {
+        if (invitationCode && onAuthSuccess) {
           onAuthSuccess();
         }
       }
