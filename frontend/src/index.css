@@ -1903,15 +1903,74 @@ body.page-about .yubi-main {
 /* InvitePartnerPage用 */
 .invite-partner-page {
   padding: 40px 20px;
-  max-width: 600px;
+  max-width: 800px;
   margin: 0 auto;
   text-align: center;
 }
 
 .invite-partner-page h1 {
   color: var(--heading-color);
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
+
+.invite-partner-page h2 {
+  color: var(--heading-color);
+  margin-bottom: 20px;
+  font-size: 20px;
+}
+
+.invitation-section, .join-section {
+  background: var(--panel-bg);
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.invitation-code, .join-form {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+  align-items: center;
+}
+
+.code-input {
+  flex: 1;
+  padding: 12px;
+  border: 2px solid var(--shadow-dark);
+  border-radius: 8px;
+  font-family: var(--font-rounded);
+  font-size: 16px;
+  text-align: center;
+  font-weight: 700;
+  letter-spacing: 2px;
+  background: #fff;
+  color: var(--text-color-brown);
+}
+
+.code-input:focus {
+  outline: none;
+  border-color: var(--leaf-green);
+  box-shadow: 0 0 10px rgba(89, 148, 91, 0.2);
+}
+
+/* 一言ページのボタンスタイルを無効状態に対応 */
+.yubi-hitokoto-send-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  box-shadow: 0 2px 0 #999;
+}
+
+.success {
+  color: var(--leaf-green);
+  background: #e8f5e8;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  border-left: 4px solid var(--leaf-green);
+}
+
 
 .invite-partner-page .error {
   color: #d32f2f;

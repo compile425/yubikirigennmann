@@ -170,7 +170,7 @@ const Sidebar = ({ onDissolvePartnership }: SidebarProps) => {
               className="yubi-sidebar__link"
               onClick={handleNavLinkClick}
             >
-              パートナー招待
+              パートナーと始める
             </Link>
           )}
           <a href="#" className="yubi-sidebar__link" onClick={handleLogout}>
