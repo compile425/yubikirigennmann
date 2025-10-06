@@ -37,6 +37,17 @@
 ## 画面キャプチャ
 
 ## 使用技術
+### Technology Stack
+
+| Category       | Technology Stack                                                                          |
+| :------------- | :---------------------------------------------------------------------------------------- |
+| **Frontend**     | TypeScript (`~5.8.3`), React (`^19.1.0`), CSS, Vite                                       |
+| **Backend**      | Ruby (`3.4.5`), Ruby on Rails (`~> 7.2.2, >= 7.2.2.1`)                                    |
+| **Infrastructure** | Amazon Web Services (S3, CloudFront, EC2, RDS, Route 53, ALB, ECR), Sentry, Docker, Docker Compose |
+| **Database**     | MySQL (`8.4`)                                                                             |
+| **Testing**      | RSpec, ESLint                                                                             |
+| **CI/CD**        | GitHub Actions                                                                            |
+| **etc.**         | draw.io, Git, GitHub                                                                      |
 
 ## ER図
 
