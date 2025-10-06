@@ -4,7 +4,7 @@
 
 
 ## オリジナルプロダクトのURL
-(https://yubikirigenman.com）
+[](https://yubikirigenman.com）
 
 ## サービスへの想い
 本プロダクトは、二人の約束事を大切にし、  
