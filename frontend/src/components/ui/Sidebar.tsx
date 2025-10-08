@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/useAuth';
-import { useState, useEffect } from 'react';
+import { useHitokotoNotification } from '../../contexts/HitokotoNotificationContext';
+import { useState, useEffect, useCallback } from 'react';
 import { apiClient } from '../../lib/api';
 import type { ApiResponse, PendingPromise } from '../../lib/api';
 
@@ -11,15 +12,10 @@ interface SidebarProps {
 
 const Sidebar = ({ onDissolvePartnership }: SidebarProps) => {
   const { setToken, partner, currentUser, token } = useAuth();
+  const { hasUnreadHitokoto, markAsRead } = useHitokotoNotification();
   const [pendingCount, setPendingCount] = useState<number>(0);
 
-  useEffect(() => {
-    if (token && partner) {
-      fetchPendingCount();
-    }
-  }, [token, partner]);
-
-  const fetchPendingCount = async (): Promise<void> => {
+  const fetchPendingCount = useCallback(async (): Promise<void> => {
     try {
       const response: ApiResponse<PendingPromise[]> = await apiClient.get(
         '/pending-evaluations'
@@ -35,7 +31,13 @@ const Sidebar = ({ onDissolvePartnership }: SidebarProps) => {
       console.error('評価待ち件数の取得に失敗しました:', error);
       setPendingCount(0);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (token && partner) {
+      fetchPendingCount();
+    }
+  }, [token, partner, fetchPendingCount]);
 
   const handleLogout = (): void => {
     setToken(null);
@@ -135,7 +137,23 @@ const Sidebar = ({ onDissolvePartnership }: SidebarProps) => {
             className="yubi-sidebar__link"
             onClick={handleNavLinkClick}
           >
-            ちょっと一言
+            <span>ちょっと一言</span>
+            {hasUnreadHitokoto && (
+              <span className="yubi-sidebar__notification-wrapper">
+                <span className="yubi-sidebar__notification-badge">!</span>
+                <button
+                  onClick={e => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    markAsRead();
+                  }}
+                  className="yubi-sidebar__notification-close"
+                  title="通知を消す"
+                >
+                  ×
+                </button>
+              </span>
+            )}
           </Link>
           <Link
             to="/pending-evaluations"

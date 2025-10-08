@@ -1,5 +1,6 @@
 /* フォント */
 @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
 
 /* 変数 */
 :root {
@@ -140,6 +141,13 @@ body.page-about .yubi-main {
   margin: 0;
 }
 
+.yubi-sidebar__notification-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+}
+
 .yubi-sidebar__notification-badge {
   background-color: #ff4757;
   color: white;
@@ -147,10 +155,36 @@ body.page-about .yubi-main {
   font-weight: bold;
   padding: 4px 8px;
   border-radius: 12px;
-  margin-left: 8px;
   min-width: 18px;
   text-align: center;
   line-height: 1;
+}
+
+.yubi-sidebar__notification-close {
+  background-color: var(--text-color-brown);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 1;
+  padding: 0;
+  transition: all 0.2s ease;
+}
+
+.yubi-sidebar__notification-close:hover {
+  background-color: #8b6f47;
+  transform: scale(1.1);
+}
+
+.yubi-sidebar__notification-close:active {
+  transform: scale(0.9);
 }
 
 /* ナビゲーションボタン */
@@ -487,10 +521,54 @@ body.page-about .yubi-main {
   line-height: 1.6;
 }
 
+/* Pick Up! スタイル */
+.yubi-card--pickup {
+  position: relative;
+  border: 2px solid var(--heading-color) !important;
+  background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: scale(1.02);
+  padding-top: 34px;
+}
+
+.yubi-pickup-header {
+  position: absolute;
+  top: 8px;
+  left: 12px;
+  color: var(--heading-color);
+  font-weight: 800;
+  font-size: 14px;
+  padding: 5px;
+  margin-bottom: 8px; /* 約束の本文との間隔 */
+}
+
 /* アクションボタン */
 .yubi-actions {
   display: flex;
   gap: 8px;
+}
+
+/* Material Symbols アイコン */
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 18px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
 }
 
 .yubi-action-button {
@@ -746,6 +824,41 @@ body.page-about .yubi-main {
 }
 
 .yubi-button--add:active {
+  transform: scale(0.95);
+}
+
+/* 既読ボタン専用スタイル */
+.yubi-button--mark-read {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  white-space: nowrap;
+  height: 36px;
+  padding: 0 12px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s ease-out;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  position: absolute;
+  right: 15px;
+  z-index: 10;
+  pointer-events: auto;
+}
+
+.yubi-button--mark-read:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.yubi-button--mark-read:active {
   transform: scale(0.95);
 }
 
@@ -1462,6 +1575,12 @@ body.page-about .yubi-main {
 .yubi-hitokoto-container .yubi-column__header {
   justify-content: center;
   text-align: center;
+  position: relative;
+}
+
+.yubi-hitokoto-container .yubi-column__header span {
+  flex: 1;
+  text-align: center;
 }
 
 .yubi-hitokoto-form-section {
@@ -1530,6 +1649,31 @@ body.page-about .yubi-main {
   cursor: not-allowed;
   box-shadow: 0 2px 0 #999;
 }
+
+.yubi-hitokoto-success-message {
+  margin-top: 15px;
+  padding: 12px 20px;
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  animation: successFadeIn 0.3s ease-in-out;
+}
+
+@keyframes successFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 
 .yubi-send-button .icon {
   display: inline-block;
@@ -2024,7 +2168,7 @@ body.page-about .yubi-main {
     max-width: 90vw;
     margin-bottom: 20px;
   }
-
+  
   .yubi-score-plate,
   .score-plate {
     margin: 10px 0;
@@ -2076,6 +2220,7 @@ body.page-about .yubi-main {
     height: 44px;
     font-size: 16px;
     padding: 0 12px;
+    margin-top: 60px; /* ハンバーガーメニューとの重なりを防ぐ */
   }
 
   .yubi-main--pending-evaluations {
@@ -2169,6 +2314,7 @@ body.page-about .yubi-main {
     height: 40px;
     font-size: 14px;
     padding: 0 10px;
+    margin-top: 55px;
   }
 
   .yubi-main--pending-evaluations {

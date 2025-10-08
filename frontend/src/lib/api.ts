@@ -106,7 +106,10 @@ export class ApiClient {
       error => {
         if (error.response?.status === 401) {
           localStorage.removeItem('authToken');
-          window.location.href = '/';
+          // ログイン画面以外でのみリロード
+          if (window.location.pathname !== '/') {
+            window.location.href = '/';
+          }
         }
         return Promise.reject(error);
       }

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { apiClient, type ApiResponse } from '../../lib/api';
+import { useHitokotoNotification } from '../../contexts/HitokotoNotificationContext';
 import Sidebar from '../ui/Sidebar';
 import DissolvePartnershipModal from '../modals/DissolvePartnershipModal';
 
@@ -14,6 +15,9 @@ const HitokotoPage = () => {
   const [newOneWord, setNewOneWord] = useState<string>('');
   const [isDissolveModalOpen, setIsDissolveModalOpen] =
     useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState<boolean>(false);
+  const { refreshUnreadStatus } = useHitokotoNotification();
 
   const fetchOneWords = async () => {
     try {
@@ -32,11 +36,16 @@ const HitokotoPage = () => {
 
   useEffect(() => {
     fetchOneWords();
-  }, []);
+    // ページを開いたときに通知を更新
+    refreshUnreadStatus();
+  }, [refreshUnreadStatus]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newOneWord.trim()) return;
+
+    setIsSubmitting(true);
+    setShowSuccessMessage(false);
 
     try {
       const response: ApiResponse<OneWord> = await apiClient.post(
@@ -51,9 +60,16 @@ const HitokotoPage = () => {
       } else {
         setNewOneWord('');
         fetchOneWords();
+        setShowSuccessMessage(true);
+
+        setTimeout(() => {
+          setShowSuccessMessage(false);
+        }, 3000);
       }
     } catch (error) {
       console.error('一言の投稿エラー:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -73,11 +89,22 @@ const HitokotoPage = () => {
                   onChange={e => setNewOneWord(e.target.value)}
                   placeholder="日頃の感謝や、ふと思ったことを手紙に書いてみよう..."
                   rows={3}
+                  disabled={isSubmitting}
                 />
-                <button type="submit" className="yubi-hitokoto-send-button">
-                  手紙を送る
+                <button
+                  type="submit"
+                  className="yubi-hitokoto-send-button"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? '送信中...' : '手紙を送る'}
                 </button>
               </form>
+
+              {showSuccessMessage && (
+                <div className="yubi-hitokoto-success-message">
+                  手紙を送りました！
+                </div>
+              )}
             </div>
           </div>
 

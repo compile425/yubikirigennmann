@@ -9,6 +9,7 @@ import HitokotoPage from './components/pages/HitokotoPage';
 import About from './components/pages/About';
 import InvitePartnerPage from './components/pages/InvitePartnerPage';
 import { useAuth } from './contexts/useAuth';
+import { HitokotoNotificationProvider } from './contexts/HitokotoNotificationContext';
 import PendingEvaluationsPage from './components/pages/PendingEvaluationsPage';
 
 function App() {
@@ -45,7 +46,8 @@ function App() {
 
   return (
     <Router>
-      <Routes>
+      <HitokotoNotificationProvider>
+        <Routes>
         <Route
           path="/invite-partner"
           element={token && currentUser ? <InvitePartnerPage /> : <LoginForm />}
@@ -79,7 +81,8 @@ function App() {
             token && currentUser ? <PendingEvaluationsPage /> : <LoginForm />
           }
         />
-      </Routes>
+        </Routes>
+      </HitokotoNotificationProvider>
     </Router>
   );
 }

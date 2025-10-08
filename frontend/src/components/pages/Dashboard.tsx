@@ -140,6 +140,7 @@ const Dashboard = () => {
             onDelete={handleDeletePromise}
             onEvaluate={handleOpenEvaluationModal}
             showEvaluationButton={true}
+            currentUserId={currentUser?.id}
           />
           <PromiseColumn
             title={partnerPromisesTitle}
