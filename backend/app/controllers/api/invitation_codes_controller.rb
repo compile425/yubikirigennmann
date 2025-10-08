@@ -54,6 +54,9 @@ class Api::InvitationCodesController < ApplicationController
         partner: current_user
       )
 
+      # デフォルトの約束を作成
+      partnership.create_default_promises
+
       invitation_code.mark_as_used!
 
       render json: {
@@ -76,4 +79,5 @@ class Api::InvitationCodesController < ApplicationController
       }, status: :unprocessable_entity
     end
   end
+
 end

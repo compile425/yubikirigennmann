@@ -18,6 +18,7 @@ Rails.application.routes.draw do
     get "/pending-evaluations", to: "pending_evaluations#index"
     get "/evaluation_pages/:id", to: "evaluation_pages#show"
     get "/get_me", to: "users#me"
+    get "/user_stats", to: "users#stats"
     post "/evaluation_emails", to: "evaluation_emails#create"
 
     # 招待コード機能のルート
@@ -26,6 +27,7 @@ Rails.application.routes.draw do
 
     # パートナーシップ機能のルート
     delete "/partnerships/dissolve", to: "partnerships#dissolve"
+    post "/partnerships/create_default_promises", to: "partnerships#create_default_promises"
 
     # ちょっと一言のルート
     resources :one_words, only: [ :index, :create ]

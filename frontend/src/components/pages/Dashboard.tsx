@@ -105,22 +105,14 @@ const Dashboard = () => {
     await fetchPromises();
   };
 
-  const myPromisesTitle = currentUser
-    ? `${currentUser.name}の約束`
-    : 'わたしの約束';
-  const partnerPromisesTitle = partner
-    ? `${partner.name}の約束`
-    : 'パートナーの約束';
+  const myPromisesTitle = 'あなたの約束';
+  const partnerPromisesTitle = 'パートナーの約束';
 
-  const myPromises = promises.filter(p => {
-    console.log('Filtering promise:', p);
-    console.log('Current user ID:', currentUser?.id);
-    console.log('Promise creator_id:', p.creator_id);
-    console.log('Is match:', currentUser && p.creator_id === currentUser.id);
-    return currentUser && p.creator_id === currentUser.id;
-  });
+  const myPromises = promises.filter(
+    p => currentUser && p.creator_id === currentUser.id && p.type !== 'our_promise'
+  );
   const partnerPromises = promises.filter(
-    p => partner && p.creator_id === partner.id
+    p => partner && p.creator_id === partner.id && p.type !== 'our_promise'
   );
   const ourPromises = promises.filter(p => p.type === 'our_promise');
 

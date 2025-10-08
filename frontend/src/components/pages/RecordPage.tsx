@@ -4,13 +4,15 @@ import Sidebar from '../ui/Sidebar';
 import DissolvePartnershipModal from '../modals/DissolvePartnershipModal';
 
 interface UserStats {
-  current_user: {
+  inviter: {
+    id: number;
     name: string;
     avatar_url?: string;
     average_score: number;
     score_trend: number;
   };
-  partner: {
+  invitee: {
+    id: number;
     name: string;
     avatar_url?: string;
     average_score: number;
@@ -56,25 +58,23 @@ const RecordPage = () => {
           <div className="score-plate">
             <img
               className="avatar"
-              src={
-                userStats?.current_user.avatar_url || '/public/icon_user.png'
-              }
-              alt="あなたのアイコン"
+              src={userStats?.inviter.avatar_url || '/public/icon_user.png'}
+              alt="招待者のアイコン"
             />
             <div className="user-name">
-              {userStats?.current_user.name || 'あなた'}
+              あなた
             </div>
             <div className="score-label">これまでの平均スコア</div>
             <div className="score-value">
-              {userStats?.current_user.average_score.toFixed(1) || '0.0'}
+              {userStats?.inviter.average_score.toFixed(1) || '0.0'}
             </div>
             <div className="trend">
               先月から{' '}
-              {userStats?.current_user.score_trend &&
-              userStats.current_user.score_trend >= 0
+              {userStats?.inviter.score_trend &&
+              userStats.inviter.score_trend >= 0
                 ? '+'
                 : ''}
-              {userStats?.current_user.score_trend?.toFixed(1) || '0.0'} UP!
+              {userStats?.inviter.score_trend?.toFixed(1) || '0.0'} UP!
             </div>
           </div>
           <img
@@ -85,23 +85,23 @@ const RecordPage = () => {
           <div className="score-plate">
             <img
               className="avatar"
-              src={userStats?.partner.avatar_url || '/public/icon_partner.png'}
-              alt="パートナーのアイコン"
+              src={userStats?.invitee.avatar_url || '/public/icon_partner.png'}
+              alt="被招待者のアイコン"
             />
             <div className="user-name">
-              {userStats?.partner.name || 'パートナー'}
+              パートナー
             </div>
             <div className="score-label">これまでの平均スコア</div>
             <div className="score-value">
-              {userStats?.partner.average_score.toFixed(1) || '0.0'}
+              {userStats?.invitee.average_score.toFixed(1) || '0.0'}
             </div>
             <div className="trend">
               先月から{' '}
-              {userStats?.partner.score_trend &&
-              userStats.partner.score_trend >= 0
+              {userStats?.invitee.score_trend &&
+              userStats.invitee.score_trend >= 0
                 ? '+'
                 : ''}
-              {userStats?.partner.score_trend?.toFixed(1) || '0.0'} UP!
+              {userStats?.invitee.score_trend?.toFixed(1) || '0.0'} UP!
             </div>
           </div>
         </div>

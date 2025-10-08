@@ -39,6 +39,45 @@ class Api::UsersController < ApplicationController
     render json: { error: "認証が必要です" }, status: :unauthorized
   end
 
+  def stats
+    unless current_user&.partnership
+      render json: { error: "パートナーシップが存在しません" }, status: :unprocessable_entity
+      return
+    end
+
+    partnership = current_user.partnership
+    inviter = User.find(partnership.user_id)
+    invitee = User.find(partnership.partner_id)
+
+    # 現在のユーザーが招待者かどうかを判定
+    current_is_inviter = current_user.id == partnership.user_id
+
+    # 左側（招待者）、右側（被招待者）の順でデータを整理
+    left_user = inviter
+    right_user = invitee
+
+    # 月間りんご数の計算（仮実装）
+    monthly_apple_count = partnership.promise_rating_scores.sum(:harvested_apples)
+
+    render json: {
+      inviter: {
+        id: left_user.id,
+        name: left_user.name,
+        avatar_url: nil, # アバター機能は後で実装
+        average_score: calculate_average_score(left_user),
+        score_trend: calculate_score_trend(left_user)
+      },
+      invitee: {
+        id: right_user.id,
+        name: right_user.name,
+        avatar_url: nil, # アバター機能は後で実装
+        average_score: calculate_average_score(right_user),
+        score_trend: calculate_score_trend(right_user)
+      },
+      monthly_apple_count: monthly_apple_count
+    }
+  end
+
   def create
     user = User.new(user_params)
 
@@ -55,18 +94,6 @@ class Api::UsersController < ApplicationController
           # メール送信に失敗してもユーザー登録は成功とする
         end
 
-        # 招待コードが存在する場合はパートナーシップを作成
-        if params[:invitation_code].present?
-          invitation_code = InvitationCode.find_by(code: params[:invitation_code].upcase, used: false)
-          if invitation_code && invitation_code.inviter_id != user.id
-            partnership = Partnership.create!(
-              user: invitation_code.inviter,
-              partner: user
-            )
-            invitation_code.update!(used: true)
-            Rails.logger.info "パートナーシップを作成しました: #{partnership.id}"
-          end
-        end
 
         token = encode_token(user_id: user.id)
 
@@ -95,5 +122,40 @@ class Api::UsersController < ApplicationController
 
   def credential_params
     params.require(:user_credential).permit(:password, :password_confirmation)
+  end
+
+  private
+
+  def calculate_average_score(user)
+    # ユーザーが評価した約束の平均スコアを計算
+    evaluations = user.evaluated_promises
+    return 0.0 if evaluations.empty?
+
+    total_score = evaluations.sum(:rating)
+    count = evaluations.count
+    count > 0 ? total_score.to_f / count : 0.0
+  end
+
+  def calculate_score_trend(user)
+    # 先月からのスコアトレンドを計算（仮実装）
+    current_month = Date.current.beginning_of_month
+    last_month = current_month - 1.month
+
+    current_score = calculate_monthly_average_score(user, current_month)
+    last_score = calculate_monthly_average_score(user, last_month)
+
+    current_score - last_score
+  end
+
+  def calculate_monthly_average_score(user, month_start)
+    evaluations = user.evaluated_promises
+      .where("created_at >= ? AND created_at < ?",
+             month_start, month_start + 1.month)
+
+    return 0.0 if evaluations.empty?
+
+    total_score = evaluations.sum(:rating)
+    count = evaluations.count
+    count > 0 ? total_score.to_f / count : 0.0
   end
 end

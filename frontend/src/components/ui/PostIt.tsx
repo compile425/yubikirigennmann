@@ -6,6 +6,7 @@ interface PostItProps {
   rating?: number;
   evaluationText?: string;
   evaluationDate?: string;
+  promiseType?: string;
   onEdit?: () => void;
   onDelete?: () => void;
   onEvaluate?: () => void;
@@ -18,6 +19,7 @@ const PostIt = ({
   rating,
   evaluationText,
   evaluationDate,
+  promiseType,
   onEdit,
   onDelete,
   onEvaluate,
@@ -98,14 +100,16 @@ const PostIt = ({
           <div className="yubi-card__bottom-left">
             {rating && renderStars(rating)}
           </div>
-          <div className="yubi-card__bottom-right">
-            <span>
-              評価日:{' '}
-              {evaluationDate
-                ? new Date(evaluationDate).toLocaleDateString('ja-JP')
-                : dueDate || 'なし'}
-            </span>
-          </div>
+          {promiseType !== 'our_promise' && (
+            <div className="yubi-card__bottom-right">
+              <span>
+                評価日:{' '}
+                {evaluationDate
+                  ? new Date(evaluationDate).toLocaleDateString('ja-JP')
+                  : dueDate || 'なし'}
+              </span>
+            </div>
+          )}
         </div>
       </footer>
     </div>

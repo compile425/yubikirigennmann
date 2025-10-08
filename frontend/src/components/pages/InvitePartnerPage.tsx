@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { apiClient, type ApiResponse } from '../../lib/api';
 import { useAuth } from '../../contexts/useAuth';
 import Sidebar from '../ui/Sidebar';
+import DissolvePartnershipModal from '../modals/DissolvePartnershipModal';
 
 interface InvitationCodeResponse {
   invitation_code: string;
@@ -15,7 +16,9 @@ const InvitePartnerPage = () => {
   const [isJoining, setIsJoining] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const [success, setSuccess] = useState<string>('');
-  const { partner } = useAuth();
+  const [isDissolveModalOpen, setIsDissolveModalOpen] =
+    useState<boolean>(false);
+  const { partner, refreshUserData } = useAuth();
   const navigate = useNavigate();
 
   const generateInvitationCode = useCallback(async (): Promise<void> => {
@@ -66,9 +69,11 @@ const InvitePartnerPage = () => {
         );
       } else {
         setSuccess('パートナーシップが結ばれました！');
+        // ユーザー情報を更新してからナビゲート
+        await refreshUserData();
         setTimeout(() => {
           navigate('/');
-        }, 2000);
+        }, 1000);
       }
     } catch (error) {
       console.error('パートナーシップ参加エラー:', error);
@@ -76,7 +81,7 @@ const InvitePartnerPage = () => {
     } finally {
       setIsJoining(false);
     }
-  }, [inputCode, navigate]);
+  }, [inputCode, navigate, refreshUserData]);
 
   useEffect(() => {
     if (partner) {
@@ -92,20 +97,25 @@ const InvitePartnerPage = () => {
   if (partner) {
     return (
       <div className="app-wrapper">
-        <Sidebar />
+        <Sidebar onDissolvePartnership={() => setIsDissolveModalOpen(true)} />
         <main className="board-container">
           <div className="invite-partner-page">
             <h1>パートナーシップが既に存在します</h1>
             <p>パートナー: {partner.name}</p>
           </div>
         </main>
+
+        <DissolvePartnershipModal
+          isOpen={isDissolveModalOpen}
+          onClose={() => setIsDissolveModalOpen(false)}
+        />
       </div>
     );
   }
 
   return (
     <div className="app-wrapper">
-      <Sidebar />
+      <Sidebar onDissolvePartnership={() => setIsDissolveModalOpen(true)} />
       <main className="board-container">
         <div className="invite-partner-page">
           <h1>パートナーと始める</h1>
@@ -176,6 +186,11 @@ const InvitePartnerPage = () => {
           </div>
         </div>
       </main>
+
+      <DissolvePartnershipModal
+        isOpen={isDissolveModalOpen}
+        onClose={() => setIsDissolveModalOpen(false)}
+      />
     </div>
   );
 };

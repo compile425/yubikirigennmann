@@ -7,7 +7,7 @@ import { useAuth } from '../../contexts/useAuth';
 import type { PendingPromise, ApiResponse } from '../../lib/api';
 
 const PendingEvaluationsPage = () => {
-  const { token, currentUser, partner } = useAuth();
+  const { token, currentUser } = useAuth();
   const [isDissolveModalOpen, setIsDissolveModalOpen] =
     useState<boolean>(false);
   const [isEvaluationModalOpen, setIsEvaluationModalOpen] =
@@ -49,27 +49,16 @@ const PendingEvaluationsPage = () => {
     await fetchPendingPromises();
   };
 
-  // 評価待ちの約束を自分が作ったものと相手が作ったもので分ける
+  // 評価待ちの約束を自分が作ったもののみ表示
   const myPendingPromises = pendingPromises.filter(
     promise => currentUser && promise.creator_id === currentUser.id
   );
-  const partnerPendingPromises = pendingPromises.filter(
-    promise => partner && promise.creator_id === partner.id
-  );
-
-  // タイトルを生成
-  const myPromisesTitle = currentUser
-    ? `${currentUser.name}の評価`
-    : 'わたしの評価';
-  const partnerPromisesTitle = partner
-    ? `${partner.name}の評価`
-    : 'パートナーの評価';
 
   if (isLoading) {
     return (
-      <div className="yubi-app">
+      <div className="yubi-app yubi-app--pending-evaluations">
         <Sidebar onDissolvePartnership={() => setIsDissolveModalOpen(true)} />
-        <main className="yubi-main">
+        <main className="yubi-main yubi-main--pending-evaluations">
           <div className="yubi-loading">
             <p>評価待ちの約束を読み込み中...</p>
           </div>
@@ -79,14 +68,14 @@ const PendingEvaluationsPage = () => {
   }
 
   return (
-    <div className="yubi-app">
+    <div className="yubi-app yubi-app--pending-evaluations">
       <Sidebar onDissolvePartnership={() => setIsDissolveModalOpen(true)} />
 
-      <main className="yubi-main">
+      <main className="yubi-main yubi-main--pending-evaluations">
         <div className="yubi-board">
           <div className="yubi-column">
             <h2 className="yubi-column__header">
-              <span>{myPromisesTitle}</span>
+              <span>評価待ちの約束</span>
               <span className="yubi-badge yubi-badge--pending">
                 {myPendingPromises.length}件
               </span>
@@ -103,51 +92,6 @@ const PendingEvaluationsPage = () => {
                     className="yubi-card yubi-card--pending"
                   >
                     <div className="yubi-card__content">{promise.content}</div>
-                    <div className="yubi-card__meta">
-                      <span className="yubi-card__due-date">
-                        期限:{' '}
-                        {new Date(promise.due_date).toLocaleDateString('ja-JP')}
-                      </span>
-                    </div>
-                    <div className="yubi-card__actions">
-                      <button
-                        className="yubi-button yubi-button--evaluate"
-                        onClick={() => handleOpenEvaluationModal(promise)}
-                      >
-                        🌟 評価する
-                      </button>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-
-          <div className="yubi-column">
-            <h2 className="yubi-column__header">
-              <span>{partnerPromisesTitle}</span>
-              <span className="yubi-badge yubi-badge--pending">
-                {partnerPendingPromises.length}件
-              </span>
-            </h2>
-            <div className="yubi-column__content">
-              {partnerPendingPromises.length === 0 ? (
-                <div className="yubi-empty-state">
-                  <p>評価待ちの約束はありません</p>
-                </div>
-              ) : (
-                partnerPendingPromises.map(promise => (
-                  <div
-                    key={promise.id}
-                    className="yubi-card yubi-card--pending"
-                  >
-                    <div className="yubi-card__content">{promise.content}</div>
-                    <div className="yubi-card__meta">
-                      <span className="yubi-card__due-date">
-                        期限:{' '}
-                        {new Date(promise.due_date).toLocaleDateString('ja-JP')}
-                      </span>
-                    </div>
                     <div className="yubi-card__actions">
                       <button
                         className="yubi-button yubi-button--evaluate"
@@ -162,14 +106,6 @@ const PendingEvaluationsPage = () => {
             </div>
           </div>
         </div>
-
-        {pendingPromises.length === 0 && (
-          <div className="yubi-success-message">
-            <div className="yubi-success-icon">🎉</div>
-            <h3>すべての評価が完了しました！</h3>
-            <p>素晴らしいです！すべての約束の評価が完了しています。</p>
-          </div>
-        )}
       </main>
 
       <EvaluationModal

@@ -13,12 +13,9 @@ interface GuestLoginResponse {
   message: string;
 }
 
-interface LoginFormProps {
-  invitationCode?: string;
-  onAuthSuccess?: () => void;
-}
+interface LoginFormProps {}
 
-const LoginForm = ({ invitationCode, onAuthSuccess }: LoginFormProps) => {
+const LoginForm = ({}: LoginFormProps) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>('');
@@ -45,10 +42,6 @@ const LoginForm = ({ invitationCode, onAuthSuccess }: LoginFormProps) => {
         );
       } else {
         setToken(response.data?.token || null);
-
-        if (invitationCode && onAuthSuccess) {
-          onAuthSuccess();
-        }
       }
     } catch (err) {
       console.error('ログイン失敗:', err);
@@ -68,10 +61,6 @@ const LoginForm = ({ invitationCode, onAuthSuccess }: LoginFormProps) => {
         setError(response.error.error || 'ゲストログインに失敗しました。');
       } else {
         setToken(response.data?.token || null);
-
-        if (invitationCode && onAuthSuccess) {
-          onAuthSuccess();
-        }
       }
     } catch (err) {
       console.error('ゲストログイン失敗:', err);
@@ -85,8 +74,6 @@ const LoginForm = ({ invitationCode, onAuthSuccess }: LoginFormProps) => {
     return (
       <RegisterForm
         onBackToLogin={() => setIsRegisterMode(false)}
-        invitationCode={invitationCode}
-        onAuthSuccess={onAuthSuccess}
       />
     );
   }
