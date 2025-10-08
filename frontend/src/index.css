@@ -329,10 +329,16 @@ body.page-about .yubi-main {
 
 .yubi-card__info {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
+  flex-direction: column;
   width: 100%;
   gap: 10px;
+}
+
+.yubi-card__bottom-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
 
 .yubi-card__bottom-left {
@@ -343,7 +349,6 @@ body.page-about .yubi-main {
 .yubi-card__bottom-right {
   display: flex;
   align-items: center;
-  margin-left: auto;
 }
 
 .yubi-card__meta {
@@ -450,20 +455,30 @@ body.page-about .yubi-main {
   color: var(--text-color-brown);
 }
 
+.yubi-evaluation-comment-section {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.yubi-evaluation-comment-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-color-brown);
+  margin: 0 0 6px 0;
+}
+
 .yubi-evaluation-comment {
-  margin: 10px 0;
+  margin: 0;
   padding: 8px 12px;
   background-color: rgba(255, 255, 255, 0.8);
   border-radius: 8px;
-  border-left: 3px solid var(--leaf-green);
 }
 
 .yubi-evaluation-text {
   margin: 0;
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text-color-brown);
-  font-style: italic;
-  line-height: 1.4;
+  line-height: 1.6;
 }
 
 /* アクションボタン */
@@ -905,7 +920,7 @@ body.page-about .yubi-main {
   text-align: center;
 }
 
-/* レポート */
+/* ふたりの評価 */
 .yubi-report-fullscreen-container,
 .report-fullscreen-container {
   width: 100%;
@@ -1727,6 +1742,116 @@ body.page-about .yubi-main {
   text-align: center;
 }
 
+/* 過去の約束検索 */
+.yubi-past-evaluations-header {
+  margin-bottom: 30px;
+}
+
+.yubi-search-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.yubi-past-evaluations-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text-color-brown);
+  margin: 0;
+  text-align: center;
+}
+
+.yubi-search-toggle-button {
+  width: 36px;
+  height: 36px;
+  background-color: var(--heading-color);
+  border: none;
+  border-radius: 50%;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #043a40;
+  transition: all 0.1s ease-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: white;
+}
+
+.yubi-search-toggle-button:hover {
+  background-color: #086673;
+}
+
+.yubi-search-toggle-button:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #043a40;
+}
+
+.yubi-search-dropdown {
+  background-color: var(--panel-bg);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin: 0 auto 20px;
+  max-width: 500px;
+}
+
+.yubi-search-controls {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.yubi-search-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.yubi-search-field label {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text-color-brown);
+}
+
+.yubi-search-input,
+.yubi-search-select {
+  padding: 10px 12px;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  font-size: 16px;
+  font-family: var(--font-rounded);
+  color: var(--text-color-brown);
+  background-color: #fff;
+  min-width: 100px;
+  transition: border-color 0.2s;
+}
+
+.yubi-search-select {
+  cursor: pointer;
+}
+
+.yubi-search-input:focus,
+.yubi-search-select:focus {
+  outline: none;
+  border-color: var(--leaf-green);
+}
+
+.yubi-search-input[type='number']::-webkit-inner-spin-button,
+.yubi-search-input[type='number']::-webkit-outer-spin-button {
+  opacity: 1;
+}
+
+.yubi-search-apply-button {
+  padding: 10px 8px;
+  white-space: nowrap;
+  font-size: 14px;
+  min-width: auto;
+}
+
 /* バッジ */
 .yubi-badge {
   background: #ff6b6b;
@@ -1950,6 +2075,38 @@ body.page-about .yubi-main {
   .record-page {
     padding: 20px 15px;
   }
+
+  .yubi-search-section {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .yubi-past-evaluations-title {
+    font-size: 20px;
+  }
+
+  .yubi-search-dropdown {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .yubi-search-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .yubi-search-field {
+    width: 100%;
+  }
+
+  .yubi-search-input,
+  .yubi-search-select {
+    width: 100%;
+  }
+
+  .yubi-search-apply-button {
+    width: 100%;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1992,5 +2149,19 @@ body.page-about .yubi-main {
   .yubi-main--pending-evaluations {
     padding-top: 120px;
     max-width: 95%;
+  }
+
+  .yubi-search-toggle-button {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+
+  .yubi-past-evaluations-title {
+    font-size: 18px;
+  }
+
+  .yubi-page-title {
+    font-size: 1.2rem;
   }
 }

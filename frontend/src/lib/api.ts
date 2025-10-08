@@ -29,6 +29,7 @@ export interface EvaluatedPromise {
   type: string;
   creator_id: number;
   rating: number;
+  evaluation_text?: string;
   evaluation_date: string;
   evaluator_name: string;
 }

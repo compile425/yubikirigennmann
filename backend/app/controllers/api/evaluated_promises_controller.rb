@@ -17,6 +17,7 @@ class Api::EvaluatedPromisesController < ApplicationController
           type: promise.type,
           creator_id: promise.creator_id,
           rating: promise.promise_evaluation.rating,
+          evaluation_text: promise.promise_evaluation.evaluation_text,
           evaluation_date: promise.promise_evaluation.created_at,
           evaluator_name: promise.promise_evaluation.evaluator.name
         }

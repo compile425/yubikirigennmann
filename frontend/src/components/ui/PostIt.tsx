@@ -52,11 +52,6 @@ const PostIt = ({
   return (
     <div className="yubi-card">
       {content}
-      {evaluationText && (
-        <div className="yubi-evaluation-comment">
-          <p className="yubi-evaluation-text">"{evaluationText}"</p>
-        </div>
-      )}
       <footer className="yubi-card__footer">
         <div className="yubi-actions">
           {onEdit && (
@@ -97,19 +92,29 @@ const PostIt = ({
           )}
         </div>
         <div className="yubi-card__info">
-          <div className="yubi-card__bottom-left">
-            {rating && renderStars(rating)}
-          </div>
-          {promiseType !== 'our_promise' && (
-            <div className="yubi-card__bottom-right">
-              <span>
-                評価日:{' '}
-                {evaluationDate
-                  ? new Date(evaluationDate).toLocaleDateString('ja-JP')
-                  : dueDate || 'なし'}
-              </span>
+          {evaluationText && (
+            <div className="yubi-evaluation-comment-section">
+              <h4 className="yubi-evaluation-comment-title">評価コメント</h4>
+              <div className="yubi-evaluation-comment">
+                <p className="yubi-evaluation-text">{evaluationText}</p>
+              </div>
             </div>
           )}
+          <div className="yubi-card__bottom-row">
+            <div className="yubi-card__bottom-left">
+              {rating && renderStars(rating)}
+            </div>
+            {(rating || evaluationDate) && (
+              <div className="yubi-card__bottom-right">
+                <span>
+                  評価日:{' '}
+                  {evaluationDate
+                    ? new Date(evaluationDate).toLocaleDateString('ja-JP')
+                    : dueDate || 'なし'}
+                </span>
+              </div>
+            )}
+          </div>
         </div>
       </footer>
     </div>
