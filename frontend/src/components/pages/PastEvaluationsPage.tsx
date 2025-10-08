@@ -28,12 +28,8 @@ const PastEvaluationsPage = () => {
   useEffect(() => {
     const fetchEvaluatedPromises = async (): Promise<void> => {
       try {
-        // TODO: 後でAPI実装時に年月をパラメータとして渡す
-        // const response: ApiResponse<EvaluatedPromise[]> = await apiClient.get(
-        //   `/evaluated-promises?year=${selectedYear}&month=${selectedMonth}`
-        // );
         const response: ApiResponse<EvaluatedPromise[]> = await apiClient.get(
-          '/evaluated-promises'
+          `/evaluated-promises?year=${selectedYear}&month=${selectedMonth}`
         );
 
         if (response.error) {
