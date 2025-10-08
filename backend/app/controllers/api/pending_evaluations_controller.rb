@@ -3,12 +3,29 @@ class Api::PendingEvaluationsController < ApplicationController
 
   def index
     if current_user&.partnership
-      # 評価待ちの約束を取得（評価が存在しない約束のみ）
-      # 現在のユーザーが作成した約束で、パートナーが評価していないもの
-      # または、パートナーが作成した約束で、現在のユーザーが評価していないもの
-      @pending_promises = current_user.partnership.promises
+      partnership = current_user.partnership
+
+      # 1. 相手が作成した約束で、自分がまだ評価していないもの
+      partner_promises = partnership.promises
         .left_joins(:promise_evaluation)
         .where(promise_evaluations: { id: nil })
+        .where.not(creator_id: current_user.id)
+        .where.not(type: "our_promise")  # ふたりの約束は別処理
+
+      # 2. 今週評価すべきふたりの約束（週番号で評価者を判定）
+      evaluator = Promise.weekly_evaluator(partnership)
+      our_promise_to_evaluate = if evaluator == current_user
+        # 自分が今週の評価者なら、一番古い評価待ちのふたりの約束を取得
+        partnership.promises.pending_our_promises.first
+      end
+
+      # 約束を結合
+      @pending_promises = partner_promises.to_a
+      @pending_promises.unshift(our_promise_to_evaluate) if our_promise_to_evaluate
+      @pending_promises = @pending_promises.sort_by(&:created_at)
+
+      # includes を後から適用
+      @pending_promises = Promise.where(id: @pending_promises.map(&:id))
         .includes(:creator)
         .order(:created_at)
 
