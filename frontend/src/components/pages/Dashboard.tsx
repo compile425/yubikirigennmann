@@ -109,7 +109,8 @@ const Dashboard = () => {
   const partnerPromisesTitle = 'パートナーの約束';
 
   const myPromises = promises.filter(
-    p => currentUser && p.creator_id === currentUser.id && p.type !== 'our_promise'
+    p =>
+      currentUser && p.creator_id === currentUser.id && p.type !== 'our_promise'
   );
   const partnerPromises = promises.filter(
     p => partner && p.creator_id === partner.id && p.type !== 'our_promise'

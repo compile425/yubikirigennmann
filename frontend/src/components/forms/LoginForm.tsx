@@ -71,11 +71,7 @@ const LoginForm = ({}: LoginFormProps) => {
   };
 
   if (isRegisterMode) {
-    return (
-      <RegisterForm
-        onBackToLogin={() => setIsRegisterMode(false)}
-      />
-    );
+    return <RegisterForm onBackToLogin={() => setIsRegisterMode(false)} />;
   }
 
   return (

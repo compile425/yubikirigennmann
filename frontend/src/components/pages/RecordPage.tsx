@@ -61,9 +61,7 @@ const RecordPage = () => {
               src={userStats?.inviter.avatar_url || '/public/icon_user.png'}
               alt="招待者のアイコン"
             />
-            <div className="user-name">
-              あなた
-            </div>
+            <div className="user-name">あなた</div>
             <div className="score-label">今月の平均スコア</div>
             <div className="score-value">
               {userStats?.inviter.average_score.toFixed(1) || '0.0'}
@@ -88,9 +86,7 @@ const RecordPage = () => {
               src={userStats?.invitee.avatar_url || '/public/icon_partner.png'}
               alt="被招待者のアイコン"
             />
-            <div className="user-name">
-              パートナー
-            </div>
+            <div className="user-name">パートナー</div>
             <div className="score-label">今月の平均スコア</div>
             <div className="score-value">
               {userStats?.invitee.average_score.toFixed(1) || '0.0'}

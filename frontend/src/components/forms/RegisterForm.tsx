@@ -11,9 +11,7 @@ interface RegisterFormProps {
   onBackToLogin: () => void;
 }
 
-const RegisterForm = ({
-  onBackToLogin,
-}: RegisterFormProps) => {
+const RegisterForm = ({ onBackToLogin }: RegisterFormProps) => {
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');

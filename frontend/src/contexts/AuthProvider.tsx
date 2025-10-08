@@ -61,7 +61,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     if (!token) return;
 
     try {
-      const response: ApiResponse<UserMeResponse> = await apiClient.get('/get_me');
+      const response: ApiResponse<UserMeResponse> =
+        await apiClient.get('/get_me');
       if (response.error) {
         console.error('ユーザー情報の取得に失敗しました:', response.error);
       } else {
@@ -107,7 +108,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }
 
   return (
-    <AuthContext.Provider value={{ token, setToken, currentUser, partner, refreshUserData }}>
+    <AuthContext.Provider
+      value={{ token, setToken, currentUser, partner, refreshUserData }}
+    >
       {children}
     </AuthContext.Provider>
   );
