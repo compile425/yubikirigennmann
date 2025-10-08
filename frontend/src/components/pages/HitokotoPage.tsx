@@ -17,7 +17,7 @@ const HitokotoPage = () => {
     useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState<boolean>(false);
-  const { refreshUnreadStatus } = useHitokotoNotification();
+  const { resetVisitStatus } = useHitokotoNotification();
 
   const fetchOneWords = async () => {
     try {
@@ -36,9 +36,7 @@ const HitokotoPage = () => {
 
   useEffect(() => {
     fetchOneWords();
-    // ページを開いたときに通知を更新
-    refreshUnreadStatus();
-  }, [refreshUnreadStatus]);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,6 +59,9 @@ const HitokotoPage = () => {
         setNewOneWord('');
         fetchOneWords();
         setShowSuccessMessage(true);
+
+        // 一言を送信したら通知フラグをリセット
+        resetVisitStatus();
 
         setTimeout(() => {
           setShowSuccessMessage(false);
