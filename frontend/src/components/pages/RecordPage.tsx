@@ -64,7 +64,7 @@ const RecordPage = () => {
             <div className="user-name">
               あなた
             </div>
-            <div className="score-label">これまでの平均スコア</div>
+            <div className="score-label">今月の平均スコア</div>
             <div className="score-value">
               {userStats?.inviter.average_score.toFixed(1) || '0.0'}
             </div>
@@ -91,7 +91,7 @@ const RecordPage = () => {
             <div className="user-name">
               パートナー
             </div>
-            <div className="score-label">これまでの平均スコア</div>
+            <div className="score-label">今月の平均スコア</div>
             <div className="score-value">
               {userStats?.invitee.average_score.toFixed(1) || '0.0'}
             </div>
