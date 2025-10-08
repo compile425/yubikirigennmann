@@ -6,13 +6,11 @@ import {
 } from '../../lib/api';
 import Sidebar from '../ui/Sidebar';
 import PromiseColumn from '../ui/PromiseColumn';
-import { useAuth } from '../../contexts/useAuth';
 
 const PastEvaluationsPage = () => {
   const [evaluatedPromises, setEvaluatedPromises] = useState<
     EvaluatedPromise[]
   >([]);
-  const { currentUser, partner } = useAuth();
 
   useEffect(() => {
     const fetchEvaluatedPromises = async (): Promise<void> => {
@@ -50,11 +48,11 @@ const PastEvaluationsPage = () => {
   // タイトル生成
   const getTitle = (type: string) => {
     if (type === 'my_promise') {
-      return `${currentUser?.name || 'あなた'}の過去の約束`;
+      return 'あなたの過去の約束';
     } else if (type === 'our_promise') {
       return 'ふたりの過去の約束';
     } else if (type === 'partner_promise') {
-      return `${partner?.name || 'パートナー'}の過去の約束`;
+      return 'パートナーの過去の約束';
     }
     return '過去の約束';
   };

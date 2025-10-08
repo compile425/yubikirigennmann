@@ -52,6 +52,13 @@ class Api::PromisesController < ApplicationController
   end
 
   def promise_params
-    params.require(:promise).permit(:content, :due_date, :type, :promise_id)
+    permitted_params = params.require(:promise).permit(:content, :due_date, :type, :promise_id)
+    
+    # ふたりの約束の場合は期日をnilに設定
+    if permitted_params[:type] == 'our_promise'
+      permitted_params[:due_date] = nil
+    end
+    
+    permitted_params
   end
 end

@@ -64,9 +64,7 @@ const HitokotoPage = () => {
         <div className="yubi-hitokoto-container">
           <div className="yubi-hitokoto-form-section">
             <div className="yubi-column__header">
-              <h2 className="yubi-column__title">
-                パートナーへメッセージを送る
-              </h2>
+              <span>パートナーへメッセージを送る</span>
             </div>
             <div className="yubi-hitokoto-form-panel">
               <form onSubmit={handleSubmit}>
@@ -85,7 +83,7 @@ const HitokotoPage = () => {
 
           <div className="yubi-hitokoto-received-messages">
             <div className="yubi-column__header">
-              <h2 className="yubi-column__title">もらった一言</h2>
+              <span>もらった一言</span>
             </div>
             <div className="yubi-column__content">
               {oneWords.map(word => (

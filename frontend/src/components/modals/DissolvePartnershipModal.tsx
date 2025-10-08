@@ -17,14 +17,6 @@ const DissolvePartnershipModal = ({
   if (!isOpen) return null;
 
   const handleDissolve = async () => {
-    if (
-      !confirm(
-        '本当にパートナーシップを解消しますか？この操作は元に戻せません。'
-      )
-    ) {
-      return;
-    }
-
     setIsLoading(true);
 
     try {
@@ -49,16 +41,31 @@ const DissolvePartnershipModal = ({
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={e => e.stopPropagation()}>
-        <h2>パートナーシップの解消</h2>
-        <p>
-          パートナーシップを解消すると、すべての約束と評価データが削除され、
-          この操作は元に戻すことができません。
-        </p>
-        <p>本当に解消しますか？</p>
+    <div
+      className={`yubi-modal-overlay ${isOpen ? 'yubi-modal-overlay--open' : ''}`}
+      onClick={onClose}
+    >
+      <div
+        className="yubi-modal yubi-modal--dissolve"
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="yubi-modal__header">
+          <h2 className="yubi-modal__title">パートナー関係の解消</h2>
+        </div>
 
-        <div className="modal-actions">
+        <div className="yubi-modal__body">
+          <p>本当にパートナーとの関係を解消しますか？</p>
+          <div className="yubi-dissolve-warning">
+            <p>
+              <strong>
+                この操作を行うと、共有していた全ての約束の記録が閲覧できなくなります。
+              </strong>
+              この操作は元に戻せません。
+            </p>
+          </div>
+        </div>
+
+        <div className="yubi-modal__actions">
           <button
             onClick={onClose}
             className="yubi-button yubi-button--secondary"
@@ -71,7 +78,7 @@ const DissolvePartnershipModal = ({
             className="yubi-button yubi-button--danger"
             disabled={isLoading}
           >
-            {isLoading ? '解消中...' : '解消する'}
+            {isLoading ? '解消中...' : 'はい、解消します'}
           </button>
         </div>
       </div>

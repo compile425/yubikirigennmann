@@ -9,14 +9,10 @@ interface RegisterResponse {
 
 interface RegisterFormProps {
   onBackToLogin: () => void;
-  invitationCode?: string;
-  onAuthSuccess?: () => void;
 }
 
 const RegisterForm = ({
   onBackToLogin,
-  invitationCode,
-  onAuthSuccess,
 }: RegisterFormProps) => {
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
@@ -40,17 +36,7 @@ const RegisterForm = ({
     }
 
     try {
-      const requestData: {
-        user: {
-          name: string;
-          email: string;
-        };
-        user_credential: {
-          password: string;
-          password_confirmation: string;
-        };
-        invitation_code?: string;
-      } = {
+      const requestData = {
         user: {
           name,
           email,
@@ -60,10 +46,6 @@ const RegisterForm = ({
           password_confirmation: passwordConfirmation,
         },
       };
-
-      if (invitationCode) {
-        requestData.invitation_code = invitationCode;
-      }
 
       const response: ApiResponse<RegisterResponse> = await apiClient.post(
         '/register',
@@ -78,10 +60,6 @@ const RegisterForm = ({
         }
       } else {
         setToken(response.data?.token || null);
-
-        if (invitationCode && onAuthSuccess) {
-          onAuthSuccess();
-        }
       }
     } catch (err) {
       console.error('登録失敗:', err);

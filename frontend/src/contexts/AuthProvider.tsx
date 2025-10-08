@@ -57,6 +57,22 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     checkAuth();
   }, []); // 空の依存配列で初回のみ実行
 
+  const refreshUserData = async (): Promise<void> => {
+    if (!token) return;
+
+    try {
+      const response: ApiResponse<UserMeResponse> = await apiClient.get('/get_me');
+      if (response.error) {
+        console.error('ユーザー情報の取得に失敗しました:', response.error);
+      } else {
+        setCurrentUser(response.data?.current_user || null);
+        setPartner(response.data?.partner || null);
+      }
+    } catch (error) {
+      console.error('ユーザー情報の取得エラー:', error);
+    }
+  };
+
   const setToken = (newToken: string | null) => {
     setTokenState(newToken);
 
@@ -91,7 +107,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }
 
   return (
-    <AuthContext.Provider value={{ token, setToken, currentUser, partner }}>
+    <AuthContext.Provider value={{ token, setToken, currentUser, partner, refreshUserData }}>
       {children}
     </AuthContext.Provider>
   );

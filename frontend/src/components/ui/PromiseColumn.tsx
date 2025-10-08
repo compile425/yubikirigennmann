@@ -47,6 +47,7 @@ const PromiseColumn = ({
             rating={promise.rating}
             evaluationText={promise.evaluation_text}
             evaluationDate={promise.evaluation_date}
+            promiseType={promise.type}
             onEdit={onEdit ? () => onEdit(promise) : undefined}
             onDelete={onDelete ? () => onDelete(promise) : undefined}
             onEvaluate={
