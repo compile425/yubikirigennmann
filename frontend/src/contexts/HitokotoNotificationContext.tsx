@@ -18,9 +18,7 @@ interface OneWord {
 
 interface HitokotoNotificationContextType {
   hasUnreadHitokoto: boolean;
-  markAsRead: () => Promise<void>;
-  refreshUnreadStatus: () => Promise<void>;
-  hasVisitedHitokotoPage: boolean;
+  markAsRead: () => void;
   resetVisitStatus: () => void;
 }
 
@@ -36,13 +34,16 @@ export const HitokotoNotificationProvider = ({
   children,
 }: HitokotoNotificationProviderProps) => {
   const [hasUnreadHitokoto, setHasUnreadHitokoto] = useState<boolean>(false);
-  const [hasVisitedHitokotoPage, setHasVisitedHitokotoPage] =
-    useState<boolean>(false);
   const { token, partner } = useAuth();
 
-  const refreshUnreadStatus = useCallback(async (): Promise<void> => {
-    // 認証されていない場合やパートナーがいない場合は通知を表示しない
+  const checkNotification = useCallback(async () => {
     if (!token || !partner) {
+      setHasUnreadHitokoto(false);
+      return;
+    }
+
+    const isDismissed = localStorage.getItem('hitokoto_dismissed') === 'true';
+    if (isDismissed) {
       setHasUnreadHitokoto(false);
       return;
     }
@@ -51,60 +52,28 @@ export const HitokotoNotificationProvider = ({
       const response: ApiResponse<OneWord[]> =
         await apiClient.get('/one_words');
 
-      if (response.error) {
-        console.error('一言の取得に失敗しました:', response.error);
-        setHasUnreadHitokoto(false);
+      if (!response.error && response.data) {
+        setHasUnreadHitokoto(response.data.length > 0);
       } else {
-        // 一言の数をチェック
-        const oneWords = response.data || [];
-        const currentCount = oneWords.length;
-        const savedCount = parseInt(
-          localStorage.getItem('hitokoto_count') || '0',
-          10
-        );
-
-        // 保存された数より増えていたら通知を表示
-        const hasNewWords = currentCount > savedCount;
-
-        console.log('一言通知チェック:', {
-          currentCount,
-          savedCount,
-          hasNewWords,
-        });
-        setHasUnreadHitokoto(hasNewWords);
+        setHasUnreadHitokoto(false);
       }
-    } catch (error) {
-      console.error('一言の取得エラー:', error);
+    } catch {
       setHasUnreadHitokoto(false);
     }
   }, [token, partner]);
 
-  const markAsRead = useCallback(async (): Promise<void> => {
-    console.log('通知を消します');
-    // 現在の一言数を記録
-    try {
-      const response: ApiResponse<OneWord[]> =
-        await apiClient.get('/one_words');
-      if (!response.error && response.data) {
-        const currentCount = response.data.length;
-        localStorage.setItem('hitokoto_count', currentCount.toString());
-        console.log('一言数を記録:', currentCount);
-      }
-    } catch (error) {
-      console.error('一言の取得エラー:', error);
-    }
+  const markAsRead = useCallback(() => {
+    localStorage.setItem('hitokoto_dismissed', 'true');
     setHasUnreadHitokoto(false);
   }, []);
 
-  const resetVisitStatus = useCallback((): void => {
-    // 一言送信時は既読日時をリセットしない（新しい一言が来たら通知を表示するため）
-    setHasVisitedHitokotoPage(false);
+  const resetVisitStatus = useCallback(() => {
+    localStorage.removeItem('hitokoto_dismissed');
   }, []);
 
-  // 初回マウント時のみ通知をチェック
   useEffect(() => {
     if (token && partner) {
-      refreshUnreadStatus();
+      checkNotification();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -114,8 +83,6 @@ export const HitokotoNotificationProvider = ({
       value={{
         hasUnreadHitokoto,
         markAsRead,
-        refreshUnreadStatus,
-        hasVisitedHitokotoPage,
         resetVisitStatus,
       }}
     >
@@ -124,6 +91,7 @@ export const HitokotoNotificationProvider = ({
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useHitokotoNotification = (): HitokotoNotificationContextType => {
   const context = useContext(HitokotoNotificationContext);
   if (context === undefined) {
