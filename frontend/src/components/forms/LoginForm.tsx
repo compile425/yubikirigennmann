@@ -13,9 +13,7 @@ interface GuestLoginResponse {
   message: string;
 }
 
-interface LoginFormProps {}
-
-const LoginForm = ({}: LoginFormProps) => {
+const LoginForm = (): React.JSX.Element => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>('');
@@ -37,15 +35,17 @@ const LoginForm = ({}: LoginFormProps) => {
       );
 
       if (response.error) {
-        setError(
-          response.error.error || 'メールアドレスまたはパスワードが違います。'
-        );
+        const errorMessage =
+          response.error.error || 'メールアドレスまたはパスワードが違います。';
+        setError(errorMessage);
       } else {
         setToken(response.data?.token || null);
       }
     } catch (err) {
       console.error('ログイン失敗:', err);
-      setError('予期せぬエラーが発生しました。');
+      setError(
+        'ログインに失敗しました。メールアドレスとパスワードを確認してください。'
+      );
     }
   };
 
@@ -58,13 +58,18 @@ const LoginForm = ({}: LoginFormProps) => {
         await apiClient.post('/guest_login');
 
       if (response.error) {
-        setError(response.error.error || 'ゲストログインに失敗しました。');
+        setError(
+          response.error.error ||
+            'ゲストログインに失敗しました。しばらく時間をおいて再度お試しください。'
+        );
       } else {
         setToken(response.data?.token || null);
       }
     } catch (err) {
       console.error('ゲストログイン失敗:', err);
-      setError('予期せぬエラーが発生しました。');
+      setError(
+        'ゲストログインに失敗しました。しばらく時間をおいて再度お試しください。'
+      );
     } finally {
       setIsGuestLoggingIn(false);
     }

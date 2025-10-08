@@ -10,6 +10,7 @@ interface PromiseColumnProps {
   onDelete?: (promise: PromiseItem) => void;
   onEvaluate?: (promise: PromiseItem) => void;
   showEvaluationButton?: boolean;
+  currentUserId?: number;
 }
 
 const PromiseColumn = ({
@@ -21,12 +22,27 @@ const PromiseColumn = ({
   onDelete,
   onEvaluate,
   showEvaluationButton = false,
+  // currentUserId, // 現在未使用のためコメントアウト
 }: PromiseColumnProps) => {
   console.log(`PromiseColumn ${title}:`, promises);
   console.log(`PromiseColumn ${title} - promises length:`, promises.length);
   promises.forEach((promise, index) => {
     console.log(`PromiseColumn ${title} - promise ${index}:`, promise);
   });
+
+  // 今週評価するふたりの約束を判定する関数
+  const isWeeklyEvaluationTarget = (
+    promise: PromiseItem,
+    index: number
+  ): boolean => {
+    // ふたりの約束で、一番上（index === 0）で、評価ボタンが表示される場合
+    return (
+      promise.type === 'our_promise' &&
+      index === 0 &&
+      showEvaluationButton &&
+      !!onEvaluate
+    );
+  };
 
   return (
     <div className="yubi-column">
@@ -56,6 +72,7 @@ const PromiseColumn = ({
                 : undefined
             }
             showEvaluationButton={showEvaluationButton && index === 0}
+            isPickup={isWeeklyEvaluationTarget(promise, index)}
           />
         ))}
       </div>

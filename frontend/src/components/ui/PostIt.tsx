@@ -11,6 +11,7 @@ interface PostItProps {
   onDelete?: () => void;
   onEvaluate?: () => void;
   showEvaluationButton?: boolean;
+  isPickup?: boolean;
 }
 
 const PostIt = ({
@@ -19,11 +20,12 @@ const PostIt = ({
   rating,
   evaluationText,
   evaluationDate,
-  promiseType,
+  // promiseType, // 未使用のためコメントアウト
   onEdit,
   onDelete,
   onEvaluate,
   showEvaluationButton = false,
+  isPickup = false,
 }: PostItProps) => {
   console.log('PostIt rendering with:', {
     content,
@@ -50,7 +52,8 @@ const PostIt = ({
   };
 
   return (
-    <div className="yubi-card">
+    <div className={`yubi-card ${isPickup ? 'yubi-card--pickup' : ''}`}>
+      {isPickup && <div className="yubi-pickup-header">Pick Up!</div>}
       {content}
       <footer className="yubi-card__footer">
         <div className="yubi-actions">
@@ -63,7 +66,7 @@ const PostIt = ({
                 onEdit();
               }}
             >
-              ✏️
+              <span className="material-symbols-outlined">edit</span>
             </a>
           )}
           {onDelete && (
@@ -75,10 +78,10 @@ const PostIt = ({
                 onDelete();
               }}
             >
-              🗑️
+              <span className="material-symbols-outlined">delete</span>
             </a>
           )}
-          {onEvaluate && showEvaluationButton && (
+          {onEvaluate && showEvaluationButton && !isPickup && (
             <a
               href="#"
               className="yubi-action-button"
@@ -87,7 +90,7 @@ const PostIt = ({
                 onEvaluate();
               }}
             >
-              ⭐
+              <span className="material-symbols-outlined">kid_star</span>
             </a>
           )}
         </div>
