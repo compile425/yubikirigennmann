@@ -7,7 +7,7 @@ import { useAuth } from '../../contexts/useAuth';
 import type { PendingPromise, ApiResponse } from '../../lib/api';
 
 const PendingEvaluationsPage = () => {
-  const { token, currentUser } = useAuth();
+  const { token } = useAuth();
   const [isDissolveModalOpen, setIsDissolveModalOpen] =
     useState<boolean>(false);
   const [isEvaluationModalOpen, setIsEvaluationModalOpen] =
@@ -49,11 +49,6 @@ const PendingEvaluationsPage = () => {
     await fetchPendingPromises();
   };
 
-  // 評価待ちの約束を自分が作ったもののみ表示
-  const myPendingPromises = pendingPromises.filter(
-    promise => currentUser && promise.creator_id === currentUser.id
-  );
-
   if (isLoading) {
     return (
       <div className="yubi-app yubi-app--pending-evaluations">
@@ -77,16 +72,16 @@ const PendingEvaluationsPage = () => {
             <h2 className="yubi-column__header">
               <span>評価待ちの約束</span>
               <span className="yubi-badge yubi-badge--pending">
-                {myPendingPromises.length}件
+                {pendingPromises.length}件
               </span>
             </h2>
             <div className="yubi-column__content">
-              {myPendingPromises.length === 0 ? (
+              {pendingPromises.length === 0 ? (
                 <div className="yubi-empty-state">
                   <p>評価待ちの約束はありません</p>
                 </div>
               ) : (
-                myPendingPromises.map(promise => (
+                pendingPromises.map(promise => (
                   <div
                     key={promise.id}
                     className="yubi-card yubi-card--pending"
