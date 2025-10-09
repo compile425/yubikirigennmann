@@ -77,7 +77,6 @@ const PastEvaluationsPage = () => {
 
   // 検索実行（年月変更時に自動的にuseEffectで再取得される）
   const handleSearch = () => {
-    console.log(`検索: ${selectedYear}年${selectedMonth}月の約束`);
     setIsSearchOpen(false);
   };
 

@@ -24,12 +24,6 @@ const PromiseColumn = ({
   showEvaluationButton = false,
   // currentUserId, // 現在未使用のためコメントアウト
 }: PromiseColumnProps) => {
-  console.log(`PromiseColumn ${title}:`, promises);
-  console.log(`PromiseColumn ${title} - promises length:`, promises.length);
-  promises.forEach((promise, index) => {
-    console.log(`PromiseColumn ${title} - promise ${index}:`, promise);
-  });
-
   // 今週評価するふたりの約束を判定する関数
   const isWeeklyEvaluationTarget = (
     promise: PromiseItem,

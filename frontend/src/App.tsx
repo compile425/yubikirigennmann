@@ -48,39 +48,41 @@ function App() {
     <Router>
       <HitokotoNotificationProvider>
         <Routes>
-        <Route
-          path="/invite-partner"
-          element={token && currentUser ? <InvitePartnerPage /> : <LoginForm />}
-        />
-        <Route path="/evaluate/:id" element={<EvaluationPage />} />
-        <Route
-          path="/past-evaluations"
-          element={
-            token && currentUser ? <PastEvaluationsPage /> : <LoginForm />
-          }
-        />
-        <Route
-          path="/record"
-          element={token && currentUser ? <RecordPage /> : <LoginForm />}
-        />
-        <Route
-          path="/hitokoto"
-          element={token && currentUser ? <HitokotoPage /> : <LoginForm />}
-        />
-        <Route
-          path="/about"
-          element={token && currentUser ? <About /> : <LoginForm />}
-        />
-        <Route
-          path="*"
-          element={token && currentUser ? <Dashboard /> : <LoginForm />}
-        />
-        <Route
-          path="/pending-evaluations"
-          element={
-            token && currentUser ? <PendingEvaluationsPage /> : <LoginForm />
-          }
-        />
+          <Route
+            path="/invite-partner"
+            element={
+              token && currentUser ? <InvitePartnerPage /> : <LoginForm />
+            }
+          />
+          <Route path="/evaluate/:id" element={<EvaluationPage />} />
+          <Route
+            path="/past-evaluations"
+            element={
+              token && currentUser ? <PastEvaluationsPage /> : <LoginForm />
+            }
+          />
+          <Route
+            path="/record"
+            element={token && currentUser ? <RecordPage /> : <LoginForm />}
+          />
+          <Route
+            path="/hitokoto"
+            element={token && currentUser ? <HitokotoPage /> : <LoginForm />}
+          />
+          <Route
+            path="/about"
+            element={token && currentUser ? <About /> : <LoginForm />}
+          />
+          <Route
+            path="*"
+            element={token && currentUser ? <Dashboard /> : <LoginForm />}
+          />
+          <Route
+            path="/pending-evaluations"
+            element={
+              token && currentUser ? <PendingEvaluationsPage /> : <LoginForm />
+            }
+          />
         </Routes>
       </HitokotoNotificationProvider>
     </Router>
