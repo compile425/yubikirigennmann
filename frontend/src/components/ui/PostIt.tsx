@@ -27,16 +27,7 @@ const PostIt = ({
   showEvaluationButton = false,
   isPickup = false,
 }: PostItProps) => {
-  console.log('PostIt rendering with:', {
-    content,
-    dueDate,
-    rating,
-    evaluationText,
-    evaluationDate,
-  });
-
   const renderStars = (ratingValue: number): React.JSX.Element => {
-    console.log('Rendering stars for rating:', ratingValue);
     return (
       <div className="yubi-rating-display">
         {[1, 2, 3, 4, 5].map(star => (
