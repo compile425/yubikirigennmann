@@ -37,7 +37,6 @@ class EvaluationMailer < ApplicationMailer
 
       begin
         due_date_evaluation_email(promise, evaluator).deliver_now
-        Rails.logger.info "Due date evaluation email sent successfully to #{evaluator.email}"
       rescue => e
         Rails.logger.error "Failed to send due date evaluation email to #{evaluator.email}: #{e.message}"
         # 個別のメール送信に失敗しても他のメールは送信を続行
@@ -62,7 +61,6 @@ class EvaluationMailer < ApplicationMailer
 
       begin
         weekly_evaluation_email(user, evaluator, top_our_promise).deliver_now
-        Rails.logger.info "Weekly evaluation email sent successfully to #{evaluator.email}"
       rescue => e
         Rails.logger.error "Failed to send weekly evaluation email to #{evaluator.email}: #{e.message}"
         # 個別のメール送信に失敗しても他のメールは送信を続行
@@ -81,7 +79,6 @@ class EvaluationMailer < ApplicationMailer
 
       begin
         weekly_evaluation_email(user, partner, top_our_promise).deliver_now
-        Rails.logger.info "Weekly evaluation email sent successfully to #{partner.email}"
       rescue => e
         Rails.logger.error "Failed to send weekly evaluation email to #{partner.email}: #{e.message}"
         # 個別のメール送信に失敗しても他のメールは送信を続行

@@ -41,7 +41,6 @@ class Api::PendingEvaluationsController < ApplicationController
         }
       end
 
-      Rails.logger.info "PendingEvaluations API Response: #{response_data}"
       render json: response_data
     else
       render json: [], status: :ok

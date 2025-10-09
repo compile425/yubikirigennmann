@@ -13,8 +13,6 @@ class Api::PartnershipsController < ApplicationController
       partnership.promises.destroy_all
       partnership.destroy
 
-      Rails.logger.info "パートナーシップを解消しました - ユーザーID: #{current_user.id}"
-
       render json: {
         message: "パートナーシップを解消しました",
         user_id: current_user.id
