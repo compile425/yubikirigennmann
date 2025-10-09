@@ -19,6 +19,9 @@ const EditPromiseModal = ({
   const [content, setContent] = useState<string>('');
   const [dueDate, setDueDate] = useState<string>('');
 
+  // 今日の日付をYYYY-MM-DD形式で取得
+  const today = new Date().toISOString().split('T')[0];
+
   useEffect(() => {
     if (promise && isOpen) {
       setContent(promise.content);
@@ -105,6 +108,7 @@ const EditPromiseModal = ({
                 value={dueDate}
                 onChange={e => setDueDate(e.target.value)}
                 className="yubi-form-group__input"
+                min={today}
               />
             </div>
           </div>

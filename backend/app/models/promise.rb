@@ -10,6 +10,7 @@ class Promise < ApplicationRecord
 
     validates :content, presence: true
     validates :type, presence: true
+    validate :due_date_cannot_be_in_the_past
 
     # スコープ：ふたりの約束
     scope :our_promises, -> {
@@ -85,6 +86,14 @@ class Promise < ApplicationRecord
     after_validation :log_validation_errors
 
     private
+
+    def due_date_cannot_be_in_the_past
+      return if due_date.blank? # 期日がない場合（our_promise）はスキップ
+
+      if due_date.present? && due_date < Date.today
+        errors.add(:due_date, "は過去の日付を設定できません")
+      end
+    end
 
     def log_validation_errors
       if errors.any?
