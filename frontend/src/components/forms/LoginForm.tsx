@@ -124,7 +124,7 @@ const LoginForm = (): React.JSX.Element => {
       </form>
 
       <div className="yubi-login__links">
-        <a href="#" className="yubi-login__link">
+        <a href="/forgot-password" className="yubi-login__link">
           パスワードを忘れた場合
         </a>
         <button

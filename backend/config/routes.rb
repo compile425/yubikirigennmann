@@ -11,6 +11,10 @@ Rails.application.routes.draw do
     post "/login", to: "sessions#create"
     post "/guest_login", to: "sessions#guest_login"
     post "/register", to: "users#create"
+
+    # パスワードリセット
+    post "/password-resets", to: "password_resets#create"
+    put "/password-resets", to: "password_resets#update"
     resources :promises, only: [ :index, :create, :update, :destroy ] do
       resources :promise_evaluations, only: [ :create ]
     end
