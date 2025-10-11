@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginForm from './components/forms/LoginForm';
+import ForgotPasswordForm from './components/forms/ForgotPasswordForm';
+import ResetPasswordForm from './components/forms/ResetPasswordForm';
 import Dashboard from './components/pages/Dashboard';
 import EvaluationPage from './components/pages/EvaluationPage';
 import PastEvaluationsPage from './components/pages/PastEvaluationsPage';
@@ -48,6 +50,8 @@ function App() {
     <Router>
       <HitokotoNotificationProvider>
         <Routes>
+          <Route path="/forgot-password" element={<ForgotPasswordForm />} />
+          <Route path="/password-reset" element={<ResetPasswordForm />} />
           <Route
             path="/invite-partner"
             element={

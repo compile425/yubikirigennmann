@@ -1258,6 +1258,29 @@ body.page-about .yubi-main {
   text-align: center;
 }
 
+/* エラーメッセージと成功メッセージ */
+.yubi-error-message {
+  margin: 15px 0;
+  padding: 12px 15px;
+  background-color: #fee;
+  color: #c33;
+  border: 1px solid #fcc;
+  border-radius: 8px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.yubi-success-message {
+  margin: 15px 0;
+  padding: 12px 15px;
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+  border-radius: 8px;
+  font-size: 14px;
+  text-align: center;
+}
+
 /* パートナー招待 */
 .yubi-invite-page,
 .invite-partner-page {

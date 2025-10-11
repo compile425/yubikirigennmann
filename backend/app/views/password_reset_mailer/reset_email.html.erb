@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .container {
+      background-color: #f9f9f9;
+      border-radius: 10px;
+      padding: 30px;
+      border: 1px solid #ddd;
+    }
+    h1 {
+      color: #6b5b3e;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    .button {
+      display: inline-block;
+      padding: 15px 30px;
+      background-color: #6b5b3e;
+      color: white;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: bold;
+      margin: 20px 0;
+    }
+    .warning {
+      color: #ff4757;
+      font-size: 14px;
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #fff5f5;
+      border-radius: 5px;
+    }
+    .footer {
+      margin-top: 30px;
+      font-size: 12px;
+      color: #999;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>パスワードリセットのご案内</h1>
+    
+    <p><%= @user.name %> 様</p>
+    
+    <p>
+      パスワードのリセットリクエストを受け付けました。<br>
+      以下のボタンをクリックして、新しいパスワードを設定してください。
+    </p>
+    
+    <p style="text-align: center;">
+      <a href="<%= @reset_url %>" class="button">パスワードをリセット</a>
+    </p>
+    
+    <div class="warning">
+      <strong>⚠️ 重要な注意事項</strong>
+      <ul>
+        <li>このリンクの有効期限は2時間です</li>
+        <li>パスワードリセットを依頼していない場合は、このメールを無視してください</li>
+        <li>セキュリティのため、このメールを他人と共有しないでください</li>
+      </ul>
+    </div>
+    
+    <div class="footer">
+      <p>このメールに心当たりがない場合は、第三者がメールアドレスを誤入力した可能性があります。</p>
+      <p>© 2025 ゆびきりげんまん</p>
+    </div>
+  </div>
+</body>
+</html>
+

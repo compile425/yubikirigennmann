@@ -72,17 +72,20 @@ Rails.application.configure do
   # caching is enabled.
   config.action_mailer.perform_caching = false
 
-  # メール送信設定
+  # メール送信設定（AWS SES）
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    address: "smtp.gmail.com",
+    address: ENV["AWS_SES_SMTP_ENDPOINT"] || "email-smtp.ap-northeast-1.amazonaws.com",
     port: 587,
     domain: ENV["MAILER_DOMAIN"] || "yubikirigennmann.com",
-    user_name: ENV["GMAIL_USERNAME"] || "yubikirigennmann@gmail.com",
-    password: ENV["GMAIL_PASSWORD"] || "your-app-password",
-    authentication: "plain",
+    user_name: ENV["AWS_SES_SMTP_USERNAME"],
+    password: ENV["AWS_SES_SMTP_PASSWORD"],
+    authentication: :login,
     enable_starttls_auto: true
   }
+
+  # メール送信元アドレス
+  config.action_mailer.default_url_options = { host: ENV["APP_HOST"] || "yubikirigennmann.com" }
 
   # メール送信エラーをログに出力
   config.action_mailer.logger = Rails.logger
