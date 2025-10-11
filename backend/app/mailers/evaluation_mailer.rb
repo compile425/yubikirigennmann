@@ -3,32 +3,37 @@ class EvaluationMailer < ApplicationMailer
     @user = user
     @partner = partner
     @promise = promise
-    @evaluation_url = "http://localhost:3000/evaluate/#{promise.id}?token=#{generate_evaluation_token(promise)}"
+    @pending_evaluations_url = "#{ENV['FRONTEND_URL'] || 'http://localhost:5173'}/pending-evaluations"
 
     mail(
       to: partner.email,
-      subject: "【約束の評価】今週の約束を評価してください"
+      subject: "【ゆびきりげんまん】評価待ちの約束があります"
     )
   end
 
   def due_date_evaluation_email(promise, evaluator)
     @promise = promise
     @evaluator = evaluator
-    @evaluation_url = "http://localhost:3000/evaluate/#{promise.id}?token=#{generate_evaluation_token(promise)}"
+    @pending_evaluations_url = "#{ENV['FRONTEND_URL'] || 'http://localhost:5173'}/pending-evaluations"
 
     mail(
       to: evaluator.email,
-      subject: "【約束の評価】期日が来た約束を評価してください"
+      subject: "【ゆびきりげんまん】評価待ちの約束があります"
     )
   end
 
   def self.send_due_date_evaluations
     today = Date.current
-    due_promises = Promise.where(due_date: today).includes(:creator, :partnership)
+    # 期日が来た約束のみ（our_promiseは除外される）
+    due_promises = Promise.where(due_date: today)
+      .where.not(type: "our_promise")
+      .includes(:creator, :partnership)
 
     due_promises.each do |promise|
       partnership = promise.partnership
+      next unless partnership
 
+      # 約束の作成者の相手に送信
       if promise.creator_id == partnership.user_id
         evaluator = partnership.partner
       else
@@ -84,14 +89,5 @@ class EvaluationMailer < ApplicationMailer
         # 個別のメール送信に失敗しても他のメールは送信を続行
       end
     end
-  end
-
-  private
-
-  def generate_evaluation_token(promise)
-    JWT.encode(
-      { promise_id: promise.id, exp: 1.week.from_now.to_i },
-      Rails.application.secret_key_base
-    )
   end
 end

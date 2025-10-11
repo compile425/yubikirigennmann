@@ -2,32 +2,78 @@
 <html>
 <head>
   <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  <style>
+    body {
+      font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .container {
+      background-color: #f9f9f9;
+      border-radius: 10px;
+      padding: 30px;
+      border: 1px solid #ddd;
+    }
+    h1 {
+      color: #6b5b3e;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    .button {
+      display: inline-block;
+      padding: 15px 30px;
+      background-color: #6b5b3e;
+      color: white;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: bold;
+      margin: 20px 0;
+    }
+    .info-box {
+      background-color: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      border-left: 4px solid #6b5b3e;
+      margin: 20px 0;
+    }
+    .footer {
+      margin-top: 30px;
+      font-size: 12px;
+      color: #999;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-  <h1>約束の評価をお願いします</h1>
-  
-  <p><%= @evaluator.name %>さん、</p>
-  
-  <p>期日が来た約束があります。評価をお願いします。</p>
-  
-  <div style="background-color: #f8f7f2; padding: 20px; border-radius: 10px; margin: 20px 0;">
-    <h3>約束の内容</h3>
-    <p><%= @promise.content %></p>
+  <div class="container">
+    <h1>📝 評価待ちの約束があります</h1>
     
-    <p><strong>期日:</strong> <%= @promise.due_date %></p>
-    <p><strong>作成者:</strong> <%= @promise.creator.name %></p>
+    <p><%= @evaluator.name %> 様</p>
+    
+    <p>
+      パートナーから新しい約束が追加されました。<br>
+      評価待ちの約束ページで確認して、評価をお願いします。
+    </p>
+    
+    <p style="text-align: center;">
+      <a href="<%= @pending_evaluations_url %>" class="button">評価待ちの約束を見る</a>
+    </p>
+    
+    <div class="info-box">
+      <p><strong>💡 評価待ちの約束ページでできること：</strong></p>
+      <ul>
+        <li>パートナーが作成した約束を確認</li>
+        <li>期日が来た約束を評価</li>
+        <li>今週のふたりの約束を評価</li>
+      </ul>
+    </div>
+    
+    <div class="footer">
+      <p>© 2025 ゆびきりげんまん</p>
+    </div>
   </div>
-  
-  <p>以下のリンクから評価を行ってください：</p>
-  
-  <div style="text-align: center; margin: 30px 0;">
-    <a href="<%= @evaluation_url %>" style="background-color: #075763; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; display: inline-block;">
-      評価する
-    </a>
-  </div>
-  
-  <p>このリンクは1週間有効です。</p>
-  
-  <p>よろしくお願いします。</p>
 </body>
 </html> 

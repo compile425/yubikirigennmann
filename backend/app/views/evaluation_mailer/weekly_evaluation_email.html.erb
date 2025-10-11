@@ -1,42 +1,79 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <title>約束の評価</title>
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  <style>
+    body {
+      font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .container {
+      background-color: #f9f9f9;
+      border-radius: 10px;
+      padding: 30px;
+      border: 1px solid #ddd;
+    }
+    h1 {
+      color: #6b5b3e;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    .button {
+      display: inline-block;
+      padding: 15px 30px;
+      background-color: #6b5b3e;
+      color: white;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: bold;
+      margin: 20px 0;
+    }
+    .info-box {
+      background-color: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      border-left: 4px solid #6b5b3e;
+      margin: 20px 0;
+    }
+    .footer {
+      margin-top: 30px;
+      font-size: 12px;
+      color: #999;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-  <div style="max-width: 600px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif;">
-    <h1 style="color: #075763;">約束の評価をお願いします</h1>
+  <div class="container">
+    <h1>📝 評価待ちの約束があります</h1>
     
-    <p>こんにちは、<%= @partner.name %>さん</p>
+    <p><%= @partner.name %> 様</p>
     
-    <p>今週の約束を評価していただく時間です。</p>
-    
-    <div style="background-color: #f5f5f5; padding: 15px; border-radius: 8px; margin: 20px 0;">
-      <h3 style="margin: 0 0 10px 0; color: #075763;">評価対象の約束</h3>
-      <p style="margin: 0; font-size: 16px;"><%= @promise.content %></p>
-    </div>
-    
-    <p>この約束について、以下のリンクから評価をお願いします：</p>
-    
-    <div style="text-align: center; margin: 30px 0;">
-      <a href="<%= @evaluation_url %>" 
-         style="background-color: #075763; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-size: 16px; font-weight: bold;">
-        約束を評価する
-      </a>
-    </div>
-    
-    <p style="font-size: 14px; color: #666;">
-      ※このリンクは1週間で期限切れになります。<br>
-      ※評価は「思ったこと」と「5段階評価」の2つで構成されています。
+    <p>
+      今週のふたりの約束を評価していただく時間です。<br>
+      評価待ちの約束ページで確認して、評価をお願いします。
     </p>
     
-    <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
-    
-    <p style="font-size: 12px; color: #999;">
-      このメールは自動送信されています。<br>
-      ご質問がございましたら、お気軽にお問い合わせください。
+    <p style="text-align: center;">
+      <a href="<%= @pending_evaluations_url %>" class="button">評価待ちの約束を見る</a>
     </p>
+    
+    <div class="info-box">
+      <p><strong>💡 評価待ちの約束ページでできること：</strong></p>
+      <ul>
+        <li>パートナーが作成した約束を確認</li>
+        <li>期日が来た約束を評価</li>
+        <li>今週のふたりの約束を評価</li>
+      </ul>
+    </div>
+    
+    <div class="footer">
+      <p>© 2025 ゆびきりげんまん</p>
+    </div>
   </div>
 </body>
 </html> 
