@@ -56,8 +56,11 @@ class Api::UsersController < ApplicationController
     left_user = inviter
     right_user = invitee
 
-    # 月間りんご数の計算（仮実装）
-    monthly_apple_count = partnership.promise_rating_scores.sum(:harvested_apples)
+    # 月間りんご数の計算（当月のみ）
+    current_month = Date.current.beginning_of_month
+    monthly_apple_count = partnership.promise_rating_scores
+      .where(year_month: current_month)
+      .sum(:harvested_apples)
 
     render json: {
       inviter: {
@@ -88,7 +91,6 @@ class Api::UsersController < ApplicationController
         # 新規ユーザー登録成功時にメールを送信
         begin
           RegistrationMailer.welcome_email(user).deliver_now
-          Rails.logger.info "Welcome email sent successfully to #{user.email}"
         rescue => e
           Rails.logger.error "Failed to send welcome email to #{user.email}: #{e.message}"
           # メール送信に失敗してもユーザー登録は成功とする

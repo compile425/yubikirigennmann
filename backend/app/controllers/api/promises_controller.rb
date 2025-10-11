@@ -20,9 +20,6 @@ class Api::PromisesController < ApplicationController
 
     promise = partnership.promises.new(promise_params)
     promise.creator = current_user
-    Rails.logger.info "Creating promise with params: #{promise_params}"
-    Rails.logger.info "Partnership ID: #{partnership.id}"
-    Rails.logger.info "Creator ID: #{current_user.id}"
 
     if promise.save
       render json: promise, status: :created
@@ -53,12 +50,12 @@ class Api::PromisesController < ApplicationController
 
   def promise_params
     permitted_params = params.require(:promise).permit(:content, :due_date, :type, :promise_id)
-    
+
     # ふたりの約束の場合は期日をnilに設定
-    if permitted_params[:type] == 'our_promise'
+    if permitted_params[:type] == "our_promise"
       permitted_params[:due_date] = nil
     end
-    
+
     permitted_params
   end
 end

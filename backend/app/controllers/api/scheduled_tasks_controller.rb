@@ -4,7 +4,6 @@ class Api::ScheduledTasksController < ApplicationController
   def send_due_date_evaluations
     begin
       EvaluationMailer.send_due_date_evaluations
-      Rails.logger.info "Due date evaluation emails sent successfully"
       render json: { message: "期日が来た約束の評価メールを送信しました" }, status: :ok
     rescue => e
       Rails.logger.error "Failed to send due date evaluation emails: #{e.message}"
@@ -15,7 +14,6 @@ class Api::ScheduledTasksController < ApplicationController
   def send_weekly_our_promises_evaluation
     begin
       EvaluationMailer.send_weekly_our_promises_evaluation
-      Rails.logger.info "Weekly evaluation emails sent successfully"
       render json: { message: "毎週の二人の約束評価メールを送信しました" }, status: :ok
     rescue => e
       Rails.logger.error "Failed to send weekly evaluation emails: #{e.message}"
@@ -31,12 +29,10 @@ class Api::ScheduledTasksController < ApplicationController
         partnership.promises.our_promises.each do |promise|
           if promise.reset_for_next_evaluation
             reset_count += 1
-            Rails.logger.info "Reset our_promise #{promise.id} for next evaluation cycle"
           end
         end
       end
 
-      Rails.logger.info "Reset #{reset_count} our_promises for weekly evaluation"
       render json: { message: "#{reset_count}件のふたりの約束をリセットしました", count: reset_count }, status: :ok
     rescue => e
       Rails.logger.error "Failed to reset our_promises: #{e.message}"

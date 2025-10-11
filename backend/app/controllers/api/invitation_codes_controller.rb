@@ -79,5 +79,4 @@ class Api::InvitationCodesController < ApplicationController
       }, status: :unprocessable_entity
     end
   end
-
 end
