@@ -6,7 +6,15 @@ class Api::OneWordsController < ApplicationController
       one_words = current_user.partnership.one_words
         .includes(:sender)
         .where(receiver_id: current_user.id)
-        .order(created_at: :desc)
+
+      # 年月でフィルタリング
+      if params[:year].present? && params[:month].present?
+        start_date = Date.new(params[:year].to_i, params[:month].to_i, 1).beginning_of_day
+        end_date = start_date.end_of_month.end_of_day
+        one_words = one_words.where(created_at: start_date..end_date)
+      end
+
+      one_words = one_words.order(created_at: :desc)
 
       render json: one_words.map { |word|
         {

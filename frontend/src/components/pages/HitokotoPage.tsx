@@ -19,10 +19,24 @@ const HitokotoPage = () => {
   const [showSuccessMessage, setShowSuccessMessage] = useState<boolean>(false);
   const { resetVisitStatus } = useHitokotoNotification();
 
+  // 検索用のステート
+  const currentDate = new Date();
+  const [selectedYear, setSelectedYear] = useState<number>(
+    currentDate.getFullYear()
+  );
+  const [selectedMonth, setSelectedMonth] = useState<number>(
+    currentDate.getMonth() + 1
+  );
+  const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
+
+  // 月の選択肢
+  const months = Array.from({ length: 12 }, (_, i) => i + 1);
+
   const fetchOneWords = async () => {
     try {
-      const response: ApiResponse<OneWord[]> =
-        await apiClient.get('/one_words');
+      const response: ApiResponse<OneWord[]> = await apiClient.get(
+        `/one_words?year=${selectedYear}&month=${selectedMonth}`
+      );
 
       if (response.error) {
         console.error('一言の取得に失敗しました:', response.error);
@@ -36,7 +50,18 @@ const HitokotoPage = () => {
 
   useEffect(() => {
     fetchOneWords();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedYear, selectedMonth]);
+
+  // 検索ボタンのトグル
+  const toggleSearch = () => {
+    setIsSearchOpen(!isSearchOpen);
+  };
+
+  // 検索実行
+  const handleSearch = () => {
+    setIsSearchOpen(false);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -110,8 +135,59 @@ const HitokotoPage = () => {
           </div>
 
           <div className="yubi-hitokoto-received-messages">
-            <div className="yubi-column__header">
-              <span>もらった一言</span>
+            <div className="yubi-past-evaluations-header">
+              <div className="yubi-search-section">
+                <h1 className="yubi-past-evaluations-title">
+                  {selectedYear}年{selectedMonth}月のもらった一言
+                </h1>
+                <button
+                  onClick={toggleSearch}
+                  className="yubi-search-toggle-button"
+                  title="年月で検索"
+                >
+                  ▼
+                </button>
+              </div>
+              {isSearchOpen && (
+                <div className="yubi-search-dropdown">
+                  <div className="yubi-search-controls">
+                    <div className="yubi-search-field">
+                      <label htmlFor="hitokoto-year-input">年</label>
+                      <input
+                        id="hitokoto-year-input"
+                        type="number"
+                        value={selectedYear}
+                        onChange={e => setSelectedYear(Number(e.target.value))}
+                        className="yubi-search-input"
+                        min="2025"
+                        max="2125"
+                        placeholder="2025"
+                      />
+                    </div>
+                    <div className="yubi-search-field">
+                      <label htmlFor="hitokoto-month-select">月</label>
+                      <select
+                        id="hitokoto-month-select"
+                        value={selectedMonth}
+                        onChange={e => setSelectedMonth(Number(e.target.value))}
+                        className="yubi-search-select"
+                      >
+                        {months.map(month => (
+                          <option key={month} value={month}>
+                            {month}月
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <button
+                      onClick={handleSearch}
+                      className="yubi-button yubi-button--primary yubi-search-apply-button"
+                    >
+                      検索
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
             <div className="yubi-column__content">
               {oneWords.map(word => (
