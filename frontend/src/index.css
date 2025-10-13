@@ -1079,13 +1079,6 @@ body.page-about .yubi-main {
   font-weight: 700;
   box-shadow: 0 3px 0 #4e342e;
   display: inline-block;
-  transition: all 0.1s ease-out;
-}
-
-.yubi-apple-count:active,
-.apple-count:active {
-  transform: translateY(2px);
-  box-shadow: 0 1px 0 #4e342e;
 }
 
 .yubi-apple-count span,

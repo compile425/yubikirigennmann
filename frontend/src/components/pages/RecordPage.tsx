@@ -44,6 +44,14 @@ const RecordPage = () => {
     fetchUserStats();
   }, []);
 
+  // アップルカウントに応じた木の画像を取得
+  const getTreeImage = (appleCount: number): string => {
+    if (appleCount >= 15) return '/tree4.png';
+    if (appleCount >= 10) return '/tree3.png';
+    if (appleCount >= 5) return '/tree2.png';
+    return '/tree1.png';
+  };
+
   return (
     <div className="app-wrapper">
       <Sidebar />
@@ -58,7 +66,7 @@ const RecordPage = () => {
           <div className="score-plate">
             <img
               className="avatar"
-              src={userStats?.inviter.avatar_url || '/public/icon_user.png'}
+              src={userStats?.inviter.avatar_url || '/icon_user.png'}
               alt="招待者のアイコン"
             />
             <div className="user-name">あなた</div>
@@ -77,13 +85,13 @@ const RecordPage = () => {
           </div>
           <img
             className="tree-background"
-            src="/public/tree2.png"
+            src={getTreeImage(userStats?.monthly_apple_count || 0)}
             alt="りんごの木"
           />
           <div className="score-plate">
             <img
               className="avatar"
-              src={userStats?.invitee.avatar_url || '/public/icon_partner.png'}
+              src={userStats?.invitee.avatar_url || '/icon_partner.png'}
               alt="被招待者のアイコン"
             />
             <div className="user-name">パートナー</div>
