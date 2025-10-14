@@ -1756,91 +1756,208 @@ body.page-about .yubi-main {
 }
 
 /* このアプリについて */
-.yubi-about-container {
-  max-width: 800px;
+/* このアプリについてページ */
+.yubi-about-page {
+  max-width: 1200px;
   margin: 0 auto;
+  padding: 40px 20px;
 }
 
-.yubi-page-header {
+/* ヒーローセクション */
+.yubi-about-hero {
   text-align: center;
-  position: relative;
-  bottom: 20px;
-}
-
-.yubi-page-header h1 {
-  font-weight: 800;
-  font-size: 32px;
-  color: white;
-  background-color: var(--heading-color);
-  padding: 15px 30px;
-  border-radius: 99px;
-  display: inline-block;
-}
-
-.yubi-page-title {
-  font-size: 2rem;
-  color: #333;
-  margin-bottom: 0.5rem;
-}
-
-.yubi-page-description {
-  color: #666;
-  font-size: 1rem;
-}
-
-.yubi-feature-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 25px;
-  margin-bottom: 30px;
-  position: relative;
-  bottom: 20px;
-}
-
-.yubi-feature-panel {
-  background: var(--panel-bg);
-  border: 4px solid white;
+  padding: 60px 20px 80px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
   border-radius: 20px;
-  padding: 20px;
-  box-shadow:
-    0 6px 0 var(--shadow-dark),
-    0 8px 15px rgba(0, 0, 0, 0.15);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
+  margin-bottom: 80px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
-.yubi-feature-icon {
-  flex-shrink: 0;
-  width: 80px;
-  height: 80px;
-  background-color: #fff;
-  border-radius: 16px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 40px;
-  border: 2px solid #ddd;
-  box-shadow:
-    inset 0 2px 0 #fff,
-    0 4px 0 #ccc;
-  color: var(--leaf-green);
-  margin-bottom: 15px;
+.yubi-about-hero__title {
+  font-size: 48px;
+  font-weight: 900;
+  color: var(--heading-color);
+  margin: 0 0 20px 0;
+  line-height: 1.3;
 }
 
-.yubi-feature-text h3 {
+.yubi-about-hero__subtitle {
   font-size: 18px;
+  color: var(--text-color-brown);
+  line-height: 1.8;
+  margin: 0;
+  opacity: 0.9;
+}
+
+/* セクションタイトル */
+.yubi-about-section-title {
+  text-align: center;
+  font-size: 36px;
   font-weight: 800;
   color: var(--heading-color);
-  margin: 0 0 8px 0;
+  margin: 0 0 60px 0;
 }
 
-.yubi-feature-text p {
-  margin: 0;
+/* 機能セクション */
+.yubi-about-features {
+  margin-bottom: 80px;
+}
+
+/* 各機能 */
+.yubi-about-feature {
+  display: flex;
+  align-items: center;
+  gap: 60px;
+  margin-bottom: 100px;
+}
+
+.yubi-about-feature--reverse {
+  flex-direction: row-reverse;
+}
+
+.yubi-about-feature__content {
+  flex: 1;
+}
+
+.yubi-about-feature__badge {
+  display: inline-block;
+  background-color: var(--heading-color);
+  color: white;
   font-size: 14px;
-  line-height: 1.6;
+  font-weight: 800;
+  padding: 6px 16px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+}
+
+.yubi-about-feature__title {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--heading-color);
+  margin: 0 0 20px 0;
+}
+
+.yubi-about-feature__description {
+  font-size: 16px;
+  line-height: 1.8;
   color: var(--text-color-brown);
+  margin: 0 0 20px 0;
+}
+
+.yubi-about-feature__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.yubi-about-feature__list li {
+  padding: 10px 0 10px 30px;
+  position: relative;
+  font-size: 15px;
+  color: var(--text-color-brown);
+  line-height: 1.6;
+}
+
+.yubi-about-feature__list li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--leaf-green);
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.yubi-about-feature__image {
+  flex: 1;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.yubi-about-feature__placeholder {
+  background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+  border: 3px dashed #ccc;
+  border-radius: 16px;
+  padding: 80px 40px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: #999;
+  width: 100%;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* CTAセクション */
+.yubi-about-cta {
+  text-align: center;
+  padding: 60px 40px;
+  background: linear-gradient(135deg, var(--heading-color) 0%, #8b6f47 100%);
+  border-radius: 20px;
+  color: white;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.yubi-about-cta__title {
+  font-size: 36px;
+  font-weight: 900;
+  margin: 0 0 16px 0;
+}
+
+.yubi-about-cta__description {
+  font-size: 18px;
+  margin: 0;
+  opacity: 0.95;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .yubi-about-hero__title {
+    font-size: 32px;
+  }
+
+  .yubi-about-hero__subtitle {
+    font-size: 16px;
+  }
+
+  .yubi-about-section-title {
+    font-size: 28px;
+  }
+
+  .yubi-about-feature {
+    flex-direction: column;
+    gap: 30px;
+    margin-bottom: 60px;
+  }
+
+  .yubi-about-feature--reverse {
+    flex-direction: column;
+  }
+
+  .yubi-about-feature__title {
+    font-size: 24px;
+  }
+
+  .yubi-about-feature__description {
+    font-size: 15px;
+  }
+
+  .yubi-about-feature__placeholder {
+    height: 300px;
+    padding: 40px 20px;
+    font-size: 16px;
+  }
+
+  .yubi-about-cta__title {
+    font-size: 28px;
+  }
+
+  .yubi-about-cta__description {
+    font-size: 16px;
+  }
 }
 
 .yubi-back-to-board-button {
