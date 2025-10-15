@@ -165,6 +165,8 @@ erDiagram
 ```
 ## インフラ構成図
 
+<img width="502" height="534" alt="Image" src="https://github.com/user-attachments/assets/63d38c0c-abe2-4082-a8c4-b3432303c88c" />
+
 ## 機能一覧
 - 会員登録、ログイン/ログアウト
 - 約束の作成/削除(内容、期日)
