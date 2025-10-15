@@ -291,4 +291,4 @@ graph TD
     F_API -- "HTTPリクエスト / JSONレスポンス" --> B_Router
 ```
 # インフラ構成図
-<img width="579" height="639" alt="Image" src="https://github.com/user-attachments/assets/9783cebd-f849-40ba-8915-ec38da1facb0" />
+<img width="502" height="534" alt="Image" src="https://github.com/user-attachments/assets/63d38c0c-abe2-4082-a8c4-b3432303c88c" />
