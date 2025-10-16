@@ -57,7 +57,6 @@ erDiagram
     users ||--o{ promises : "creates"
     users ||--o{ promise_evaluations : "evaluates"
     users ||--o{ one_words : "sends/receives"
-    users ||--o{ one_words_reads : "reads"
     
     partnerships ||--o{ promises : "has_many"
     partnerships ||--o{ one_words : "has_many"
@@ -155,13 +154,6 @@ erDiagram
         datetime updated_at "更新日時"
     }
 
-    one_words_reads {
-        bigint id PK "既読ID"
-        bigint one_word_id FK "一言ID"
-        bigint user_id FK "既読したユーザーID"
-        datetime created_at "作成日時"
-        datetime updated_at "更新日時"
-    }
 ```
 ## インフラ構成図
 
@@ -181,7 +173,7 @@ erDiagram
 
 ## 技術的な工夫
 - バックエンドをAPIとして、フロントエンドと分離し、S3、CloudFrontを活用したSPA構成にすることでページ遷移の高速化と低コストで運用を実現
-- モデルスペックとリクエストスペックでのRSpecテストを実装し、ビジネスロジックとサービス全体の期待動作を保証
+- モデルスペックとリクエストスペックでのRSpecテストを実装し、ビジネスロジックとサービス全体の期待動作を保証(ラインカバレッジ90%以上維持) 
 - ALBを使いMulti-AZにまたがって配置されたEC2インスタンスに負荷を分散することで単一障害点を排除し、フェイルオーバーを用いることでサービスが停止しにくい可用性の高い構成の実現
 
 ## ユーザー目線での工夫
