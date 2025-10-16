@@ -68,6 +68,27 @@ class Promise < ApplicationRecord
       true
     end
 
+    # 評価を作成または更新する
+    def evaluate!(evaluator:, rating:, evaluation_text:)
+      evaluation = promise_evaluation || build_promise_evaluation
+      rating_value = rating.to_i
+      evaluation.assign_attributes(
+        evaluator: evaluator,
+        rating: rating_value,
+        evaluation_text: evaluation_text
+      )
+
+      ActiveRecord::Base.transaction do
+        evaluation.save!
+        touch # updated_atを更新
+
+        # 評価が4以上の場合、アップルカウントを増やす
+        increment_apple_count if rating_value >= 4
+      end
+
+      evaluation
+    end
+
     # レスポンス用のハッシュに変換
     def to_evaluation_response
       {
@@ -81,6 +102,17 @@ class Promise < ApplicationRecord
         evaluation_date: promise_evaluation.created_at,
         evaluator_name: promise_evaluation.evaluator.name
       }
+    end
+
+    # 評価済みのふたりの約束を全てリセット
+    def self.reset_evaluated_our_promises
+      reset_count = 0
+      Partnership.includes(:promises).find_each do |partnership|
+        partnership.promises.our_promises.each do |promise|
+          reset_count += 1 if promise.reset_for_next_evaluation
+        end
+      end
+      reset_count
     end
 
     after_validation :log_validation_errors
@@ -99,5 +131,21 @@ class Promise < ApplicationRecord
       if errors.any?
         Rails.logger.error "Promise validation errors: #{errors.full_messages}"
       end
+    end
+
+    def increment_apple_count
+      return unless partnership
+
+      current_month = Date.current.beginning_of_month
+
+      # 当月のスコアレコードを取得または作成
+      rating_score = partnership.promise_rating_scores.find_or_initialize_by(
+        year_month: current_month
+      )
+
+      # アップルカウントを1増やす
+      rating_score.harvested_apples ||= 0
+      rating_score.harvested_apples += 1
+      rating_score.save!
     end
 end

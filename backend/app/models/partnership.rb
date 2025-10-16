@@ -30,4 +30,64 @@ class Partnership < ApplicationRecord
       )
     end
   end
+
+  # パートナーシップを解消する
+  def dissolve!
+    ActiveRecord::Base.transaction do
+      promises.destroy_all
+      destroy!
+    end
+  end
+
+  # 評価待ちの約束を取得
+  def pending_evaluations_for(user)
+    today = Date.today
+
+    # 1. 相手が作成した約束で、期日が来ていて、まだ評価していないもの
+    partner_promises = promises
+      .left_joins(:promise_evaluation)
+      .where(promise_evaluations: { id: nil })
+      .where.not(creator_id: user.id)
+      .where.not(type: "our_promise")
+      .where("due_date <= ?", today)
+
+    # 2. 今週評価すべきふたりの約束
+    evaluator = Promise.weekly_evaluator(self)
+    our_promise_to_evaluate = if evaluator == user
+      promises.pending_our_promises.first
+    end
+
+    # 約束を結合してソート
+    pending = partner_promises.to_a
+    pending.unshift(our_promise_to_evaluate) if our_promise_to_evaluate
+
+    # IDリストでクエリして、includesを適用
+    Promise.where(id: pending.map(&:id))
+      .includes(:creator)
+      .order(:created_at)
+  end
+
+  # 月間りんご数を取得
+  def monthly_apple_count
+    current_month = Date.current.beginning_of_month
+    promise_rating_scores
+      .where(year_month: current_month)
+      .sum(:harvested_apples)
+  end
+
+  # 週次評価メールを送信
+  def send_weekly_evaluation_email!(sender)
+    top_our_promise = promises.our_promises.order(:updated_at).first
+
+    raise ArgumentError, "評価対象の約束が見つかりません" unless top_our_promise
+
+    receiver = partner_of(sender)
+    EvaluationMailer.weekly_evaluation_email(sender, receiver, top_our_promise).deliver_now
+
+    {
+      promise: top_our_promise,
+      partner: receiver,
+      sender: sender
+    }
+  end
 end

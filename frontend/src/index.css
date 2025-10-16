@@ -337,6 +337,15 @@ body.page-about .yubi-main {
   border-radius: 4px;
 }
 
+/* 空メッセージ */
+.yubi-empty-message {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-color-muted);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
 /* カード */
 .yubi-card {
   width: 90%;

@@ -190,20 +190,26 @@ const HitokotoPage = () => {
               )}
             </div>
             <div className="yubi-column__content">
-              {oneWords.map(word => (
-                <div key={word.id} className="yubi-card">
-                  {word.content}
-                  <footer className="yubi-card__footer">
-                    {new Date(word.created_at)
-                      .toLocaleDateString('ja-JP', {
-                        year: 'numeric',
-                        month: '2-digit',
-                        day: '2-digit',
-                      })
-                      .replace(/\//g, '.')}
-                  </footer>
+              {oneWords.length === 0 ? (
+                <div className="yubi-empty-message">
+                  もらった一言はありません
                 </div>
-              ))}
+              ) : (
+                oneWords.map(word => (
+                  <div key={word.id} className="yubi-card">
+                    {word.content}
+                    <footer className="yubi-card__footer">
+                      {new Date(word.created_at)
+                        .toLocaleDateString('ja-JP', {
+                          year: 'numeric',
+                          month: '2-digit',
+                          day: '2-digit',
+                        })
+                        .replace(/\//g, '.')}
+                    </footer>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>

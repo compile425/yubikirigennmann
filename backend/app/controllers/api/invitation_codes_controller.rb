@@ -31,11 +31,6 @@ class Api::InvitationCodesController < ApplicationController
       return
     end
 
-    if current_user.partnership
-      render json: { error: "既にパートナーシップが存在します" }, status: :unprocessable_entity
-      return
-    end
-
     invitation_code = InvitationCode.find_by(code: code.upcase, used: false)
 
     unless invitation_code
@@ -43,40 +38,28 @@ class Api::InvitationCodesController < ApplicationController
       return
     end
 
-    if invitation_code.inviter_id == current_user.id
-      render json: { error: "自分の招待コードは使用できません" }, status: :unprocessable_entity
-      return
-    end
+    partnership = invitation_code.join_partnership!(current_user)
 
-    begin
-      partnership = Partnership.create!(
-        user: invitation_code.inviter,
-        partner: current_user
-      )
-
-      # デフォルトの約束を作成
-      partnership.create_default_promises
-
-      invitation_code.mark_as_used!
-
-      render json: {
-        message: "パートナーシップが結ばれました",
-        partnership: {
-          id: partnership.id,
-          user: {
-            id: invitation_code.inviter.id,
-            name: invitation_code.inviter.name
-          },
-          partner: {
-            id: current_user.id,
-            name: current_user.name
-          }
+    render json: {
+      message: "パートナーシップが結ばれました",
+      partnership: {
+        id: partnership.id,
+        user: {
+          id: partnership.user.id,
+          name: partnership.user.name
+        },
+        partner: {
+          id: partnership.partner.id,
+          name: partnership.partner.name
         }
       }
-    rescue ActiveRecord::RecordInvalid => e
-      render json: {
-        error: "パートナーシップの作成に失敗しました: #{e.message}"
-      }, status: :unprocessable_entity
-    end
+    }
+  rescue ArgumentError => e
+    render json: { error: e.message }, status: :unprocessable_entity
+  rescue ActiveRecord::RecordInvalid => e
+    render json: {
+      error: "パートナーシップの作成に失敗しました",
+      details: e.record.errors.full_messages
+    }, status: :unprocessable_entity
   end
 end

@@ -46,74 +46,50 @@ class Api::UsersController < ApplicationController
     end
 
     partnership = current_user.partnership
-    inviter = User.find(partnership.user_id)
-    invitee = User.find(partnership.partner_id)
-
-    # 現在のユーザーが招待者かどうかを判定
-    current_is_inviter = current_user.id == partnership.user_id
-
-    # 左側（招待者）、右側（被招待者）の順でデータを整理
-    left_user = inviter
-    right_user = invitee
-
-    # 月間りんご数の計算（当月のみ）
-    current_month = Date.current.beginning_of_month
-    monthly_apple_count = partnership.promise_rating_scores
-      .where(year_month: current_month)
-      .sum(:harvested_apples)
+    inviter = partnership.user
+    invitee = partnership.partner
 
     render json: {
       inviter: {
-        id: left_user.id,
-        name: left_user.name,
-        avatar_url: nil, # アバター機能は後で実装
-        average_score: calculate_average_score(left_user),
-        score_trend: calculate_score_trend(left_user)
+        id: inviter.id,
+        name: inviter.name,
+        avatar_url: nil,
+        average_score: inviter.average_score,
+        score_trend: inviter.score_trend
       },
       invitee: {
-        id: right_user.id,
-        name: right_user.name,
-        avatar_url: nil, # アバター機能は後で実装
-        average_score: calculate_average_score(right_user),
-        score_trend: calculate_score_trend(right_user)
+        id: invitee.id,
+        name: invitee.name,
+        avatar_url: nil,
+        average_score: invitee.average_score,
+        score_trend: invitee.score_trend
       },
-      monthly_apple_count: monthly_apple_count
+      monthly_apple_count: partnership.monthly_apple_count
     }
   end
 
   def create
-    user = User.new(user_params)
+    user = User.create_with_credential!(user_params, credential_params)
 
-    if user.save
-      credential = user.build_user_credential(credential_params)
-
-      if credential.save
-        # 新規ユーザー登録成功時にメールを送信
-        begin
-          RegistrationMailer.welcome_email(user).deliver_now
-        rescue => e
-          Rails.logger.error "Failed to send welcome email to #{user.email}: #{e.message}"
-          # メール送信に失敗してもユーザー登録は成功とする
-        end
-
-
-        token = encode_token(user_id: user.id)
-
-        render json: {
-          token: token,
-          user: {
-            id: user.id,
-            name: user.name,
-            email: user.email
-          }
-        }, status: :created
-      else
-        user.destroy
-        render json: { error: credential.errors.full_messages.join(", ") }, status: :unprocessable_entity
-      end
-    else
-      render json: { error: user.errors.full_messages.join(", ") }, status: :unprocessable_entity
+    # ウェルカムメール送信
+    begin
+      RegistrationMailer.welcome_email(user).deliver_now
+    rescue => e
+      Rails.logger.error "Failed to send welcome email to #{user.email}: #{e.message}"
     end
+
+    token = encode_token(user_id: user.id)
+
+    render json: {
+      token: token,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email
+      }
+    }, status: :created
+  rescue ActiveRecord::RecordInvalid => e
+    render json: { error: e.record.errors.full_messages.join(", ") }, status: :unprocessable_entity
   end
 
   private
@@ -124,40 +100,5 @@ class Api::UsersController < ApplicationController
 
   def credential_params
     params.require(:user_credential).permit(:password, :password_confirmation)
-  end
-
-  private
-
-  def calculate_average_score(user)
-    # ユーザーが評価した約束の平均スコアを計算
-    evaluations = user.evaluated_promises
-    return 0.0 if evaluations.empty?
-
-    total_score = evaluations.sum(:rating)
-    count = evaluations.count
-    count > 0 ? total_score.to_f / count : 0.0
-  end
-
-  def calculate_score_trend(user)
-    # 先月からのスコアトレンドを計算（仮実装）
-    current_month = Date.current.beginning_of_month
-    last_month = current_month - 1.month
-
-    current_score = calculate_monthly_average_score(user, current_month)
-    last_score = calculate_monthly_average_score(user, last_month)
-
-    current_score - last_score
-  end
-
-  def calculate_monthly_average_score(user, month_start)
-    evaluations = user.evaluated_promises
-      .where("created_at >= ? AND created_at < ?",
-             month_start, month_start + 1.month)
-
-    return 0.0 if evaluations.empty?
-
-    total_score = evaluations.sum(:rating)
-    count = evaluations.count
-    count > 0 ? total_score.to_f / count : 0.0
   end
 end

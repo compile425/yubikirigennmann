@@ -13,6 +13,28 @@ class InvitationCode < ApplicationRecord
     update!(used: true)
   end
 
+  # 招待コードを使ってパートナーシップを結ぶ
+  def join_partnership!(partner_user)
+    raise ArgumentError, "自分の招待コードは使用できません" if inviter_id == partner_user.id
+    raise ArgumentError, "既にパートナーシップが存在します" if partner_user.partnership
+    raise ArgumentError, "この招待コードは既に使用されています" if used?
+
+    ActiveRecord::Base.transaction do
+      partnership = Partnership.create!(
+        user: inviter,
+        partner: partner_user
+      )
+
+      # デフォルトの約束を作成
+      partnership.create_default_promises
+
+      # 招待コードを使用済みにする
+      mark_as_used!
+
+      partnership
+    end
+  end
+
   private
 
   def generate_code

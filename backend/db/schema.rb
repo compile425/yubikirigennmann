@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_10_11_011044) do
+ActiveRecord::Schema[7.2].define(version: 2025_10_16_140951) do
   create_table "invitation_codes", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "inviter_id", null: false
     t.string "code", limit: 8, null: false
@@ -32,15 +32,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_10_11_011044) do
     t.index ["partnership_id"], name: "index_one_words_on_partnership_id"
     t.index ["receiver_id"], name: "index_one_words_on_receiver_id"
     t.index ["sender_id"], name: "index_one_words_on_sender_id"
-  end
-
-  create_table "one_words_reads", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "one_word_id", null: false
-    t.bigint "user_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["one_word_id"], name: "index_one_words_reads_on_one_word_id"
-    t.index ["user_id"], name: "index_one_words_reads_on_user_id"
   end
 
   create_table "partnerships", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -118,8 +109,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_10_11_011044) do
   add_foreign_key "one_words", "partnerships"
   add_foreign_key "one_words", "users", column: "receiver_id"
   add_foreign_key "one_words", "users", column: "sender_id"
-  add_foreign_key "one_words_reads", "one_words"
-  add_foreign_key "one_words_reads", "users"
   add_foreign_key "partnerships", "users"
   add_foreign_key "partnerships", "users", column: "partner_id"
   add_foreign_key "promise_evaluations", "promises"
