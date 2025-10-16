@@ -65,11 +65,6 @@ const ResetPasswordForm = () => {
     <div className="yubi-login-container">
       <div className="yubi-login-card">
         <div className="yubi-login-header">
-          <img
-            src="/icon_yubikiri.png"
-            alt="ゆびきり"
-            className="yubi-login-icon"
-          />
           <h2 className="yubi-login-title">新しいパスワードを設定</h2>
           <p className="yubi-login-subtitle">
             新しいパスワードを入力してください
