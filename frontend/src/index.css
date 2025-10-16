@@ -1161,15 +1161,128 @@ body.page-about .yubi-main {
 }
 
 /* ログイン */
-.yubi-login {
-  width: 90%;
-  max-width: 400px;
+.yubi-login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.yubi-login-card {
+  width: auto;
+  max-width: 100%;
+  min-width: 400px;
   background-color: var(--panel-bg);
   border-radius: 20px;
   padding: 35px;
   border: 1px solid #e0e0e0;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
   text-align: center;
+}
+
+.yubi-login {
+  width: 90%;
+  max-width: 700px;
+  background-color: var(--panel-bg);
+  border-radius: 20px;
+  padding: 35px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* 新規登録画面専用の幅広スタイル */
+.yubi-login--register {
+  width: 100%;
+  max-width: 1200px;
+  background-color: var(--panel-bg);
+  border-radius: 20px;
+  padding: 35px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.yubi-login-header {
+  margin-bottom: 25px;
+}
+
+.yubi-login-header h2 {
+  font-weight: 800;
+  font-size: 32px;
+  color: var(--heading-color);
+  margin: 0 0 15px 0;
+}
+
+.yubi-login-header p {
+  color: var(--text-color-brown);
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+
+.yubi-login-title {
+  font-weight: 800;
+  font-size: 28px;
+  color: var(--heading-color);
+  margin: 0 0 15px 0;
+  white-space: nowrap;
+}
+
+.yubi-login-subtitle {
+  color: var(--text-color-brown);
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0 0 25px 0;
+}
+
+.yubi-login-form {
+  text-align: left;
+}
+
+.yubi-form-label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: var(--text-color-brown);
+}
+
+.yubi-form-input {
+  width: 100%;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  padding: 12px 15px;
+  font-size: 16px;
+  font-family: var(--font-rounded);
+  color: var(--text-color-brown);
+  box-sizing: border-box;
+  background-color: #fff;
+  transition: all 0.2s;
+}
+
+.yubi-form-input:focus {
+  outline: none;
+  border-color: var(--heading-color);
+  box-shadow: 0 0 10px rgba(7, 87, 99, 0.2);
+}
+
+.yubi-login-links {
+  margin-top: 25px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.yubi-login-link {
+  color: var(--text-color-brown);
+  text-decoration: underline;
+  margin: 0 10px;
+}
+
+.yubi-login-link:hover {
+  color: var(--leaf-green);
 }
 
 .yubi-login__header {
@@ -1929,7 +2042,7 @@ body.page-about .yubi-main {
 
   .yubi-about-feature {
     flex-direction: column;
-    gap: 30px;
+  gap: 30px;
     margin-bottom: 60px;
   }
 

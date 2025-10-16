@@ -66,7 +66,7 @@ const RegisterForm = ({ onBackToLogin }: RegisterFormProps) => {
   };
 
   return (
-    <div className="yubi-login">
+    <div className="yubi-login yubi-login--register">
       <header className="yubi-login__header">
         <h1>新規登録</h1>
       </header>

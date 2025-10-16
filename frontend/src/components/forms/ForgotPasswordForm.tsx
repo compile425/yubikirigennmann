@@ -37,14 +37,11 @@ const ForgotPasswordForm = () => {
     <div className="yubi-login-container">
       <div className="yubi-login-card">
         <div className="yubi-login-header">
-          <img
-            src="/icon_yubikiri.png"
-            alt="ゆびきり"
-            className="yubi-login-icon"
-          />
           <h2 className="yubi-login-title">パスワードをお忘れの方</h2>
           <p className="yubi-login-subtitle">
-            登録されたメールアドレスにパスワードリセット用のリンクを送信します
+            登録されたメールアドレスに
+            <br />
+            パスワードリセット用のリンクを送信します
           </p>
         </div>
 
