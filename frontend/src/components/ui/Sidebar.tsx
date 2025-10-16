@@ -111,89 +111,127 @@ const Sidebar = ({ onDissolvePartnership }: SidebarProps) => {
           </div>
         </div>
         <nav className="yubi-sidebar__nav">
-          <Link
-            to="/"
-            className="yubi-sidebar__link"
-            onClick={handleNavLinkClick}
-          >
-            約束一覧
-          </Link>
-          <Link
-            to="/record"
-            className="yubi-sidebar__link"
-            onClick={handleNavLinkClick}
-          >
-            ふたりの記録
-          </Link>
-          <Link
-            to="/past-evaluations"
-            className="yubi-sidebar__link"
-            onClick={handleNavLinkClick}
-          >
-            過去の評価
-          </Link>
-          <Link
-            to="/hitokoto"
-            className="yubi-sidebar__link"
-            onClick={handleNavLinkClick}
-          >
-            <span>ちょっと一言</span>
-            {hasUnreadHitokoto && (
-              <span className="yubi-sidebar__notification-wrapper">
-                <span className="yubi-sidebar__notification-badge">!</span>
-                <button
-                  onClick={e => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    markAsRead();
-                  }}
-                  className="yubi-sidebar__notification-close"
-                  title="通知を消す"
-                >
-                  ×
-                </button>
-              </span>
-            )}
-          </Link>
-          <Link
-            to="/pending-evaluations"
-            className="yubi-sidebar__link"
-            onClick={handleNavLinkClick}
-          >
-            <span>評価待ちの約束</span>
-            {pendingCount > 0 && (
-              <span className="yubi-sidebar__notification-badge">
-                {pendingCount}
-              </span>
-            )}
-          </Link>
-          <Link
-            to="/about"
-            className="yubi-sidebar__link"
-            onClick={handleNavLinkClick}
-          >
-            このアプリについて
-          </Link>
-          {partner ? (
-            <a
-              href="#"
-              className="yubi-sidebar__link"
-              onClick={handleDissolvePartnership}
-            >
-              パートナー解消
-            </a>
-          ) : (
-            <Link
-              to="/invite-partner"
-              className="yubi-sidebar__link"
-              onClick={handleNavLinkClick}
-            >
-              パートナーと始める
-            </Link>
+          {/* ログインしていない場合 */}
+          {!token && (
+            <>
+              <Link
+                to="/"
+                className="yubi-sidebar__link"
+                onClick={handleNavLinkClick}
+              >
+                ログイン
+              </Link>
+              <Link
+                to="/about"
+                className="yubi-sidebar__link"
+                onClick={handleNavLinkClick}
+              >
+                このアプリについて
+              </Link>
+            </>
           )}
-          <a href="#" className="yubi-sidebar__link" onClick={handleLogout}>
-            ログアウト
-          </a>
+
+          {/* ログイン済み、パートナーシップなし */}
+          {token && !partner && (
+            <>
+              <Link
+                to="/about"
+                className="yubi-sidebar__link"
+                onClick={handleNavLinkClick}
+              >
+                このアプリについて
+              </Link>
+              <Link
+                to="/invite-partner"
+                className="yubi-sidebar__link"
+                onClick={handleNavLinkClick}
+              >
+                パートナーと始める
+              </Link>
+              <a href="#" className="yubi-sidebar__link" onClick={handleLogout}>
+                ログアウト
+              </a>
+            </>
+          )}
+
+          {/* ログイン済み、パートナーシップあり */}
+          {token && partner && (
+            <>
+              <Link
+                to="/"
+                className="yubi-sidebar__link"
+                onClick={handleNavLinkClick}
+              >
+                約束一覧
+              </Link>
+              <Link
+                to="/record"
+                className="yubi-sidebar__link"
+                onClick={handleNavLinkClick}
+              >
+                ふたりの記録
+              </Link>
+              <Link
+                to="/past-evaluations"
+                className="yubi-sidebar__link"
+                onClick={handleNavLinkClick}
+              >
+                過去の評価
+              </Link>
+              <Link
+                to="/hitokoto"
+                className="yubi-sidebar__link"
+                onClick={handleNavLinkClick}
+              >
+                <span>ちょっと一言</span>
+                {hasUnreadHitokoto && (
+                  <span className="yubi-sidebar__notification-wrapper">
+                    <span className="yubi-sidebar__notification-badge">!</span>
+                    <button
+                      onClick={e => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        markAsRead();
+                      }}
+                      className="yubi-sidebar__notification-close"
+                      title="通知を消す"
+                    >
+                      ×
+                    </button>
+                  </span>
+                )}
+              </Link>
+              <Link
+                to="/pending-evaluations"
+                className="yubi-sidebar__link"
+                onClick={handleNavLinkClick}
+              >
+                <span>評価待ちの約束</span>
+                {pendingCount > 0 && (
+                  <span className="yubi-sidebar__notification-badge">
+                    {pendingCount}
+                  </span>
+                )}
+              </Link>
+              <Link
+                to="/about"
+                className="yubi-sidebar__link"
+                onClick={handleNavLinkClick}
+              >
+                このアプリについて
+              </Link>
+              <a
+                href="#"
+                className="yubi-sidebar__link"
+                onClick={handleDissolvePartnership}
+              >
+                パートナー解消
+              </a>
+              <a href="#" className="yubi-sidebar__link" onClick={handleLogout}>
+                ログアウト
+              </a>
+            </>
+          )}
         </nav>
       </aside>
       <label htmlFor="yubi-nav-toggle" className="yubi-overlay"></label>

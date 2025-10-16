@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/useAuth';
 import { apiClient, type ApiResponse } from '../../lib/api';
 import RegisterForm from './RegisterForm';
@@ -20,6 +21,7 @@ const LoginForm = (): React.JSX.Element => {
   const [isRegisterMode, setIsRegisterMode] = useState<boolean>(false);
   const [isGuestLoggingIn, setIsGuestLoggingIn] = useState<boolean>(false);
   const { setToken } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
@@ -144,6 +146,13 @@ const LoginForm = (): React.JSX.Element => {
           disabled={isGuestLoggingIn}
         >
           {isGuestLoggingIn ? 'ログイン中...' : 'ゲストとしてログイン'}
+        </button>
+        <button
+          type="button"
+          className="yubi-button yubi-button--secondary yubi-button--guest"
+          onClick={() => navigate('/about')}
+        >
+          このアプリについて
         </button>
       </div>
     </div>

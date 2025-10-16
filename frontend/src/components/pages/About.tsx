@@ -1,10 +1,31 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Sidebar from '../ui/Sidebar';
 import DissolvePartnershipModal from '../modals/DissolvePartnershipModal';
+import { useAuth } from '../../contexts/useAuth';
 
 const About = () => {
   const [isDissolveModalOpen, setIsDissolveModalOpen] =
     useState<boolean>(false);
+  const { token, partner } = useAuth();
+  const navigate = useNavigate();
+
+  // ボタンのテキストとリンク先を決定
+  const getButtonConfig = () => {
+    if (!token) {
+      return { text: 'アプリを始める', path: '/' };
+    } else if (!partner) {
+      return { text: 'パートナーと始める', path: '/invite-partner' };
+    } else {
+      return { text: 'アプリに戻る', path: '/' };
+    }
+  };
+
+  const buttonConfig = getButtonConfig();
+
+  const handleCTAClick = () => {
+    navigate(buttonConfig.path);
+  };
 
   return (
     <div className="app-wrapper">
@@ -141,7 +162,7 @@ const About = () => {
                 </p>
                 <ul className="yubi-about-feature__list">
                   <li>⭐️4以上の評価で今月のりんごが増加</li>
-                  <li>りんごの数に応じて木が成長（4段階）</li>
+                  <li>りんごの数に応じて木が成長（3段階）</li>
                   <li>ふたりの平均スコアとトレンドを表示</li>
                 </ul>
               </div>
@@ -214,6 +235,9 @@ const About = () => {
             <p className="yubi-about-cta__description">
               小さな約束を積み重ねて、大きな信頼を育てましょう。
             </p>
+            <button onClick={handleCTAClick} className="yubi-about-cta__button">
+              {buttonConfig.text}
+            </button>
           </section>
         </div>
       </main>

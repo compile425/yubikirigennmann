@@ -5,12 +5,14 @@ class Api::PendingEvaluationsController < ApplicationController
     if current_user&.partnership
       partnership = current_user.partnership
 
-      # 1. 相手が作成した約束で、自分がまだ評価していないもの
+      # 1. 相手が作成した約束で、期日が来ていて、自分がまだ評価していないもの
+      today = Date.today
       partner_promises = partnership.promises
         .left_joins(:promise_evaluation)
         .where(promise_evaluations: { id: nil })
         .where.not(creator_id: current_user.id)
         .where.not(type: "our_promise")  # ふたりの約束は別処理
+        .where("due_date <= ?", today)  # 期日が来ているもののみ
 
       # 2. 今週評価すべきふたりの約束（週番号で評価者を判定）
       evaluator = Promise.weekly_evaluator(partnership)
