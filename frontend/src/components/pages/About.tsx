@@ -10,7 +10,6 @@ const About = () => {
   const { token, partner } = useAuth();
   const navigate = useNavigate();
 
-  // ボタンのテキストとリンク先を決定
   const getButtonConfig = () => {
     if (!token) {
       return { text: 'アプリを始める', path: '/' };

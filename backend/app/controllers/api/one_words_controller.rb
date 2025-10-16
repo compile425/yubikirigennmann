@@ -1,43 +1,21 @@
 class Api::OneWordsController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_partnership, only: [ :index, :create ]
 
   def index
-    if current_user&.partnership
-      one_words = current_user.partnership.one_words
-        .includes(:sender)
-        .where(receiver_id: current_user.id)
+    one_words = @partnership.one_words
+      .includes(:sender)
+      .for_receiver(current_user)
+      .by_year_month(params[:year], params[:month])
+      .order(created_at: :desc)
 
-      # 年月でフィルタリング
-      if params[:year].present? && params[:month].present?
-        start_date = Date.new(params[:year].to_i, params[:month].to_i, 1).beginning_of_day
-        end_date = start_date.end_of_month.end_of_day
-        one_words = one_words.where(created_at: start_date..end_date)
-      end
-
-      one_words = one_words.order(created_at: :desc)
-
-      render json: one_words.map { |word|
-        {
-          id: word.id,
-          content: word.content,
-          created_at: word.created_at,
-          sender_name: word.sender.name
-        }
-      }
-    else
-      render json: []
-    end
+    render json: one_words.map(&:to_response_hash)
   end
 
   def create
-    unless current_user.partnership
-      render json: { error: "パートナーシップが存在しません" }, status: :unprocessable_entity
-      return
-    end
+    partner = @partnership.partner_of(current_user)
 
-    partner = current_user.partnership.partner_of(current_user)
-
-    one_word = current_user.partnership.one_words.build(
+    one_word = @partnership.one_words.build(
       content: one_word_params[:content],
       sender_id: current_user.id,
       receiver_id: partner.id
@@ -51,6 +29,11 @@ class Api::OneWordsController < ApplicationController
   end
 
   private
+
+  def set_partnership
+    @partnership = current_user.partnership
+    return render json: [] unless @partnership
+  end
 
   def one_word_params
     params.require(:one_word).permit(:content)
