@@ -15,7 +15,7 @@ import { HitokotoNotificationProvider } from './contexts/HitokotoNotificationCon
 import PendingEvaluationsPage from './components/pages/PendingEvaluationsPage';
 
 function App() {
-  const { token, currentUser } = useAuth();
+  const { token, currentUser, partner } = useAuth();
 
   React.useEffect(() => {
     const setBodyClass = () => {
@@ -58,33 +58,61 @@ function App() {
               token && currentUser ? <InvitePartnerPage /> : <LoginForm />
             }
           />
-          <Route path="/evaluate/:id" element={<EvaluationPage />} />
+          <Route
+            path="/evaluate/:id"
+            element={
+              token && currentUser && partner ? (
+                <EvaluationPage />
+              ) : (
+                <LoginForm />
+              )
+            }
+          />
           <Route
             path="/past-evaluations"
             element={
-              token && currentUser ? <PastEvaluationsPage /> : <LoginForm />
+              token && currentUser && partner ? (
+                <PastEvaluationsPage />
+              ) : (
+                <LoginForm />
+              )
             }
           />
           <Route
             path="/record"
-            element={token && currentUser ? <RecordPage /> : <LoginForm />}
+            element={
+              token && currentUser && partner ? <RecordPage /> : <LoginForm />
+            }
           />
           <Route
             path="/hitokoto"
-            element={token && currentUser ? <HitokotoPage /> : <LoginForm />}
+            element={
+              token && currentUser && partner ? <HitokotoPage /> : <LoginForm />
+            }
           />
-          <Route
-            path="/about"
-            element={token && currentUser ? <About /> : <LoginForm />}
-          />
+          <Route path="/about" element={<About />} />
           <Route
             path="*"
-            element={token && currentUser ? <Dashboard /> : <LoginForm />}
+            element={
+              token && currentUser ? (
+                partner ? (
+                  <Dashboard />
+                ) : (
+                  <InvitePartnerPage />
+                )
+              ) : (
+                <LoginForm />
+              )
+            }
           />
           <Route
             path="/pending-evaluations"
             element={
-              token && currentUser ? <PendingEvaluationsPage /> : <LoginForm />
+              token && currentUser && partner ? (
+                <PendingEvaluationsPage />
+              ) : (
+                <LoginForm />
+              )
             }
           />
         </Routes>

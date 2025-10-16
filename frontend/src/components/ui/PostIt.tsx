@@ -98,16 +98,17 @@ const PostIt = ({
             <div className="yubi-card__bottom-left">
               {rating && renderStars(rating)}
             </div>
-            {(rating || evaluationDate) && (
-              <div className="yubi-card__bottom-right">
+            <div className="yubi-card__bottom-right">
+              {evaluationDate ? (
                 <span>
-                  評価日:{' '}
-                  {evaluationDate
-                    ? new Date(evaluationDate).toLocaleDateString('ja-JP')
-                    : dueDate || 'なし'}
+                  評価日: {new Date(evaluationDate).toLocaleDateString('ja-JP')}
                 </span>
-              </div>
-            )}
+              ) : dueDate ? (
+                <span>
+                  期日: {new Date(dueDate).toLocaleDateString('ja-JP')}
+                </span>
+              ) : null}
+            </div>
           </div>
         </div>
       </footer>

@@ -108,13 +108,48 @@ const Dashboard = () => {
   const myPromisesTitle = 'あなたの約束';
   const partnerPromisesTitle = 'パートナーの約束';
 
-  const myPromises = promises.filter(
-    p =>
-      currentUser && p.creator_id === currentUser.id && p.type !== 'our_promise'
-  );
-  const partnerPromises = promises.filter(
-    p => partner && p.creator_id === partner.id && p.type !== 'our_promise'
-  );
+  // 期日順にソート（期日が近い順）
+  const sortByDueDate = (a: PromiseItem, b: PromiseItem): number => {
+    if (!a.due_date && !b.due_date) return 0;
+    if (!a.due_date) return 1; // 期日がないものは後ろに
+    if (!b.due_date) return -1; // 期日がないものは後ろに
+    return new Date(a.due_date).getTime() - new Date(b.due_date).getTime();
+  };
+
+  // 期日が来ていない約束のみ表示（評価されていないもの）
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // 時刻をリセットして日付のみで比較
+
+  const isBeforeDueDate = (dueDateStr: string): boolean => {
+    const dueDate = new Date(dueDateStr);
+    dueDate.setHours(0, 0, 0, 0);
+    return dueDate >= today; // 期日が今日以降（今日を含む）
+  };
+
+  const myPromises = promises
+    .filter(
+      p =>
+        currentUser &&
+        p.creator_id === currentUser.id &&
+        p.type !== 'our_promise' &&
+        !p.rating && // 評価されていない
+        p.due_date && // 期日が設定されている
+        isBeforeDueDate(p.due_date) // 期日が来ていない
+    )
+    .sort(sortByDueDate);
+
+  const partnerPromises = promises
+    .filter(
+      p =>
+        partner &&
+        p.creator_id === partner.id &&
+        p.type !== 'our_promise' &&
+        !p.rating && // 評価されていない
+        p.due_date && // 期日が設定されている
+        isBeforeDueDate(p.due_date) // 期日が来ていない
+    )
+    .sort(sortByDueDate);
+
   const ourPromises = promises.filter(p => p.type === 'our_promise');
 
   return (
