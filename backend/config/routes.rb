@@ -40,5 +40,6 @@ Rails.application.routes.draw do
     post "/scheduled_tasks/send_due_date_evaluations", to: "scheduled_tasks#send_due_date_evaluations"
     post "/scheduled_tasks/send_weekly_our_promises_evaluation", to: "scheduled_tasks#send_weekly_our_promises_evaluation"
     post "/scheduled_tasks/reset_our_promises_for_weekly_evaluation", to: "scheduled_tasks#reset_our_promises_for_weekly_evaluation"
+    post "/scheduled_tasks/send_monthly_reports", to: "scheduled_tasks#send_monthly_reports"
   end
 end

@@ -90,4 +90,30 @@ class Partnership < ApplicationRecord
       sender: sender
     }
   end
+
+  # 指定月の統計データを取得
+  def monthly_stats(target_user, year_month = Date.current.beginning_of_month)
+    partner_user = partner_of(target_user)
+
+    {
+      user: {
+        name: target_user.name,
+        average_score: target_user.monthly_average_score(year_month),
+        evaluation_count: target_user.evaluated_promises.where(
+          "created_at >= ? AND created_at < ?",
+          year_month, year_month + 1.month
+        ).count
+      },
+      partner: {
+        name: partner_user.name,
+        average_score: partner_user.monthly_average_score(year_month),
+        evaluation_count: partner_user.evaluated_promises.where(
+          "created_at >= ? AND created_at < ?",
+          year_month, year_month + 1.month
+        ).count
+      },
+      apple_count: promise_rating_scores.find_by(year_month: year_month)&.harvested_apples || 0,
+      year_month: year_month
+    }
+  end
 end

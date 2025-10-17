@@ -214,5 +214,69 @@ RSpec.describe Partnership, type: :model do
       end
     end
   end
+
+  describe '#monthly_stats' do
+    let(:user) { create(:user) }
+    let(:partner) { create(:user) }
+    let(:partnership) { create(:partnership, user: user, partner: partner) }
+    let(:target_month) { Date.new(2025, 1, 1) }
+
+    before do
+      promise1 = create(:promise, partnership: partnership, creator: partner)
+      eval1 = create(:promise_evaluation, promise: promise1, evaluator: user, rating: 5)
+      eval1.update(created_at: Date.new(2025, 1, 15))
+
+      promise2 = create(:promise, partnership: partnership, creator: partner)
+      eval2 = create(:promise_evaluation, promise: promise2, evaluator: user, rating: 3)
+      eval2.update(created_at: Date.new(2025, 1, 20))
+
+      partnership.promise_rating_scores.create!(
+        year_month: target_month,
+        harvested_apples: 8
+      )
+    end
+
+    it 'ハッシュを返す' do
+      result = partnership.monthly_stats(user, target_month)
+      expect(result).to be_a(Hash)
+      expect(result).to have_key(:user)
+      expect(result).to have_key(:partner)
+      expect(result).to have_key(:apple_count)
+      expect(result).to have_key(:year_month)
+    end
+
+    it 'ユーザーの統計情報が正しい' do
+      result = partnership.monthly_stats(user, target_month)
+      expect(result[:user][:name]).to eq(user.name)
+      expect(result[:user][:average_score]).to eq(4.0)
+      expect(result[:user][:evaluation_count]).to eq(2)
+    end
+
+    it 'パートナーの統計情報が正しい' do
+      result = partnership.monthly_stats(user, target_month)
+      expect(result[:partner][:name]).to eq(partner.name)
+    end
+
+    it 'りんご数が正しい' do
+      result = partnership.monthly_stats(user, target_month)
+      expect(result[:apple_count]).to eq(8)
+    end
+
+    it '対象月が正しい' do
+      result = partnership.monthly_stats(user, target_month)
+      expect(result[:year_month]).to eq(target_month)
+    end
+
+    it 'userとpartnerを入れ替えても正しく動作する' do
+      result1 = partnership.monthly_stats(user, target_month)
+      result2 = partnership.monthly_stats(partner, target_month)
+
+      expect(result1[:user][:name]).to eq(user.name)
+      expect(result1[:partner][:name]).to eq(partner.name)
+
+      expect(result2[:user][:name]).to eq(partner.name)
+      expect(result2[:partner][:name]).to eq(user.name)
+    end
+  end
 end
 

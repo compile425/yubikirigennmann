@@ -24,4 +24,12 @@ class Api::ScheduledTasksController < ApplicationController
     Rails.logger.error "Failed to reset our_promises: #{e.message}"
     render json: { error: "リセットに失敗しました: #{e.message}" }, status: :internal_server_error
   end
+
+  def send_monthly_reports
+    MonthlyReportMailer.send_monthly_reports
+    render json: { message: "月次レポートを送信しました" }, status: :ok
+  rescue => e
+    Rails.logger.error "Failed to send monthly reports: #{e.message}"
+    render json: { error: "月次レポート送信に失敗しました: #{e.message}" }, status: :internal_server_error
+  end
 end
