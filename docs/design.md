@@ -190,83 +190,104 @@ graph TD
 
 ```mermaid
 erDiagram
-    %% --- 関係性の定義 ---
-    partnerships ||--|{ users : "has"
-    partnerships ||--|{ promises : "creates"
-    partnerships ||--|{ notes : "sends"
-    partnerships ||--|{ monthly_summaries : "has"
+    users ||--o| user_credentials : "has_one"
+    users ||--o{ invitation_codes : "creates"
+    users |o--o| partnerships : "forms"
     users ||--o{ promises : "creates"
-    users ||--o{ evaluations : "evaluates"
-    users ||--o{ notes : "sends"
-    users ||--o{ note_read_events : "reads"
-    promises ||--|{ evaluations : "is evaluated by"
-    promises ||--|{ promise_events : "has history of"
+    users ||--o{ promise_evaluations : "evaluates"
+    users ||--o{ one_words : "sends/receives"
+    
+    partnerships ||--o{ promises : "has_many"
+    partnerships ||--o{ one_words : "has_many"
+    partnerships ||--o{ promise_rating_scores : "has_many"
+    
+    promises ||--o| promise_evaluations : "has_one"
+    promises ||--o{ promise_histories : "has_many"
 
-
-    %% --- テーブル（エンティティ）の定義 ---
     users {
-        int id "PK"
-        string email
-        string password_digest
-        string name
-        string profile_image_url
-        int partnership_id "FK"
+        bigint id PK "ユーザーID"
+        string email UK "メールアドレス"
+        string name "氏名"
+        string reset_password_token UK "パスワードリセットトークン"
+        datetime reset_password_sent_at "リセットトークン送信日時"
+        datetime created_at "作成日時"
+        datetime updated_at "更新日時"
+    }
+
+    user_credentials {
+        bigint id PK "認証情報ID"
+        bigint user_id FK "ユーザーID"
+        string password_digest "ハッシュ化パスワード"
+        datetime created_at "作成日時"
+        datetime updated_at "更新日時"
+    }
+
+    invitation_codes {
+        bigint id PK "招待コードID"
+        bigint inviter_id FK "招待者ID (users.id)"
+        string code UK "招待コード"
+        boolean used "使用済みフラグ"
+        datetime created_at "作成日時"
+        datetime updated_at "更新日時"
     }
 
     partnerships {
-        int id "PK"
-        string invite_token
-        string status
+        bigint id PK "パートナーシップID"
+        bigint user_id FK "ユーザーID"
+        bigint partner_id FK "パートナーのID (users.id)"
+        datetime created_at "作成日時"
+        datetime updated_at "更新日時"
     }
 
     promises {
-        int id "PK"
-        int partnership_id "FK"
-        int creator_id "FK"
-        text content
-        string promise_type
-        date due_date
-        datetime created_at
+        bigint id PK "約束ID"
+        bigint partnership_id FK "パートナーシップID"
+        bigint creator_id FK "作成者ID (users.id)"
+        text content "約束の内容"
+        string status "ステータス (例: todo, in_progress, done)"
+        string type "種類 (例: weekly, one_time)"
+        date due_date "期日"
+        bigint parent_promise_id FK "親の約束ID (自己参照)"
+        datetime created_at "作成日時"
+        datetime updated_at "更新日時"
     }
 
-    promise_events {
-        int id "PK"
-        int promise_id "FK"
-        string event_type "'EDITED', 'DELETED', 'COMPLETED', 'EXPIRED'"
-        json event_data "変更内容など"
-        datetime created_at
+    promise_evaluations {
+        bigint id PK "評価ID"
+        bigint promise_id FK "約束ID"
+        bigint evaluator_id FK "評価者ID (users.id)"
+        integer rating "評価 (例: 1-5)"
+        text evaluation_text "評価コメント"
+        datetime created_at "作成日時"
+        datetime updated_at "更新日時"
     }
 
-    evaluations {
-        int id "PK"
-        int promise_id "FK"
-        int evaluator_id "FK"
-        int score
-        text comment
-        text improvement_plan
+    promise_histories {
+        bigint id PK "履歴ID"
+        bigint promise_id FK "約束ID"
+        string status "変更後のステータス"
+        datetime created_at "作成日時"
+        datetime updated_at "更新日時"
     }
 
-    notes {
-        int id "PK"
-        int partnership_id "FK"
-        int sender_id "FK"
-        text content
-        datetime created_at
+    promise_rating_scores {
+        bigint id PK "評価スコアID"
+        bigint partnership_id FK "パートナーシップID"
+        date year_month "対象年月"
+        float average_score "月間平均スコア"
+        integer harvested_apples "収穫したりんごの数"
+        datetime created_at "作成日時"
+        datetime updated_at "更新日時"
     }
 
-    note_read_events {
-        int id "PK"
-        int note_id "FK"
-        int reader_id "FK"
-        datetime read_at
-    }
-
-    monthly_summaries {
-        int id "PK"
-        int partnership_id "FK"
-        date year_month
-        float average_score
-        int harvested_apples
+    one_words {
+        bigint id PK "一言ID"
+        bigint partnership_id FK "パートナーシップID"
+        bigint sender_id FK "送信者ID (users.id)"
+        bigint receiver_id FK "受信者ID (users.id)"
+        text content "内容"
+        datetime created_at "作成日時"
+        datetime updated_at "更新日時"
     }
 ```
 # システム構成図(アプリケーションレイヤーのみ)
