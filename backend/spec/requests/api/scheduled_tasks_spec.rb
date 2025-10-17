@@ -81,5 +81,38 @@ RSpec.describe 'Api::ScheduledTasks', type: :request do
       expect(our_promise_no_eval.reload.promise_evaluation).to be_nil
     end
   end
+
+  describe 'POST /api/scheduled_tasks/send_monthly_reports' do
+    let!(:partnership1) { create(:partnership) }
+    let!(:partnership2) { create(:partnership) }
+
+    before do
+      last_month = Date.current.beginning_of_month - 1.month
+
+      [partnership1, partnership2].each do |p|
+        p.promise_rating_scores.create!(
+          year_month: last_month,
+          harvested_apples: 5
+        )
+      end
+    end
+
+    it '200ステータスを返す' do
+      post '/api/scheduled_tasks/send_monthly_reports', headers: headers
+      expect(response).to have_http_status(:ok)
+    end
+
+    it '成功メッセージを返す' do
+      post '/api/scheduled_tasks/send_monthly_reports', headers: headers
+      json = json_response
+      expect(json['message']).to eq('月次レポートを送信しました')
+    end
+
+    it 'メールが送信される' do
+      expect {
+        post '/api/scheduled_tasks/send_monthly_reports', headers: headers
+      }.to change { ActionMailer::Base.deliveries.count }.by(4)
+    end
+  end
 end
 

@@ -1,0 +1,156 @@
+name: Scheduled Tasks
+
+on:
+  schedule:
+    # 毎日午後9時（JST）= 12:00 UTC - 期日メール送信
+    - cron: '0 12 * * *'
+    # 毎週日曜日午後8時（JST）= 11:00 UTC - 週次評価メール送信
+    - cron: '0 11 * * 0'
+    # 毎月1日午前9時（JST）= 0:00 UTC - 月次レポート送信（前月分）
+    - cron: '0 0 1 * *'
+  workflow_dispatch: # 手動実行用
+    inputs:
+      task:
+        description: '実行するタスク'
+        required: true
+        type: choice
+        options:
+          - all
+          - due_date_evaluations
+          - weekly_our_promises
+          - monthly_reports
+        default: 'all'
+
+jobs:
+  send-due-date-evaluations:
+    name: 期日メール送信
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'schedule' && github.event.schedule == '0 12 * * *') ||
+      (github.event_name == 'workflow_dispatch' && (github.event.inputs.task == 'all' || github.event.inputs.task == 'due_date_evaluations'))
+    
+    steps:
+      - name: Send due date evaluation emails
+        env:
+          API_URL: ${{ secrets.API_URL }}
+          ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+        run: |
+          echo "期日メール送信を開始します"
+          response=$(curl -s -w "\n%{http_code}" -X POST \
+            "${API_URL}/api/scheduled_tasks/send_due_date_evaluations" \
+            -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+            -H "Content-Type: application/json")
+          
+          http_code=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | sed '$d')
+          
+          echo "HTTP Status: $http_code"
+          echo "Response: $body"
+          
+          if [ "$http_code" -eq 200 ]; then
+            echo "✅ 期日メール送信が完了しました"
+          else
+            echo "❌ 期日メール送信に失敗しました"
+            exit 1
+          fi
+
+  send-weekly-evaluation:
+    name: 週次評価メール送信
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'schedule' && github.event.schedule == '0 11 * * 0') ||
+      (github.event_name == 'workflow_dispatch' && (github.event.inputs.task == 'all' || github.event.inputs.task == 'weekly_our_promises'))
+    
+    steps:
+      - name: Send weekly evaluation emails
+        env:
+          API_URL: ${{ secrets.API_URL }}
+          ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+        run: |
+          echo "📧 週次評価メール送信を開始します..."
+          response=$(curl -s -w "\n%{http_code}" -X POST \
+            "${API_URL}/api/scheduled_tasks/send_weekly_our_promises_evaluation" \
+            -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+            -H "Content-Type: application/json")
+          
+          http_code=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | sed '$d')
+          
+          echo "HTTP Status: $http_code"
+          echo "Response: $body"
+          
+          if [ "$http_code" -eq 200 ]; then
+            echo "✅ 週次評価メール送信が完了しました"
+          else
+            echo "❌ 週次評価メール送信に失敗しました"
+            exit 1
+          fi
+
+      - name: Reset our promises for next week
+        env:
+          API_URL: ${{ secrets.API_URL }}
+          ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+        run: |
+          echo "ふたりの約束をリセットします"
+          response=$(curl -s -w "\n%{http_code}" -X POST \
+            "${API_URL}/api/scheduled_tasks/reset_our_promises_for_weekly_evaluation" \
+            -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+            -H "Content-Type: application/json")
+          
+          http_code=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | sed '$d')
+          
+          echo "HTTP Status: $http_code"
+          echo "Response: $body"
+          
+          if [ "$http_code" -eq 200 ]; then
+            echo "✅ ふたりの約束のリセットが完了しました"
+          else
+            echo "❌ ふたりの約束のリセットに失敗しました"
+            exit 1
+          fi
+
+  send-monthly-reports:
+    name: 月次レポート送信
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'schedule' && github.event.schedule == '0 0 1 * *') ||
+      (github.event_name == 'workflow_dispatch' && (github.event.inputs.task == 'all' || github.event.inputs.task == 'monthly_reports'))
+    
+    steps:
+      - name: Send monthly reports
+        env:
+          API_URL: ${{ secrets.API_URL }}
+          ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+        run: |
+          echo "📊 月次レポート送信を開始します..."
+          response=$(curl -s -w "\n%{http_code}" -X POST \
+            "${API_URL}/api/scheduled_tasks/send_monthly_reports" \
+            -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+            -H "Content-Type: application/json")
+          
+          http_code=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | sed '$d')
+          
+          echo "HTTP Status: $http_code"
+          echo "Response: $body"
+          
+          if [ "$http_code" -eq 200 ]; then
+            echo "✅ 月次レポート送信が完了しました"
+          else
+            echo "❌ 月次レポート送信に失敗しました"
+            exit 1
+          fi
+
+  notify-on-failure:
+    name: 失敗通知
+    runs-on: ubuntu-latest
+    needs: [send-due-date-evaluations, send-weekly-evaluation, send-monthly-reports]
+    if: failure()
+    
+    steps:
+      - name: Notify failure
+        run: |
+          echo "⚠️ スケジュールタスクの実行に失敗しました"
+          echo "詳細はGitHub Actionsのログを確認してください"
+

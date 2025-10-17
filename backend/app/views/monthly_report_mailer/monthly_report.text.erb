@@ -1,0 +1,27 @@
+<%= @year %>年<%= @month %>月のレポート
+
+<%= @user.name %> 様
+
+<%= @year %>年<%= @month %>月のふたりの約束の振り返りです。
+今月もお疲れ様でした！
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+今月のりんご: 🍎 <%= @stats[:apple_count] %> 個
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+【あなたのスコア】
+平均評価: ⭐ <%= @stats[:user][:average_score].round(2) %>
+評価した回数: <%= @stats[:user][:evaluation_count] %> 回
+
+【<%= @stats[:partner][:name] %> さんのスコア】
+平均評価: ⭐ <%= @stats[:partner][:average_score].round(2) %>
+評価した回数: <%= @stats[:partner][:evaluation_count] %> 回
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+来月も一緒に頑張りましょう！
+
+© 2025 ゆびきりげんまん
+
