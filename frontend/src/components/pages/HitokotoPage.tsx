@@ -135,59 +135,60 @@ const HitokotoPage = () => {
           </div>
 
           <div className="yubi-hitokoto-received-messages">
-            <div className="yubi-past-evaluations-header">
-              <div className="yubi-search-section">
-                <h1 className="yubi-past-evaluations-title">
-                  {selectedYear}年{selectedMonth}月のもらった一言
-                </h1>
-                <button
-                  onClick={toggleSearch}
-                  className="yubi-search-toggle-button"
-                  title="年月で検索"
-                >
-                  ▼
-                </button>
-              </div>
-              {isSearchOpen && (
-                <div className="yubi-search-dropdown">
-                  <div className="yubi-search-controls">
-                    <div className="yubi-search-field">
-                      <label htmlFor="hitokoto-year-input">年</label>
-                      <input
-                        id="hitokoto-year-input"
-                        type="number"
-                        value={selectedYear}
-                        onChange={e => setSelectedYear(Number(e.target.value))}
-                        className="yubi-search-input"
-                        min="2025"
-                        max="2125"
-                        placeholder="2025"
-                      />
-                    </div>
-                    <div className="yubi-search-field">
-                      <label htmlFor="hitokoto-month-select">月</label>
-                      <select
-                        id="hitokoto-month-select"
-                        value={selectedMonth}
-                        onChange={e => setSelectedMonth(Number(e.target.value))}
-                        className="yubi-search-select"
-                      >
-                        {months.map(month => (
-                          <option key={month} value={month}>
-                            {month}月
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <button
-                      onClick={handleSearch}
-                      className="yubi-button yubi-button--primary yubi-search-apply-button"
-                    >
-                      検索
-                    </button>
+            <div className="yubi-search-section">
+              <h1 className="yubi-past-evaluations-title">
+                {selectedYear}年{selectedMonth}月の
+              </h1>
+              <button
+                onClick={toggleSearch}
+                className="yubi-search-toggle-button"
+                title="年月で検索"
+              >
+                ▼
+              </button>
+            </div>
+            {isSearchOpen && (
+              <div className="yubi-search-dropdown">
+                <div className="yubi-search-controls">
+                  <div className="yubi-search-field">
+                    <label htmlFor="hitokoto-year-input">年</label>
+                    <input
+                      id="hitokoto-year-input"
+                      type="number"
+                      value={selectedYear}
+                      onChange={e => setSelectedYear(Number(e.target.value))}
+                      className="yubi-search-input"
+                      min="2025"
+                      max="2125"
+                      placeholder="2025"
+                    />
                   </div>
+                  <div className="yubi-search-field">
+                    <label htmlFor="hitokoto-month-select">月</label>
+                    <select
+                      id="hitokoto-month-select"
+                      value={selectedMonth}
+                      onChange={e => setSelectedMonth(Number(e.target.value))}
+                      className="yubi-search-select"
+                    >
+                      {months.map(month => (
+                        <option key={month} value={month}>
+                          {month}月
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <button
+                    onClick={handleSearch}
+                    className="yubi-button yubi-button--primary yubi-search-apply-button"
+                  >
+                    検索
+                  </button>
                 </div>
-              )}
+              </div>
+            )}
+            <div className="yubi-column__header">
+              <span>もらった一言</span>
             </div>
             <div className="yubi-column__content">
               {oneWords.length === 0 ? (
