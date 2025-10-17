@@ -65,8 +65,6 @@ erDiagram
     promises ||--o| promise_evaluations : "has_one"
     promises ||--o{ promise_histories : "has_many"
     promises }o--o| promises : "sub-promise of"
-    
-    one_words ||--o{ one_words_reads : "has_many"
 
     users {
         bigint id PK "ユーザーID"
