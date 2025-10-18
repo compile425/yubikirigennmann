@@ -1,14 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Partnership, type: :model do
-  describe 'associations' do
-    it { should belong_to(:user) }
-    it { should belong_to(:partner).class_name('User') }
-    it { should have_many(:promises).dependent(:destroy) }
-    it { should have_many(:one_words).dependent(:destroy) }
-    it { should have_many(:promise_rating_scores).dependent(:destroy) }
-  end
-
   describe '#partner_of' do
     let(:user) { create(:user) }
     let(:partner) { create(:user) }

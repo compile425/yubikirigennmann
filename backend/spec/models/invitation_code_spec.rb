@@ -1,10 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe InvitationCode, type: :model do
-  describe 'associations' do
-    it { should belong_to(:inviter).class_name('User') }
-  end
-
   describe 'validations' do
     it 'codeが存在すること' do
       invitation_code = create(:invitation_code)

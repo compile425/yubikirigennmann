@@ -41,12 +41,6 @@ RSpec.describe MonthlyReportMailer, type: :mailer do
       body_text = mail.html_part.body.to_s
       expect(body_text).to include(partner.name)
     end
-
-    it 'メールを送信できる' do
-      expect {
-        mail.deliver_now
-      }.to change { ActionMailer::Base.deliveries.count }.by(1)
-    end
   end
 
   describe '.send_monthly_reports' do

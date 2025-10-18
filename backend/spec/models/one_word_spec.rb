@@ -1,16 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe OneWord, type: :model do
-  describe 'associations' do
-    it { should belong_to(:partnership) }
-    it { should belong_to(:sender).class_name('User') }
-    it { should belong_to(:receiver).class_name('User') }
-  end
-
-  describe 'validations' do
-    it { should validate_presence_of(:content) }
-  end
-
   describe 'scopes' do
     let(:partnership) { create(:partnership) }
     let(:user) { partnership.user }

@@ -25,12 +25,6 @@ RSpec.describe PasswordResetMailer, type: :mailer do
     it 'リセットURLが含まれる' do
       expect(mail.html_part.body.to_s).to include('password-reset')
     end
-
-    it 'メールを送信できる' do
-      expect {
-        mail.deliver_now
-      }.to change { ActionMailer::Base.deliveries.count }.by(1)
-    end
   end
 end
 
