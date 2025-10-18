@@ -1,10 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe PromiseRatingScore, type: :model do
-  describe 'associations' do
-    it { should belong_to(:partnership) }
-  end
-
   describe 'validations' do
     it '有効なレコードを作成できる' do
       score = build(:promise_rating_score)

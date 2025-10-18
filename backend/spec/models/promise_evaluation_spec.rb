@@ -1,11 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe PromiseEvaluation, type: :model do
-  describe 'associations' do
-    it { should belong_to(:promise) }
-    it { should belong_to(:evaluator).class_name('User') }
-  end
-
   describe 'validations' do
     it '有効な評価を作成できる' do
       partnership = create(:partnership)

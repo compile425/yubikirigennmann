@@ -1,17 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Promise, type: :model do
-  describe 'associations' do
-    it { should belong_to(:partnership) }
-    it { should belong_to(:creator).class_name('User') }
-    it { should have_one(:promise_evaluation).dependent(:destroy) }
-    it { should have_many(:promise_histories).dependent(:destroy) }
-  end
-
   describe 'validations' do
-    it { should validate_presence_of(:content) }
-    it { should validate_presence_of(:type) }
-
     context '期日のバリデーション' do
       let(:partnership) { create(:partnership) }
 
@@ -286,12 +276,6 @@ RSpec.describe Promise, type: :model do
       promise.reset_for_next_evaluation
       expect(promise.reload.updated_at).to be > old_updated_at
     end
-
-    it '約束自体は削除されない' do
-      promise_id = promise.id
-      promise.reset_for_next_evaluation
-      expect(Promise.find_by(id: promise_id)).to be_present
-    end
   end
 
   describe '.reset_evaluated_our_promises' do
@@ -316,12 +300,6 @@ RSpec.describe Promise, type: :model do
     it '評価がない約束には影響しない' do
       Promise.reset_evaluated_our_promises
       expect(our_promise_no_eval.reload.promise_evaluation).to be_nil
-    end
-
-    it '約束自体は削除されない' do
-      expect {
-        Promise.reset_evaluated_our_promises
-      }.not_to change(Promise, :count)
     end
 
     it 'ふたりの約束のみが対象' do

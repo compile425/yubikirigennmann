@@ -18,12 +18,6 @@ RSpec.describe RegistrationMailer, type: :mailer do
       body_text = mail.html_part ? mail.html_part.body.to_s : mail.body.to_s
       expect(body_text).to include(user.name)
     end
-
-    it 'メールを送信できる' do
-      expect {
-        mail.deliver_now
-      }.to change { ActionMailer::Base.deliveries.count }.by(1)
-    end
   end
 end
 

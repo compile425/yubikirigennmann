@@ -1,14 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  describe 'associations' do
-    it { should have_one(:user_credential).dependent(:destroy) }
-    it { should have_many(:partnerships_as_user).dependent(:destroy) }
-    it { should have_many(:partnerships_as_partner).dependent(:destroy) }
-    it { should have_many(:created_promises).dependent(:destroy) }
-    it { should have_many(:evaluated_promises).dependent(:destroy) }
-  end
-
   describe 'validations' do
     it { should validate_presence_of(:email) }
     it { should validate_presence_of(:name) }

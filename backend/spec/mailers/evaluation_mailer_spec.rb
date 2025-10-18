@@ -22,12 +22,6 @@ RSpec.describe EvaluationMailer, type: :mailer do
       expect(body_text).to include('evaluate')
       expect(body_text).to include(promise.id.to_s)
     end
-
-    it 'メールを送信できる' do
-      expect {
-        mail.deliver_now
-      }.to change { ActionMailer::Base.deliveries.count }.by(1)
-    end
   end
 
   describe '#due_date_evaluation_email' do

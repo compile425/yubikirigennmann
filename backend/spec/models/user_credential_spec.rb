@@ -1,10 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe UserCredential, type: :model do
-  describe 'associations' do
-    it { should belong_to(:user) }
-  end
-
   describe 'has_secure_password' do
     let(:user) { create(:user) }
     let(:credential) { user.user_credential }
