@@ -35,6 +35,27 @@
 そのサポートができることを目指しています。
 
 ## 画面キャプチャ
+### 一言送信
+https://github.com/user-attachments/assets/5d90cd64-c6ca-4ee8-ae4b-6b8a5bbf247a
+### パートナー解消
+https://github.com/user-attachments/assets/e60a4229-6064-4058-b9e4-585b50ab4ceb
+### 約束作成
+https://github.com/user-attachments/assets/946e5625-9fe3-4e95-a595-1cfbd9070702
+### もらった一言の過去検索
+https://github.com/user-attachments/assets/30f6e2fc-7bf2-4bcb-9cff-43fe3e514a0b
+### ログイン
+https://github.com/user-attachments/assets/9edde5a7-742e-4bcf-a28e-08748680feac
+### 過去の約束の過去検索
+https://github.com/user-attachments/assets/3c06ddfc-dde0-4a5c-b115-a8546b00f95a
+### 新規登録
+https://github.com/user-attachments/assets/fc836e7d-83be-45c7-a8ed-6defbc5a572f
+### 約束の評価
+https://github.com/user-attachments/assets/8130f2d1-9534-4601-abef-d3754f484190
+### 約束の編集削除
+https://github.com/user-attachments/assets/3d4cedc7-3b8a-4ad2-a840-3f280b75401d
+### かっこかり
+https://github.com/user-attachments/assets/872d7dab-d200-41bb-a4b4-c8a6a7b63d38
+
 
 ## 使用技術
 
