@@ -35,27 +35,36 @@
 そのサポートができることを目指しています。
 
 ## 画面キャプチャ
-### 一言送信
-https://github.com/user-attachments/assets/5d90cd64-c6ca-4ee8-ae4b-6b8a5bbf247a
-### パートナー解消
-https://github.com/user-attachments/assets/e60a4229-6064-4058-b9e4-585b50ab4ceb
-### 約束作成
-https://github.com/user-attachments/assets/946e5625-9fe3-4e95-a595-1cfbd9070702
-### もらった一言の過去検索
-https://github.com/user-attachments/assets/30f6e2fc-7bf2-4bcb-9cff-43fe3e514a0b
+
 ### ログイン
 https://github.com/user-attachments/assets/9edde5a7-742e-4bcf-a28e-08748680feac
-### 過去の約束の過去検索
-https://github.com/user-attachments/assets/3c06ddfc-dde0-4a5c-b115-a8546b00f95a
+
 ### 新規登録
 https://github.com/user-attachments/assets/fc836e7d-83be-45c7-a8ed-6defbc5a572f
-### 約束の評価
-https://github.com/user-attachments/assets/8130f2d1-9534-4601-abef-d3754f484190
-### 約束の編集削除
-https://github.com/user-attachments/assets/3d4cedc7-3b8a-4ad2-a840-3f280b75401d
-### かっこかり
+
+### パートナーシップの作成
 https://github.com/user-attachments/assets/872d7dab-d200-41bb-a4b4-c8a6a7b63d38
 
+### パートナー解消
+https://github.com/user-attachments/assets/e60a4229-6064-4058-b9e4-585b50ab4ceb
+
+### 約束作成
+https://github.com/user-attachments/assets/946e5625-9fe3-4e95-a595-1cfbd9070702
+
+### 約束の編集削除
+https://github.com/user-attachments/assets/3d4cedc7-3b8a-4ad2-a840-3f280b75401d
+
+### 約束の評価
+https://github.com/user-attachments/assets/8130f2d1-9534-4601-abef-d3754f484190
+
+### 一言送信
+https://github.com/user-attachments/assets/5d90cd64-c6ca-4ee8-ae4b-6b8a5bbf247a
+
+### 過去の約束の過去検索
+https://github.com/user-attachments/assets/3c06ddfc-dde0-4a5c-b115-a8546b00f95a
+
+### もらった一言の過去検索
+https://github.com/user-attachments/assets/30f6e2fc-7bf2-4bcb-9cff-43fe3e514a0b
 
 ## 使用技術
 
@@ -179,13 +188,17 @@ erDiagram
 
 ## 機能一覧
 - 会員登録、ログイン/ログアウト
-- 約束の作成/削除(内容、期日)
+- パートナー招待機能
+- 約束の作成/削除/編集(内容、期日)
 - 約束の一覧表示(自分、パートナー、二人の約束)
 - 約束の評価(５段階評価、コメント)
-- パートナー招待機能
 - 過去の評価された約束の一覧表示(自分、パートナー、二人の約束)
 - 評価待ちの約束の一覧表示、通知（自分）
 - 1ヶ月の信頼スコアの表示
+- 約束の評価と数によって『ふたりの記録』の画面が変化
+- 感謝やあの時言えなかったことを伝える『ちょっと一言』機能
+- 相手からもらった一言の一覧表示、通知（自分）
+- メールによる新規登録の完了の通知
 - メールによる約束評価のリマインド
 - メールによる1ヶ月のレポート送信
 
@@ -196,6 +209,5 @@ erDiagram
 
 ## ユーザー目線での工夫
 - モーダルを適切に使用することで入力する場所をわかりやすくし、見やすい画面の実現
-- 評価をするというセンシティブな内容に踏み入るため、「感謝の言葉を添えよう」と言った文言をフォームに入れることで評価される心理的ストレスの低減
 - 信頼スコアの表示やレポートなどといったやったことの可視化によってモチベーションの維持
 - 必要最低限の情報量に限定した画面によってユーザーが迷わず分かりやすい画面の実現
