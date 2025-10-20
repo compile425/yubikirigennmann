@@ -56,19 +56,27 @@ const About = () => {
                 <div className="yubi-about-feature__badge">01</div>
                 <h3 className="yubi-about-feature__title">約束一覧</h3>
                 <p className="yubi-about-feature__description">
-                  「あなたの約束」「パートナーの約束」「ふたりの約束」の3種類の約束を管理できます。
+                  「あなたの約束」「パートナーの約束」「ふたりの約束」の
+                  <br />
+                  3種類の約束を管理できます。
                   <br />
                   <br />
                   <strong>あなたの約束：</strong>
-                  自分がパートナーにする約束。期日を設定して、守れたかパートナーが評価します。
+                  自分がパートナーにする約束。
+                  <br />
+                  期日を設定して、守れたかパートナーが評価します。
                   <br />
                   <br />
                   <strong>パートナーの約束：</strong>
-                  パートナーがあなたにする約束。期日が来たら、あなたが評価します。
+                  パートナーがあなたにする約束。
+                  <br />
+                  期日が来たら、あなたが評価します。
                   <br />
                   <br />
                   <strong>ふたりの約束：</strong>
-                  ふたりで守る大切な約束。毎週交互に評価し合い、繰り返し確認することで関係性を深めます。
+                  ふたりで守る大切な約束。
+                  <br />
+                  毎週交互に評価し合い、繰り返し確認することで関係性を深めます。
                 </p>
                 <ul className="yubi-about-feature__list">
                   <li>約束を簡単に追加・編集・削除</li>
@@ -77,31 +85,46 @@ const About = () => {
                 </ul>
               </div>
               <div className="yubi-about-feature__image">
-                <div className="yubi-about-feature__placeholder">
-                  動画キャプチャ
-                  <br />
-                  （約束一覧画面）
-                </div>
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="yubi-about-feature__video"
+                >
+                  <source src="/videos/promise1.mp4" type="video/mp4" />
+                  お使いのブラウザは動画再生に対応していません。
+                </video>
               </div>
             </div>
 
             {/* 評価待ちの約束 */}
             <div className="yubi-about-feature yubi-about-feature--reverse">
               <div className="yubi-about-feature__image">
-                <div className="yubi-about-feature__placeholder">
-                  動画キャプチャ
-                  <br />
-                  （評価待ち画面）
-                </div>
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="yubi-about-feature__video"
+                >
+                  <source src="/videos/evaluation.mp4" type="video/mp4" />
+                  お使いのブラウザは動画再生に対応していません。
+                </video>
               </div>
               <div className="yubi-about-feature__content">
                 <div className="yubi-about-feature__badge">02</div>
                 <h3 className="yubi-about-feature__title">評価待ちの約束</h3>
                 <p className="yubi-about-feature__description">
-                  パートナーが作成した約束の期日が来ると、あなたの「評価待ちの約束」に表示されます。
+                  パートナーが作成した約束の期日が来ると、
+                  <br />
+                  あなたの「評価待ちの約束」に表示されます。
                   <br />
                   <br />
-                  約束が守られたかを⭐️1〜5で評価し、感謝や気持ちをコメントで伝えられます。
+                  約束が守られたかを⭐️1〜5で評価し、
+                  <br />
+                  感謝や気持ちをコメントで伝えられます。
+                  <br />
                   毎週日曜日には、ふたりの約束の評価ターンが交互に回ってきます。
                 </p>
                 <ul className="yubi-about-feature__list">
@@ -121,7 +144,11 @@ const About = () => {
                   パートナーから評価された約束を振り返ることができます。
                   <br />
                   <br />
-                  年月で検索して、過去のどの時期にどんな約束をしたか、どんな評価をもらったかを確認できます。
+                  年月で検索して、過去のどの時期にどんな約束をしたか、
+                  <br />
+                  どんな評価をもらったかを確認できます。
+                  <br />
+                  <br />
                   ふたりの成長の記録として、大切な思い出になります。
                 </p>
                 <ul className="yubi-about-feature__list">
@@ -131,22 +158,27 @@ const About = () => {
                 </ul>
               </div>
               <div className="yubi-about-feature__image">
-                <div className="yubi-about-feature__placeholder">
-                  動画キャプチャ
-                  <br />
-                  （過去の評価画面）
-                </div>
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="yubi-about-feature__video"
+                >
+                  <source src="/videos/promise-kako.mp4" type="video/mp4" />
+                  お使いのブラウザは動画再生に対応していません。
+                </video>
               </div>
             </div>
 
             {/* ふたりの記録 */}
             <div className="yubi-about-feature yubi-about-feature--reverse">
               <div className="yubi-about-feature__image">
-                <div className="yubi-about-feature__placeholder">
-                  動画キャプチャ
-                  <br />
-                  （ふたりの記録画面）
-                </div>
+                <img
+                  src="/hutarinokiroku.png"
+                  alt="ふたりの記録"
+                  className="yubi-about-feature__image-static"
+                />
               </div>
               <div className="yubi-about-feature__content">
                 <div className="yubi-about-feature__badge">04</div>
@@ -155,8 +187,14 @@ const About = () => {
                   約束の評価が⭐️4以上だと、今月のりんごが1つ増えます。
                   <br />
                   <br />
-                  りんごが増えるほど、真ん中のりんごの木が成長していきます。
+                  りんごが5個増えるたび、
+                  <br />
+                  真ん中のりんごの木が成長していきます。
+                  <br />
+                  <br />
                   ふたりの信頼関係が可視化され、お互いの頑張りを実感できます。
+                  <br />
+                  <br />
                   毎月リセットされるので、新しい気持ちで頑張れます。
                 </p>
                 <ul className="yubi-about-feature__list">
@@ -177,7 +215,11 @@ const About = () => {
                   <br />
                   <br />
                   約束とは別に、気軽にメッセージを交換できます。
+                  <br />
+                  <br />
                   新しいメッセージが届くと、サイドバーに通知が表示されます。
+                  <br />
+                  <br />
                   年月で検索して、過去のメッセージを振り返ることもできます。
                 </p>
                 <ul className="yubi-about-feature__list">
@@ -187,21 +229,46 @@ const About = () => {
                 </ul>
               </div>
               <div className="yubi-about-feature__image">
-                <div className="yubi-about-feature__placeholder">
-                  動画キャプチャ
-                  <br />
-                  （ちょっと一言画面）
-                </div>
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="yubi-about-feature__video"
+                >
+                  <source src="/videos/hitokoto-action.mp4" type="video/mp4" />
+                  お使いのブラウザは動画再生に対応していません。
+                </video>
               </div>
             </div>
 
             {/* パートナー管理 */}
             <div className="yubi-about-feature yubi-about-feature--reverse">
               <div className="yubi-about-feature__image">
-                <div className="yubi-about-feature__placeholder">
-                  動画キャプチャ
-                  <br />
-                  （パートナー招待画面）
+                <div className="yubi-about-feature__videos-grid">
+                  <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="yubi-about-feature__video-small"
+                  >
+                    <source src="/videos/partner-create.mp4" type="video/mp4" />
+                    お使いのブラウザは動画再生に対応していません。
+                  </video>
+                  <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="yubi-about-feature__video-small"
+                  >
+                    <source
+                      src="/videos/partner-resolved.mp4"
+                      type="video/mp4"
+                    />
+                    お使いのブラウザは動画再生に対応していません。
+                  </video>
                 </div>
               </div>
               <div className="yubi-about-feature__content">
@@ -214,8 +281,14 @@ const About = () => {
                   <br />
                   <br />
                   パートナーが招待コードを入力すると、ふたりのパートナーシップが成立。
+                  <br />
+                  <br />
                   すぐに約束の共有が始まります。
-                  また、パートナーシップはいつでも解消できます（すべてのデータが削除されます）。
+                  <br />
+                  <br />
+                  また、パートナーシップはいつでも解消できます。
+                  <br />
+                  （すべてのデータが削除されます）
                 </p>
                 <ul className="yubi-about-feature__list">
                   <li>招待コードで簡単にパートナーシップを開始</li>

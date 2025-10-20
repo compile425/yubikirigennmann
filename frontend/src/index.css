@@ -2019,6 +2019,33 @@ body.page-about .yubi-main {
   justify-content: center;
 }
 
+.yubi-about-feature__video {
+  width: 100%;
+  max-width: 100%;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.yubi-about-feature__image-static {
+  width: 100%;
+  max-width: 100%;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.yubi-about-feature__videos-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.yubi-about-feature__video-small {
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
 /* CTAセクション */
 .yubi-about-cta {
   text-align: center;
