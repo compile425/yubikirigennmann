@@ -75,4 +75,3 @@ RSpec.describe 'Api::EvaluationEmails', type: :request do
     end
   end
 end
-

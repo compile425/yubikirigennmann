@@ -19,4 +19,3 @@ RSpec.describe UserCredential, type: :model do
     end
   end
 end
-

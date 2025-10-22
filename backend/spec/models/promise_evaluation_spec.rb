@@ -18,4 +18,3 @@ RSpec.describe PromiseEvaluation, type: :model do
     end
   end
 end
-

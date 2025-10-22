@@ -122,7 +122,7 @@ RSpec.describe User, type: :model do
     it 'トランザクション内で実行される' do
       # UserCredentialの作成が失敗した場合、Userも作成されない
       allow_any_instance_of(User).to receive(:create_user_credential!).and_raise(ActiveRecord::RecordInvalid.new(UserCredential.new))
-      
+
       expect {
         begin
           User.create_with_credential!(user_params, credential_params)
@@ -265,4 +265,3 @@ RSpec.describe User, type: :model do
     end
   end
 end
-

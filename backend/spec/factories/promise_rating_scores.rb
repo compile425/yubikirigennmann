@@ -5,4 +5,3 @@ FactoryBot.define do
     harvested_apples { 0 }
   end
 end
-

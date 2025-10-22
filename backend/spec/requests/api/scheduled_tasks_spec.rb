@@ -89,7 +89,7 @@ RSpec.describe 'Api::ScheduledTasks', type: :request do
     before do
       last_month = Date.current.beginning_of_month - 1.month
 
-      [partnership1, partnership2].each do |p|
+      [ partnership1, partnership2 ].each do |p|
         p.promise_rating_scores.create!(
           year_month: last_month,
           harvested_apples: 5
@@ -115,4 +115,3 @@ RSpec.describe 'Api::ScheduledTasks', type: :request do
     end
   end
 end
-

@@ -89,7 +89,7 @@ RSpec.describe InvitationCode, type: :model do
 
       it 'デフォルトの約束は全てour_promise' do
         partnership = invitation_code.join_partnership!(partner)
-        expect(partnership.promises.pluck(:type).uniq).to eq(['our_promise'])
+        expect(partnership.promises.pluck(:type).uniq).to eq([ 'our_promise' ])
       end
     end
 
@@ -126,4 +126,3 @@ RSpec.describe InvitationCode, type: :model do
     end
   end
 end
-

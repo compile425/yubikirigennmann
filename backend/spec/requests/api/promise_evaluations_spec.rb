@@ -21,14 +21,12 @@ RSpec.describe 'Api::PromiseEvaluations', type: :request do
         end
 
         it '201ステータスを返す' do
-
           post "/api/promises/#{promise.id}/promise_evaluations", params: valid_params, headers: headers
 
           expect(response).to have_http_status(:created)
         end
 
         it '評価データをJSON形式で返す' do
-
           post "/api/promises/#{promise.id}/promise_evaluations", params: valid_params, headers: headers
 
           json = json_response
@@ -38,7 +36,6 @@ RSpec.describe 'Api::PromiseEvaluations', type: :request do
         end
 
         it 'レスポンスにidが含まれる' do
-
           post "/api/promises/#{promise.id}/promise_evaluations", params: valid_params, headers: headers
 
           json = json_response
@@ -46,14 +43,12 @@ RSpec.describe 'Api::PromiseEvaluations', type: :request do
         end
 
         it '評価を作成できる' do
-
           expect {
             post "/api/promises/#{promise.id}/promise_evaluations", params: valid_params, headers: headers
           }.to change(PromiseEvaluation, :count).by(1)
         end
 
         it 'データベースに評価が保存される' do
-
           post "/api/promises/#{promise.id}/promise_evaluations", params: valid_params, headers: headers
 
           evaluation = PromiseEvaluation.last
@@ -166,4 +161,3 @@ RSpec.describe 'Api::PromiseEvaluations', type: :request do
     end
   end
 end
-

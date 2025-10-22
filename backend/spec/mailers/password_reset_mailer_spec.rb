@@ -27,4 +27,3 @@ RSpec.describe PasswordResetMailer, type: :mailer do
     end
   end
 end
-

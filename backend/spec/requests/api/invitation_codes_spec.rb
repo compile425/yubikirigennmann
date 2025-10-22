@@ -107,4 +107,3 @@ RSpec.describe 'Api::InvitationCodes', type: :request do
     end
   end
 end
-

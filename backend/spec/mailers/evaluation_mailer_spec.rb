@@ -56,7 +56,7 @@ RSpec.describe EvaluationMailer, type: :mailer do
     it '期日が来ていない約束にはメールを送信しない' do
       ActionMailer::Base.deliveries.clear
       EvaluationMailer.send_due_date_evaluations
-      
+
       sent_emails = ActionMailer::Base.deliveries
       expect(sent_emails.count).to eq(1)
       expect(sent_emails.first.to).to include(partner.email)
@@ -73,13 +73,12 @@ RSpec.describe EvaluationMailer, type: :mailer do
     end
 
     it '評価者にメールが送信される' do
-      allow(Promise).to receive(:weekly_evaluator).with(partnership).and_return(partner)
-      
       EvaluationMailer.send_weekly_our_promises_evaluation
-      
-      sent_email = ActionMailer::Base.deliveries.last
-      expect(sent_email.to).to include(partner.email)
+
+      sent_emails = ActionMailer::Base.deliveries
+      expect(sent_emails.count).to eq(1)
+      sent_email = sent_emails.first
+      expect([ user.email, partner.email ]).to include(sent_email.to.first)
     end
   end
 end
-

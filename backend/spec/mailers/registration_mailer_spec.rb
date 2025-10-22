@@ -20,4 +20,3 @@ RSpec.describe RegistrationMailer, type: :mailer do
     end
   end
 end
-

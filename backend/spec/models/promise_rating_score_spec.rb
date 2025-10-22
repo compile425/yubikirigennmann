@@ -19,7 +19,7 @@ RSpec.describe PromiseRatingScore, type: :model do
     it '同じ月のレコードは1つだけ作成される' do
       current_month = Date.current.beginning_of_month
       score1 = create(:promise_rating_score, partnership: partnership, year_month: current_month, harvested_apples: 3)
-      
+
       score2 = partnership.promise_rating_scores.find_or_initialize_by(year_month: current_month)
       expect(score2.id).to eq(score1.id)
       expect(score2.harvested_apples).to eq(3)
@@ -36,4 +36,3 @@ RSpec.describe PromiseRatingScore, type: :model do
     end
   end
 end
-

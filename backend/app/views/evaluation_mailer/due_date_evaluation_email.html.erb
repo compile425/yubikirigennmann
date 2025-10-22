@@ -11,19 +11,19 @@
   <p>期日が来た約束があります。評価をお願いします。</p>
   
   <div style="background-color: #f8f7f2; padding: 20px; border-radius: 10px; margin: 20px 0;">
-    <h3>約束の内容</h3>
-    <p><%= @promise.content %></p>
-    
-    <p><strong>期日:</strong> <%= @promise.due_date %></p>
-    <p><strong>作成者:</strong> <%= @promise.creator.name %></p>
+  <h3>約束の内容</h3>
+  <p><%= @promise.content %></p>
+  
+  <p><strong>期日:</strong> <%= @promise.due_date %></p>
+  <p><strong>作成者:</strong> <%= @promise.creator.name %></p>
   </div>
   
   <p>以下のリンクから評価を行ってください：</p>
   
   <div style="text-align: center; margin: 30px 0;">
-    <a href="<%= @evaluation_url %>" style="background-color: #075763; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; display: inline-block;">
-      評価する
-    </a>
+  <a href="<%= @evaluation_url %>" style="background-color: #075763; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; display: inline-block;">
+    評価する
+  </a>
   </div>
   
   <p>このリンクは1週間有効です。</p>

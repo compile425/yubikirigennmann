@@ -6,4 +6,3 @@ FactoryBot.define do
     association :receiver, factory: :user
   end
 end
-

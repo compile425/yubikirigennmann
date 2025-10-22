@@ -304,11 +304,10 @@ RSpec.describe Promise, type: :model do
 
     it 'ふたりの約束のみが対象' do
       regular_promise = create(:promise, :with_evaluation, partnership: partnership1, creator: partnership1.user)
-      
+
       expect {
         Promise.reset_evaluated_our_promises
       }.not_to change { regular_promise.reload.promise_evaluation }
     end
   end
 end
-

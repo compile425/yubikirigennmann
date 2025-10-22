@@ -80,4 +80,3 @@ RSpec.describe 'Api::EvaluationPages', type: :request do
     end
   end
 end
-

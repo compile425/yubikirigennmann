@@ -75,4 +75,3 @@ RSpec.describe 'Api::PendingEvaluations', type: :request do
     end
   end
 end
-

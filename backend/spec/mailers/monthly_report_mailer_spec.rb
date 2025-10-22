@@ -49,8 +49,8 @@ RSpec.describe MonthlyReportMailer, type: :mailer do
 
     before do
       last_month = Date.current.beginning_of_month - 1.month
-      
-      [partnership1, partnership2].each do |p|
+
+      [ partnership1, partnership2 ].each do |p|
         p.promise_rating_scores.create!(
           year_month: last_month,
           harvested_apples: 5
@@ -66,10 +66,10 @@ RSpec.describe MonthlyReportMailer, type: :mailer do
 
     it '各ユーザーにメールが送信される' do
       MonthlyReportMailer.send_monthly_reports
-      
+
       emails = ActionMailer::Base.deliveries.last(4)
       recipients = emails.map(&:to).flatten
-      
+
       expect(recipients).to include(partnership1.user.email)
       expect(recipients).to include(partnership1.partner.email)
       expect(recipients).to include(partnership2.user.email)

@@ -10,45 +10,45 @@ class InvitationCode < ApplicationRecord
   scope :used, -> { where(used: true) }
 
   def mark_as_used!
-    update!(used: true)
+  update!(used: true)
   end
 
   # 招待コードを使ってパートナーシップを結ぶ
   def join_partnership!(partner_user)
-    raise ArgumentError, "自分の招待コードは使用できません" if inviter_id == partner_user.id
-    raise ArgumentError, "既にパートナーシップが存在します" if partner_user.partnership
-    raise ArgumentError, "この招待コードは既に使用されています" if used?
+  raise ArgumentError, "自分の招待コードは使用できません" if inviter_id == partner_user.id
+  raise ArgumentError, "既にパートナーシップが存在します" if partner_user.partnership
+  raise ArgumentError, "この招待コードは既に使用されています" if used?
 
-    ActiveRecord::Base.transaction do
-      partnership = Partnership.create!(
-        user: inviter,
-        partner: partner_user
-      )
+  ActiveRecord::Base.transaction do
+    partnership = Partnership.create!(
+      user: inviter,
+      partner: partner_user
+    )
 
-      # デフォルトの約束を作成
-      partnership.create_default_promises
+    # デフォルトの約束を作成
+    partnership.create_default_promises
 
-      # 招待コードを使用済みにする
-      mark_as_used!
+    # 招待コードを使用済みにする
+    mark_as_used!
 
-      partnership
-    end
+    partnership
+  end
   end
 
   private
 
   def generate_code
-    return if code.present?
+  return if code.present?
 
-    loop do
-      self.code = generate_random_code
-      break unless InvitationCode.exists?(code: code)
-    end
+  loop do
+    self.code = generate_random_code
+    break unless InvitationCode.exists?(code: code)
+  end
   end
 
   def generate_random_code
-    # 英数字8文字のランダムコードを生成
-    charset = Array("A".."Z") + Array("0".."9")
-    Array.new(8) { charset.sample }.join
+  # 英数字8文字のランダムコードを生成
+  charset = Array("A".."Z") + Array("0".."9")
+  Array.new(8) { charset.sample }.join
   end
 end

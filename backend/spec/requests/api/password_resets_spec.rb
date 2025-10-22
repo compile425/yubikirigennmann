@@ -152,4 +152,3 @@ RSpec.describe 'Api::PasswordResets', type: :request do
     end
   end
 end
-

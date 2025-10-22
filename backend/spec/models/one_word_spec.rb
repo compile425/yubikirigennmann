@@ -58,4 +58,3 @@ RSpec.describe OneWord, type: :model do
     end
   end
 end
-

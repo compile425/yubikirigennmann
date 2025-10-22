@@ -26,12 +26,12 @@ RSpec.describe Partnership, type: :model do
 
     it '全てour_promiseタイプで作成される' do
       partnership.create_default_promises
-      expect(partnership.promises.pluck(:type).uniq).to eq(['our_promise'])
+      expect(partnership.promises.pluck(:type).uniq).to eq([ 'our_promise' ])
     end
 
     it '期日がnilで作成される' do
       partnership.create_default_promises
-      expect(partnership.promises.pluck(:due_date).uniq).to eq([nil])
+      expect(partnership.promises.pluck(:due_date).uniq).to eq([ nil ])
     end
   end
 
@@ -69,7 +69,7 @@ RSpec.describe Partnership, type: :model do
 
     it 'トランザクション内で実行される' do
       allow(partnership.promises).to receive(:destroy_all).and_raise(StandardError, 'Test error')
-      
+
       expect {
         partnership.dissolve! rescue nil
       }.not_to change(Partnership, :count)
@@ -271,4 +271,3 @@ RSpec.describe Partnership, type: :model do
     end
   end
 end
-

@@ -221,7 +221,7 @@ RSpec.describe 'Api::Promises', type: :request do
 
       it '関連する評価も削除される' do
         create(:promise_evaluation, promise: promise, evaluator: partner, rating: 5)
-        
+
         expect {
           delete "/api/promises/#{promise.id}", headers: headers
         }.to change(PromiseEvaluation, :count).by(-1)
@@ -229,4 +229,3 @@ RSpec.describe 'Api::Promises', type: :request do
     end
   end
 end
-

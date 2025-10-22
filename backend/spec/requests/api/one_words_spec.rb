@@ -101,4 +101,3 @@ RSpec.describe 'Api::OneWords', type: :request do
     end
   end
 end
-

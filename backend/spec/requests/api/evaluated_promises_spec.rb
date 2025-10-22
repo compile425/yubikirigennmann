@@ -71,4 +71,3 @@ RSpec.describe 'Api::EvaluatedPromises', type: :request do
     end
   end
 end
-
