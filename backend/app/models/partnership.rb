@@ -95,13 +95,17 @@ class Partnership < ApplicationRecord
   def monthly_stats(target_user, year_month = Date.current.beginning_of_month)
     partner_user = partner_of(target_user)
 
+    # year_month を Time オブジェクトに変換してタイムゾーンを考慮
+    start_time = year_month.beginning_of_day.in_time_zone
+    end_time = (year_month + 1.month).beginning_of_day.in_time_zone
+
     {
       user: {
         name: target_user.name,
         average_score: target_user.monthly_average_score(year_month),
         evaluation_count: target_user.evaluated_promises.where(
           "created_at >= ? AND created_at < ?",
-          year_month, year_month + 1.month
+          start_time, end_time
         ).count
       },
       partner: {
@@ -109,7 +113,7 @@ class Partnership < ApplicationRecord
         average_score: partner_user.monthly_average_score(year_month),
         evaluation_count: partner_user.evaluated_promises.where(
           "created_at >= ? AND created_at < ?",
-          year_month, year_month + 1.month
+          start_time, end_time
         ).count
       },
       apple_count: promise_rating_scores.find_by(year_month: year_month)&.harvested_apples || 0,

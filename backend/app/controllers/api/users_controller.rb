@@ -49,19 +49,21 @@ class Api::UsersController < ApplicationController
     inviter = partnership.user
     invitee = partnership.partner
 
+    current_month = Date.current.beginning_of_month
+
     render json: {
       inviter: {
         id: inviter.id,
         name: inviter.name,
         avatar_url: nil,
-        average_score: inviter.average_score,
+        average_score: inviter.monthly_average_score(current_month),
         score_trend: inviter.score_trend
       },
       invitee: {
         id: invitee.id,
         name: invitee.name,
         avatar_url: nil,
-        average_score: invitee.average_score,
+        average_score: invitee.monthly_average_score(current_month),
         score_trend: invitee.score_trend
       },
       monthly_apple_count: partnership.monthly_apple_count
