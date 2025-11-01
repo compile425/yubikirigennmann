@@ -18,6 +18,14 @@ end
 
 partnership = Partnership.find_or_create_by!(user: user1, partner: user2)
 
+# ゲストユーザーのアップルカウントを5で初期化（当月のみ、既存レコードは更新しない）
+current_month = Date.current.beginning_of_month
+score = partnership.promise_rating_scores.find_or_initialize_by(year_month: current_month)
+if score.new_record?
+  score.harvested_apples = 5
+  score.save!
+end
+
 # パートナーシップにデフォルトの約束を自動作成
 partnership.create_default_promises
 

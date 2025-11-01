@@ -91,6 +91,50 @@ namespace :admin do
     end
   end
 
+  desc "ゲストユーザーのデータをリセット"
+  task reset_guest_data: :environment do
+    puts "\n🔄 ゲストユーザーのデータをリセットしています...\n"
+    
+    user1 = User.find_by(email: 'test1@example.com')
+    user2 = User.find_by(email: 'test2@example.com')
+    
+    unless user1 && user2
+      puts "❌ ゲストユーザーが見つかりません"
+      puts "先に bin/rails db:seed を実行してください"
+      exit 1
+    end
+    
+    partnership = Partnership.find_by(user: user1, partner: user2)
+    
+    unless partnership
+      puts "❌ パートナーシップが見つかりません"
+      exit 1
+    end
+    
+    # 既存の評価データとアップルカウントをクリア
+    partnership.promises.each do |promise|
+      promise.promise_evaluation&.destroy
+    end
+    partnership.promise_rating_scores.destroy_all
+    partnership.promises.destroy_all
+    
+    # ゲストユーザーのアップルカウントを5で初期化
+    current_month = Date.current.beginning_of_month
+    partnership.promise_rating_scores.create!(
+      year_month: current_month,
+      harvested_apples: 5
+    )
+    
+    # デフォルトの約束を再作成
+    partnership.create_default_promises
+    
+    puts "✅ ゲストユーザーのデータをリセットしました"
+    puts "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    puts "アップルカウント: 5個"
+    puts "デフォルトの約束: 3個"
+    puts "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+  end
+
   desc "スケジュールタスクをテスト実行"
   task test_scheduled_tasks: :environment do
     puts "\n🧪 スケジュールタスクのテスト実行\n"

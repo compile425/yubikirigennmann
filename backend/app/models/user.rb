@@ -73,9 +73,12 @@ class User < ApplicationRecord
 
   # 月間平均スコアを計算
   def monthly_average_score(month_start)
+    # month_start を Time オブジェクトに変換してタイムゾーンを考慮
+    start_time = month_start.beginning_of_day.in_time_zone
+    end_time = (month_start + 1.month).beginning_of_day.in_time_zone
+
     evaluations = evaluated_promises
-      .where("created_at >= ? AND created_at < ?",
-             month_start, month_start + 1.month)
+      .where("created_at >= ? AND created_at < ?", start_time, end_time)
 
     return 0.0 if evaluations.empty?
 
