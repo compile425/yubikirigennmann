@@ -48,9 +48,9 @@ jobs:
           echo "Response: $body"
           
           if [ "$http_code" -eq 200 ]; then
-            echo "✅ 期日メール送信が完了しました"
+            echo "期日メール送信が完了しました"
           else
-            echo "❌ 期日メール送信に失敗しました"
+            echo "期日メール送信に失敗しました"
             exit 1
           fi
 
@@ -67,7 +67,7 @@ jobs:
           API_URL: ${{ secrets.API_URL }}
           ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
         run: |
-          echo "📧 週次評価メール送信を開始します..."
+          echo "週次評価メール送信を開始します..."
           response=$(curl -s -w "\n%{http_code}" -X POST \
             "${API_URL}/api/scheduled_tasks/send_weekly_our_promises_evaluation" \
             -H "Authorization: Bearer ${ADMIN_TOKEN}" \
@@ -80,9 +80,9 @@ jobs:
           echo "Response: $body"
           
           if [ "$http_code" -eq 200 ]; then
-            echo "✅ 週次評価メール送信が完了しました"
+            echo "週次評価メール送信が完了しました"
           else
-            echo "❌ 週次評価メール送信に失敗しました"
+            echo "週次評価メール送信に失敗しました"
             exit 1
           fi
 
@@ -104,9 +104,9 @@ jobs:
           echo "Response: $body"
           
           if [ "$http_code" -eq 200 ]; then
-            echo "✅ ふたりの約束のリセットが完了しました"
+            echo "ふたりの約束のリセットが完了しました"
           else
-            echo "❌ ふたりの約束のリセットに失敗しました"
+            echo "ふたりの約束のリセットに失敗しました"
             exit 1
           fi
 
@@ -123,7 +123,7 @@ jobs:
           API_URL: ${{ secrets.API_URL }}
           ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
         run: |
-          echo "📊 月次レポート送信を開始します..."
+          echo "月次レポート送信を開始します..."
           response=$(curl -s -w "\n%{http_code}" -X POST \
             "${API_URL}/api/scheduled_tasks/send_monthly_reports" \
             -H "Authorization: Bearer ${ADMIN_TOKEN}" \
@@ -136,9 +136,9 @@ jobs:
           echo "Response: $body"
           
           if [ "$http_code" -eq 200 ]; then
-            echo "✅ 月次レポート送信が完了しました"
+            echo "月次レポート送信が完了しました"
           else
-            echo "❌ 月次レポート送信に失敗しました"
+            echo "月次レポート送信に失敗しました"
             exit 1
           fi
 
