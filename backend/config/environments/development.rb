@@ -39,17 +39,30 @@ Rails.application.configure do
   config.action_mailer.perform_caching = false
 
   # メール送信設定
-  config.action_mailer.delivery_method = :letter_opener_web
-  config.action_mailer.perform_deliveries = true
-  config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
-
-  # letter_opener_webの設定
-  config.action_mailer.letter_opener_web_settings = {
-    location: Rails.root.join("tmp", "letter_opener_web")
-  }
-
-  # メール送信設定（開発環境ではletter_openerを使用）
-  config.action_mailer.delivery_method = :letter_opener
+  # SESの認証情報が設定されている場合はSESを使用、それ以外はletter_opener_webを使用
+  if ENV["AWS_SES_SMTP_USERNAME"].present? && ENV["AWS_SES_SMTP_PASSWORD"].present?
+    # SESを使用する場合
+    config.action_mailer.delivery_method = :smtp
+    config.action_mailer.smtp_settings = {
+      address: ENV["AWS_SES_SMTP_ENDPOINT"] || "email-smtp.ap-northeast-1.amazonaws.com",
+      port: 587,
+      domain: ENV["MAILER_DOMAIN"] || "yubikirigenman.com",
+      user_name: ENV["AWS_SES_SMTP_USERNAME"],
+      password: ENV["AWS_SES_SMTP_PASSWORD"],
+      authentication: :login,
+      enable_starttls_auto: true
+    }
+  else
+    # letter_opener_webを使用する場合（デフォルト）
+    begin
+      require "letter_opener_web"
+      config.action_mailer.delivery_method = :letter_opener_web if defined?(LetterOpenerWeb)
+    rescue LoadError
+      # letter_opener_webが利用できない場合はファイル出力にフォールバック
+      config.action_mailer.delivery_method = :file
+      config.action_mailer.file_settings = { location: Rails.root.join("tmp", "mail") }
+    end
+  end
   config.action_mailer.perform_deliveries = true
   config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
 

@@ -1,7 +1,12 @@
 Rails.application.routes.draw do
   # letter_opener_webのルート（開発環境でのメール確認用）
-  if Rails.env.development? && defined?(LetterOpenerWeb)
-    mount LetterOpenerWeb::Engine, at: "/letter_opener"
+  if Rails.env.development?
+    begin
+      require "letter_opener_web"
+      mount LetterOpenerWeb::Engine, at: "/letter_opener" if defined?(LetterOpenerWeb)
+    rescue LoadError
+      # letter_opener_webがインストールされていない場合は無視
+    end
   end
 
   # ALB用のヘルスチェックのためAPIルート
