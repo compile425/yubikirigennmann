@@ -3,7 +3,8 @@ class PasswordResetMailer < ApplicationMailer
 
   def reset_email(user)
     @user = user
-    @reset_url = "#{ENV['FRONTEND_URL'] || 'http://localhost:5173'}/password-reset?token=#{user.reset_password_token}"
+    frontend_url = ENV["FRONTEND_URL"] || ENV["APP_HOST"] || "http://localhost:5173"
+    @reset_url = "#{frontend_url}/password-reset?token=#{user.reset_password_token}"
 
     mail(
       to: user.email,
