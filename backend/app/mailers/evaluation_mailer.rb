@@ -3,7 +3,8 @@ class EvaluationMailer < ApplicationMailer
     @user = user
     @partner = partner
     @promise = promise
-    @evaluation_url = "http://localhost:3000/evaluate/#{promise.id}?token=#{generate_evaluation_token(promise)}"
+    base_url = ENV["FRONTEND_URL"] || ENV["APP_HOST"] || "http://localhost:3000"
+    @evaluation_url = "#{base_url}/evaluate/#{promise.id}?token=#{generate_evaluation_token(promise)}"
 
     mail(
       to: partner.email,
@@ -14,7 +15,8 @@ class EvaluationMailer < ApplicationMailer
   def due_date_evaluation_email(promise, evaluator)
     @promise = promise
     @evaluator = evaluator
-    @evaluation_url = "http://localhost:3000/evaluate/#{promise.id}?token=#{generate_evaluation_token(promise)}"
+    base_url = ENV["FRONTEND_URL"] || ENV["APP_HOST"] || "http://localhost:3000"
+    @evaluation_url = "#{base_url}/evaluate/#{promise.id}?token=#{generate_evaluation_token(promise)}"
 
     mail(
       to: evaluator.email,
