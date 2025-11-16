@@ -1,5 +1,5 @@
 class PasswordResetMailer < ApplicationMailer
-  default from: ENV["MAILER_FROM"] || "noreply@yubikirigennmann.com"
+  # ApplicationMailerでSES_VERIFIED_SENDERが設定されているため、個別の設定は不要
 
   def reset_email(user)
     @user = user
