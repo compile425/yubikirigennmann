@@ -77,7 +77,7 @@ Rails.application.configure do
   config.action_mailer.smtp_settings = {
     address: ENV["AWS_SES_SMTP_ENDPOINT"] || "email-smtp.ap-northeast-1.amazonaws.com",
     port: 587,
-    domain: ENV["MAILER_DOMAIN"] || "yubikirigennmann.com",
+    domain: ENV["MAILER_DOMAIN"] || "yubikirigenman.com",
     user_name: ENV["AWS_SES_SMTP_USERNAME"],
     password: ENV["AWS_SES_SMTP_PASSWORD"],
     authentication: :login,
@@ -85,7 +85,7 @@ Rails.application.configure do
   }
 
   # メール送信元アドレス
-  config.action_mailer.default_url_options = { host: ENV["APP_HOST"] || "yubikirigennmann.com" }
+  config.action_mailer.default_url_options = { host: ENV["APP_HOST"] || "yubikirigenman.com" }
 
   # メール送信エラーをログに出力
   config.action_mailer.logger = Rails.logger
