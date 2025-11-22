@@ -20,7 +20,7 @@ namespace :admin do
     end
     
     payload = { user_id: admin.id }
-    token = JWT.encode(payload, Rails.application.credentials.secret_key_base)
+    token = JWT.encode(payload, Rails.application.secret_key_base)
     
     puts "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     puts "📋 管理者情報"
@@ -48,7 +48,7 @@ namespace :admin do
     end
     
     payload = { user_id: user.id }
-    token = JWT.encode(payload, Rails.application.credentials.secret_key_base)
+    token = JWT.encode(payload, Rails.application.secret_key_base)
     
     puts "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     puts "📋 ユーザー情報"
@@ -69,7 +69,7 @@ namespace :admin do
     end
     
     begin
-      decoded = JWT.decode(args[:token], Rails.application.credentials.secret_key_base, true, { algorithm: 'HS256' })
+      decoded = JWT.decode(args[:token], Rails.application.secret_key_base, true, { algorithm: 'HS256' })
       user_id = decoded[0]['user_id']
       user = User.find_by(id: user_id)
       
