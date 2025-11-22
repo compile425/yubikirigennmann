@@ -1,6 +1,4 @@
 class PasswordResetMailer < ApplicationMailer
-  # ApplicationMailerで送信元名が設定されているため、個別の設定は不要
-
   def reset_email(user)
     @user = user
     frontend_url = ENV["FRONTEND_URL"] || ENV["APP_HOST"] || "http://localhost:5173"

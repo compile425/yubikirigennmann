@@ -60,7 +60,7 @@ class Api::SessionsController < ApplicationController
     # 評価待ちの約束がない場合、1件作成
     if pending_promises.empty?
       partnership.promises.create!(
-        content: "ゲストログイン時のサンプル約束です。この約束を評価してみてください。",
+        content: "何かしてもらったら感謝の言葉を伝えよう。",
         type: "personal_promise",
         creator: guest_partner, # パートナーが作成者（ゲストユーザーが評価する）
         due_date: today # 期日を今日に設定（評価待ちになる）
