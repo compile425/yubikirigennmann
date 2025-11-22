@@ -58,6 +58,7 @@ const PromiseColumn = ({
             evaluationText={promise.evaluation_text}
             evaluationDate={promise.evaluation_date}
             promiseType={promise.type}
+            evaluatorName={promise.evaluator_name}
             onEdit={onEdit ? () => onEdit(promise) : undefined}
             onDelete={onDelete ? () => onDelete(promise) : undefined}
             onEvaluate={

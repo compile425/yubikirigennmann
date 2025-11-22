@@ -240,13 +240,20 @@ RSpec.describe Partnership, type: :model do
     it 'ユーザーの統計情報が正しい' do
       result = partnership.monthly_stats(user, target_month)
       expect(result[:user][:name]).to eq(user.name)
-      expect(result[:user][:average_score]).to eq(4.0)
-      expect(result[:user][:evaluation_count]).to eq(2)
+      # userが作成した約束に対する評価がないため、スコアは0.0
+      expect(result[:user][:average_score]).to eq(0.0)
+      expect(result[:user][:evaluation_count]).to eq(0)
+      # partnerが作成した約束をuserが評価しているため、partnerのスコアが4.0
+      expect(result[:partner][:average_score]).to eq(4.0)
+      expect(result[:partner][:evaluation_count]).to eq(2)
     end
 
     it 'パートナーの統計情報が正しい' do
       result = partnership.monthly_stats(user, target_month)
       expect(result[:partner][:name]).to eq(partner.name)
+      # partnerが作成した約束をuserが評価しているため、partnerのスコアが4.0
+      expect(result[:partner][:average_score]).to eq(4.0)
+      expect(result[:partner][:evaluation_count]).to eq(2)
     end
 
     it 'りんご数が正しい' do

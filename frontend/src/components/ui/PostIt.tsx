@@ -7,6 +7,7 @@ interface PostItProps {
   evaluationText?: string;
   evaluationDate?: string;
   promiseType?: string;
+  evaluatorName?: string;
   onEdit?: () => void;
   onDelete?: () => void;
   onEvaluate?: () => void;
@@ -20,7 +21,8 @@ const PostIt = ({
   rating,
   evaluationText,
   evaluationDate,
-  // promiseType, // 未使用のためコメントアウト
+  promiseType,
+  evaluatorName,
   onEdit,
   onDelete,
   onEvaluate,
@@ -93,6 +95,9 @@ const PostIt = ({
                 <p className="yubi-evaluation-text">{evaluationText}</p>
               </div>
             </div>
+          )}
+          {promiseType === 'our_promise' && evaluatorName && (
+            <div className="yubi-evaluator-name">評価者: {evaluatorName}</div>
           )}
           <div className="yubi-card__bottom-row">
             <div className="yubi-card__bottom-left">
