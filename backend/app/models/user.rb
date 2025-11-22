@@ -50,9 +50,13 @@ class User < ApplicationRecord
     PasswordResetMailer.reset_email(self).deliver_now
   end
 
-  # 平均スコアを計算
+  # 平均スコアを計算（このユーザーが作成した約束に対する評価の平均）
   def average_score
-    evaluations = evaluated_promises
+    # このユーザーが作成した約束に対する評価を取得
+    evaluations = PromiseEvaluation
+      .joins(:promise)
+      .where(promises: { creator_id: id })
+
     return 0.0 if evaluations.empty?
 
     total_score = evaluations.sum(:rating)
@@ -71,14 +75,17 @@ class User < ApplicationRecord
     current_score - last_score
   end
 
-  # 月間平均スコアを計算
+  # 月間平均スコアを計算（このユーザーが作成した約束に対する評価の平均）
   def monthly_average_score(month_start)
     # month_start を Time オブジェクトに変換してタイムゾーンを考慮
     start_time = month_start.beginning_of_day.in_time_zone
     end_time = (month_start + 1.month).beginning_of_day.in_time_zone
 
-    evaluations = evaluated_promises
-      .where("created_at >= ? AND created_at < ?", start_time, end_time)
+    # このユーザーが作成した約束に対する評価を取得
+    evaluations = PromiseEvaluation
+      .joins(:promise)
+      .where(promises: { creator_id: id })
+      .where("promise_evaluations.created_at >= ? AND promise_evaluations.created_at < ?", start_time, end_time)
 
     return 0.0 if evaluations.empty?
 

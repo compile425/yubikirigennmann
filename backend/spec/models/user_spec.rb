@@ -59,8 +59,11 @@ RSpec.describe User, type: :model do
         create(:promise_evaluation, promise: promise2, evaluator: user, rating: 3)
       end
 
-      it '平均スコアを返す' do
-        expect(user.average_score).to eq(4.0)
+      it '評価された人の平均スコアを返す（評価者のスコアではない）' do
+        # userが評価したが、partnerが作成した約束なので、partnerのスコアに反映される
+        expect(partner.average_score).to eq(4.0)
+        # userが作成した約束に対する評価がないため、userのスコアは0.0
+        expect(user.average_score).to eq(0.0)
       end
     end
   end
@@ -74,17 +77,20 @@ RSpec.describe User, type: :model do
       current_month = Date.current.beginning_of_month
       last_month = current_month - 1.month
 
-      # 先月の評価
+      # 先月の評価（partnerが作成した約束をuserが評価）
       last_promise = create(:promise, partnership: partnership, creator: partner)
       last_eval = create(:promise_evaluation, promise: last_promise, evaluator: user, rating: 3)
       last_eval.update(created_at: last_month + 10.days)
 
-      # 今月の評価
+      # 今月の評価（partnerが作成した約束をuserが評価）
       current_promise = create(:promise, partnership: partnership, creator: partner)
       current_eval = create(:promise_evaluation, promise: current_promise, evaluator: user, rating: 5)
       current_eval.update(created_at: current_month + 10.days)
 
-      expect(user.score_trend).to eq(2.0)
+      # partnerのスコアトレンドを計算（評価された人のスコア）
+      expect(partner.score_trend).to eq(2.0)
+      # userは評価者なので、userが作成した約束に対する評価がないため、トレンドは0.0
+      expect(user.score_trend).to eq(0.0)
     end
   end
 

@@ -12,6 +12,7 @@ export interface PromiseItem {
   rating?: number;
   evaluation_text?: string;
   evaluation_date?: string;
+  evaluator_name?: string;
 }
 
 export interface User {

@@ -103,18 +103,20 @@ class Partnership < ApplicationRecord
       user: {
         name: target_user.name,
         average_score: target_user.monthly_average_score(year_month),
-        evaluation_count: target_user.evaluated_promises.where(
-          "created_at >= ? AND created_at < ?",
-          start_time, end_time
-        ).count
+        evaluation_count: PromiseEvaluation
+          .joins(:promise)
+          .where(promises: { creator_id: target_user.id })
+          .where("promise_evaluations.created_at >= ? AND promise_evaluations.created_at < ?", start_time, end_time)
+          .count
       },
       partner: {
         name: partner_user.name,
         average_score: partner_user.monthly_average_score(year_month),
-        evaluation_count: partner_user.evaluated_promises.where(
-          "created_at >= ? AND created_at < ?",
-          start_time, end_time
-        ).count
+        evaluation_count: PromiseEvaluation
+          .joins(:promise)
+          .where(promises: { creator_id: partner_user.id })
+          .where("promise_evaluations.created_at >= ? AND promise_evaluations.created_at < ?", start_time, end_time)
+          .count
       },
       apple_count: promise_rating_scores.find_by(year_month: year_month)&.harvested_apples || 0,
       year_month: year_month
