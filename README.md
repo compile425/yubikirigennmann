@@ -184,7 +184,7 @@ erDiagram
 ```
 ## インフラ構成図
 
-<img width="502" height="534" alt="Image" src="https://github.com/user-attachments/assets/63d38c0c-abe2-4082-a8c4-b3432303c88c" />
+<img width="481" height="500" alt="Image" src="https://github.com/user-attachments/assets/192aac21-e7e8-4a28-aebd-78c2441ac61e" />
 
 ## 機能一覧
 - 会員登録、ログイン/ログアウト
