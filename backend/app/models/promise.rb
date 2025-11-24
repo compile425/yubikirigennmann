@@ -35,11 +35,13 @@ class Promise < ApplicationRecord
     scope :by_evaluation_month, ->(year, month) {
       return all if year.blank? || month.blank?
 
-      start_date = Date.new(year.to_i, month.to_i, 1).beginning_of_day
-      end_date = start_date.end_of_month.end_of_day
+      # タイムゾーンを考慮して日付範囲を計算
+      month_start = Date.new(year.to_i, month.to_i, 1)
+      start_time = month_start.beginning_of_day.in_time_zone
+      end_time = (month_start + 1.month).beginning_of_day.in_time_zone
 
-      where("promise_evaluations.created_at >= ? AND promise_evaluations.created_at <= ?",
-            start_date, end_date)
+      where("promise_evaluations.created_at >= ? AND promise_evaluations.created_at < ?",
+            start_time, end_time)
     }
 
     # スコープ：評価日の降順でソート
