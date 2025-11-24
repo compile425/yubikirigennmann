@@ -57,6 +57,44 @@ RSpec.describe 'Api::EvaluatedPromises', type: :request do
           expect(json.first['id']).to eq(evaluated_promise1.id)
         end
       end
+
+      context 'personal_promiseタイプの約束が評価された場合' do
+        let!(:personal_promise) do
+          promise = create(:promise, partnership: partnership, creator: partner, type: "personal_promise", due_date: Date.today)
+          create(:promise_evaluation, promise: promise, evaluator: user, rating: 5)
+          promise
+        end
+
+        it 'personal_promiseタイプの約束も過去の評価に含まれる' do
+          get '/api/evaluated-promises', headers: headers
+          json = json_response
+          expect(json.map { |p| p['id'] }).to include(personal_promise.id)
+          expect(json.find { |p| p['id'] == personal_promise.id }['type']).to eq('personal_promise')
+        end
+      end
+
+      context 'ゲストログイン時に作成される約束が評価された場合' do
+        let!(:guest_promise) do
+          # ゲストログイン時に作成される約束と同じ条件で作成
+          promise = create(:promise, 
+            partnership: partnership, 
+            creator: partner, 
+            type: "personal_promise", 
+            due_date: Date.today,
+            content: "何かしてもらったら感謝の言葉を伝えよう。"
+          )
+          create(:promise_evaluation, promise: promise, evaluator: user, rating: 4)
+          promise
+        end
+
+        it 'ゲストログイン時に作成される約束も過去の評価に含まれる' do
+          get '/api/evaluated-promises', headers: headers
+          json = json_response
+          expect(json.map { |p| p['id'] }).to include(guest_promise.id)
+          expect(json.find { |p| p['id'] == guest_promise.id }['type']).to eq('personal_promise')
+          expect(json.find { |p| p['id'] == guest_promise.id }['rating']).to eq(4)
+        end
+      end
     end
 
     context 'パートナーシップがない場合' do
