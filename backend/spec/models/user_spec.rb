@@ -66,6 +66,42 @@ RSpec.describe User, type: :model do
         expect(user.average_score).to eq(0.0)
       end
     end
+
+    context 'our_promiseの評価がある場合' do
+      let!(:our_promise) { create(:promise, :our_promise, partnership: partnership, creator: user) }
+
+      context '週番号が偶数の場合（userがweekly_evaluatee）' do
+        before do
+          # 評価日時を偶数週に設定
+          evaluation = create(:promise_evaluation, promise: our_promise, evaluator: partner, rating: 5)
+          # 偶数週の日付に設定（2025年1月6日は週番号2）
+          evaluation.update(created_at: Time.zone.local(2025, 1, 6, 12, 0, 0))
+        end
+
+        it 'weekly_evaluatee（user）のスコアに反映される' do
+          # 週番号が偶数の場合、userがweekly_evaluateeなので、userのスコアに反映
+          expect(user.average_score).to eq(5.0)
+          # partnerは評価者なので、partnerのスコアには反映されない
+          expect(partner.average_score).to eq(0.0)
+        end
+      end
+
+      context '週番号が奇数の場合（partnerがweekly_evaluatee）' do
+        before do
+          # 評価日時を奇数週に設定
+          evaluation = create(:promise_evaluation, promise: our_promise, evaluator: user, rating: 4)
+          # 奇数週の日付に設定（2025年1月13日は週番号3）
+          evaluation.update(created_at: Time.zone.local(2025, 1, 13, 12, 0, 0))
+        end
+
+        it 'weekly_evaluatee（partner）のスコアに反映される' do
+          # 週番号が奇数の場合、partnerがweekly_evaluateeなので、partnerのスコアに反映
+          expect(partner.average_score).to eq(4.0)
+          # userは評価者なので、userのスコアには反映されない
+          expect(user.average_score).to eq(0.0)
+        end
+      end
+    end
   end
 
   describe '#score_trend' do

@@ -276,6 +276,47 @@ RSpec.describe Partnership, type: :model do
       expect(result2[:user][:name]).to eq(partner.name)
       expect(result2[:partner][:name]).to eq(user.name)
     end
+
+    context 'our_promiseの評価がある場合' do
+      let!(:our_promise) { create(:promise, :our_promise, partnership: partnership, creator: user) }
+
+      context '週番号が偶数の場合（userがweekly_evaluatee）' do
+        before do
+          evaluation = create(:promise_evaluation, promise: our_promise, evaluator: partner, rating: 5)
+          # 偶数週の日付に設定（2025年1月6日は週番号2）
+          evaluation.update(created_at: Time.zone.local(2025, 1, 6, 12, 0, 0))
+        end
+
+        it 'weekly_evaluatee（user）のスコアに反映される' do
+          result = partnership.monthly_stats(user, target_month)
+          # 週番号が偶数の場合、userがweekly_evaluateeなので、userのスコアに反映
+          expect(result[:user][:average_score]).to eq(5.0)
+          expect(result[:user][:evaluation_count]).to eq(1)
+          # partnerは評価者なので、partnerのスコアには反映されない
+          expect(result[:partner][:average_score]).to eq(4.0) # 既存の評価
+          expect(result[:partner][:evaluation_count]).to eq(2) # 既存の評価
+        end
+      end
+
+      context '週番号が奇数の場合（partnerがweekly_evaluatee）' do
+        before do
+          evaluation = create(:promise_evaluation, promise: our_promise, evaluator: user, rating: 4)
+          # 奇数週の日付に設定（2025年1月13日は週番号3）
+          evaluation.update(created_at: Time.zone.local(2025, 1, 13, 12, 0, 0))
+        end
+
+        it 'weekly_evaluatee（partner）のスコアに反映される' do
+          result = partnership.monthly_stats(user, target_month)
+          # 週番号が奇数の場合、partnerがweekly_evaluateeなので、partnerのスコアに反映
+          # partnerの既存の評価（5, 3）と新しい評価（4）の平均 = (5 + 3 + 4) / 3 = 4.0
+          expect(result[:partner][:average_score]).to eq(4.0)
+          expect(result[:partner][:evaluation_count]).to eq(3)
+          # userは評価者なので、userのスコアには反映されない
+          expect(result[:user][:average_score]).to eq(0.0)
+          expect(result[:user][:evaluation_count]).to eq(0)
+        end
+      end
+    end
   end
 end
 
