@@ -55,7 +55,8 @@ const PastEvaluationsPage = () => {
     promise => promise.type === 'our_promise'
   );
   const partnerPromises = evaluatedPromises.filter(
-    promise => promise.type === 'partner_promise' || promise.type === 'personal_promise'
+    promise =>
+      promise.type === 'partner_promise' || promise.type === 'personal_promise'
   );
 
   // タイトル生成
