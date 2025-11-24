@@ -55,7 +55,7 @@ const PastEvaluationsPage = () => {
     promise => promise.type === 'our_promise'
   );
   const partnerPromises = evaluatedPromises.filter(
-    promise => promise.type === 'partner_promise'
+    promise => promise.type === 'partner_promise' || promise.type === 'personal_promise'
   );
 
   // タイトル生成
@@ -64,7 +64,7 @@ const PastEvaluationsPage = () => {
       return 'あなたの約束';
     } else if (type === 'our_promise') {
       return 'ふたりの約束';
-    } else if (type === 'partner_promise') {
+    } else if (type === 'partner_promise' || type === 'personal_promise') {
       return 'パートナーの約束';
     }
     return '過去の約束';

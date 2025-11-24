@@ -57,7 +57,7 @@ export interface ApiResponse<T = unknown> {
   status: number;
 }
 
-export type PromiseType = 'my_promise' | 'our_promise' | 'partner_promise';
+export type PromiseType = 'my_promise' | 'our_promise' | 'partner_promise' | 'personal_promise';
 
 export interface CreatePromiseData {
   content: string;
