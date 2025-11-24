@@ -103,23 +103,43 @@ class Partnership < ApplicationRecord
       user: {
         name: target_user.name,
         average_score: target_user.monthly_average_score(year_month),
-        evaluation_count: PromiseEvaluation
-          .joins(:promise)
-          .where(promises: { creator_id: target_user.id })
-          .where("promise_evaluations.created_at >= ? AND promise_evaluations.created_at < ?", start_time, end_time)
-          .count
+        evaluation_count: count_evaluations_for_user(target_user, start_time, end_time)
       },
       partner: {
         name: partner_user.name,
         average_score: partner_user.monthly_average_score(year_month),
-        evaluation_count: PromiseEvaluation
-          .joins(:promise)
-          .where(promises: { creator_id: partner_user.id })
-          .where("promise_evaluations.created_at >= ? AND promise_evaluations.created_at < ?", start_time, end_time)
-          .count
+        evaluation_count: count_evaluations_for_user(partner_user, start_time, end_time)
       },
       apple_count: promise_rating_scores.find_by(year_month: year_month)&.harvested_apples || 0,
       year_month: year_month
     }
+  end
+
+  private
+
+  # 指定ユーザーの評価数をカウント（our_promiseの場合は評価者の相手を考慮）
+  def count_evaluations_for_user(user, start_time, end_time)
+    # 1. このユーザーが作成した約束（our_promise以外）に対する評価
+    regular_count = PromiseEvaluation
+      .joins(:promise)
+      .where(promises: { creator_id: user.id })
+      .where.not(promises: { type: "our_promise" })
+      .where("promise_evaluations.created_at >= ? AND promise_evaluations.created_at < ?", start_time, end_time)
+      .count
+
+    # 2. our_promiseの場合、このユーザーが評価者の相手だった評価
+    # 評価したユーザーじゃない方（評価者の相手）のスコアに反映
+    our_promise_count = PromiseEvaluation
+      .joins(promise: :partnership)
+      .where(promises: { type: "our_promise", partnership_id: id })
+      .where("promise_evaluations.created_at >= ? AND promise_evaluations.created_at < ?", start_time, end_time)
+      .where(
+        "(partnerships.user_id = ? AND promise_evaluations.evaluator_id = partnerships.partner_id) OR " \
+        "(partnerships.partner_id = ? AND promise_evaluations.evaluator_id = partnerships.user_id)",
+        user.id, user.id
+      )
+      .count
+
+    regular_count + our_promise_count
   end
 end

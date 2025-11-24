@@ -51,17 +51,46 @@ class User < ApplicationRecord
   end
 
   # 平均スコアを計算（このユーザーが作成した約束に対する評価の平均）
+  # our_promiseの場合は、評価したユーザーじゃない方（評価者の相手）のスコアに反映
   def average_score
-    # このユーザーが作成した約束に対する評価を取得
-    evaluations = PromiseEvaluation
+    # 1. このユーザーが作成した約束（our_promise以外）に対する評価
+    regular_total = PromiseEvaluation
       .joins(:promise)
       .where(promises: { creator_id: id })
+      .where.not(promises: { type: "our_promise" })
+      .sum(:rating)
+    regular_count = PromiseEvaluation
+      .joins(:promise)
+      .where(promises: { creator_id: id })
+      .where.not(promises: { type: "our_promise" })
+      .count
 
-    return 0.0 if evaluations.empty?
+    # 2. our_promiseの場合、このユーザーが評価者の相手だった評価
+    # 評価したユーザーじゃない方（評価者の相手）のスコアに反映
+    our_promise_total = PromiseEvaluation
+      .joins(promise: :partnership)
+      .where(promises: { type: "our_promise" })
+      .where(
+        "(partnerships.user_id = ? AND promise_evaluations.evaluator_id = partnerships.partner_id) OR " \
+        "(partnerships.partner_id = ? AND promise_evaluations.evaluator_id = partnerships.user_id)",
+        id, id
+      )
+      .sum(:rating)
+    our_promise_count = PromiseEvaluation
+      .joins(promise: :partnership)
+      .where(promises: { type: "our_promise" })
+      .where(
+        "(partnerships.user_id = ? AND promise_evaluations.evaluator_id = partnerships.partner_id) OR " \
+        "(partnerships.partner_id = ? AND promise_evaluations.evaluator_id = partnerships.user_id)",
+        id, id
+      )
+      .count
 
-    total_score = evaluations.sum(:rating)
-    count = evaluations.count
-    count > 0 ? total_score.to_f / count : 0.0
+    total_count = regular_count + our_promise_count
+    return 0.0 if total_count == 0
+
+    total_score = regular_total + our_promise_total
+    total_score.to_f / total_count
   end
 
   # スコアトレンドを計算（先月比）
@@ -76,22 +105,54 @@ class User < ApplicationRecord
   end
 
   # 月間平均スコアを計算（このユーザーが作成した約束に対する評価の平均）
+  # our_promiseの場合は、評価したユーザーじゃない方（評価者の相手）のスコアに反映
   def monthly_average_score(month_start)
     # month_start を Time オブジェクトに変換してタイムゾーンを考慮
     start_time = month_start.beginning_of_day.in_time_zone
     end_time = (month_start + 1.month).beginning_of_day.in_time_zone
 
-    # このユーザーが作成した約束に対する評価を取得
-    evaluations = PromiseEvaluation
+    # 1. このユーザーが作成した約束（our_promise以外）に対する評価
+    regular_total = PromiseEvaluation
       .joins(:promise)
       .where(promises: { creator_id: id })
+      .where.not(promises: { type: "our_promise" })
       .where("promise_evaluations.created_at >= ? AND promise_evaluations.created_at < ?", start_time, end_time)
+      .sum(:rating)
+    regular_count = PromiseEvaluation
+      .joins(:promise)
+      .where(promises: { creator_id: id })
+      .where.not(promises: { type: "our_promise" })
+      .where("promise_evaluations.created_at >= ? AND promise_evaluations.created_at < ?", start_time, end_time)
+      .count
 
-    return 0.0 if evaluations.empty?
+    # 2. our_promiseの場合、このユーザーが評価者の相手だった評価
+    # 評価したユーザーじゃない方（評価者の相手）のスコアに反映
+    our_promise_total = PromiseEvaluation
+      .joins(promise: :partnership)
+      .where(promises: { type: "our_promise" })
+      .where("promise_evaluations.created_at >= ? AND promise_evaluations.created_at < ?", start_time, end_time)
+      .where(
+        "(partnerships.user_id = ? AND promise_evaluations.evaluator_id = partnerships.partner_id) OR " \
+        "(partnerships.partner_id = ? AND promise_evaluations.evaluator_id = partnerships.user_id)",
+        id, id
+      )
+      .sum(:rating)
+    our_promise_count = PromiseEvaluation
+      .joins(promise: :partnership)
+      .where(promises: { type: "our_promise" })
+      .where("promise_evaluations.created_at >= ? AND promise_evaluations.created_at < ?", start_time, end_time)
+      .where(
+        "(partnerships.user_id = ? AND promise_evaluations.evaluator_id = partnerships.partner_id) OR " \
+        "(partnerships.partner_id = ? AND promise_evaluations.evaluator_id = partnerships.user_id)",
+        id, id
+      )
+      .count
 
-    total_score = evaluations.sum(:rating)
-    count = evaluations.count
-    count > 0 ? total_score.to_f / count : 0.0
+    total_count = regular_count + our_promise_count
+    return 0.0 if total_count == 0
+
+    total_score = regular_total + our_promise_total
+    total_score.to_f / total_count
   end
 
   # ユーザーと認証情報を一緒に作成
