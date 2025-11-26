@@ -101,7 +101,7 @@ const HitokotoPage = () => {
 
   return (
     <div className="app-wrapper">
-      <Sidebar />
+      <Sidebar onDissolvePartnership={() => setIsDissolveModalOpen(true)} />
       <main className="board-container">
         <div className="yubi-hitokoto-container">
           <div className="yubi-hitokoto-form-section">
