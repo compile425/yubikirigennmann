@@ -51,9 +51,6 @@ const PastEvaluationsPage = () => {
   const myPromises = evaluatedPromises.filter(
     promise => promise.type === 'my_promise'
   );
-  const ourPromises = evaluatedPromises.filter(
-    promise => promise.type === 'our_promise'
-  );
   const partnerPromises = evaluatedPromises.filter(
     promise =>
       promise.type === 'partner_promise' || promise.type === 'personal_promise'
@@ -63,8 +60,6 @@ const PastEvaluationsPage = () => {
   const getTitle = (type: string) => {
     if (type === 'my_promise') {
       return 'あなたの約束';
-    } else if (type === 'our_promise') {
-      return 'ふたりの約束';
     } else if (type === 'partner_promise' || type === 'personal_promise') {
       return 'パートナーの約束';
     }
@@ -149,14 +144,6 @@ const PastEvaluationsPage = () => {
           <PromiseColumn
             title={getTitle('my_promise')}
             promises={myPromises}
-            onAdd={() => {}}
-            showAddButton={false}
-            showEvaluationButton={false}
-          />
-
-          <PromiseColumn
-            title={getTitle('our_promise')}
-            promises={ourPromises}
             onAdd={() => {}}
             showAddButton={false}
             showEvaluationButton={false}
