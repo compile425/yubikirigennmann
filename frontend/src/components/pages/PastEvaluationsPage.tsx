@@ -12,6 +12,13 @@ const PastEvaluationsPage = () => {
     EvaluatedPromise[]
   >([]);
 
+  useEffect(() => {
+    document.documentElement.classList.add('no-scroll');
+    return () => {
+      document.documentElement.classList.remove('no-scroll');
+    };
+  }, []);
+
   // 検索用のステート
   const currentDate = new Date();
   const [selectedYear, setSelectedYear] = useState<number>(
@@ -77,9 +84,9 @@ const PastEvaluationsPage = () => {
   };
 
   return (
-    <div className="app-wrapper">
+    <div className="app-wrapper app-wrapper--no-scroll">
       <Sidebar />
-      <main className="board-container">
+      <main className="board-container board-container--no-scroll">
         {/* 検索ヘッダー */}
         <div className="yubi-past-evaluations-header">
           <div className="yubi-search-section">
@@ -140,7 +147,7 @@ const PastEvaluationsPage = () => {
           )}
         </div>
 
-        <div className="yubi-board">
+        <div className="yubi-board yubi-board--past-evaluations">
           <PromiseColumn
             title={getTitle('my_promise')}
             promises={myPromises}

@@ -22,6 +22,13 @@ interface UserStats {
 }
 
 const RecordPage = () => {
+  useEffect(() => {
+    document.documentElement.classList.add('no-scroll');
+    return () => {
+      document.documentElement.classList.remove('no-scroll');
+    };
+  }, []);
+
   const [userStats, setUserStats] = useState<UserStats | null>(null);
   const [isDissolveModalOpen, setIsDissolveModalOpen] =
     useState<boolean>(false);
@@ -53,9 +60,9 @@ const RecordPage = () => {
   };
 
   return (
-    <div className="app-wrapper">
+    <div className="app-wrapper app-wrapper--no-scroll">
       <Sidebar />
-      <main className="report-fullscreen-container">
+      <main className="report-fullscreen-container board-container--no-scroll">
         <div className="top-info">
           <h1 className="page-title">ふたりの記録</h1>
           <div className="apple-count">

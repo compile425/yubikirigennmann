@@ -25,6 +25,11 @@ html {
   height: 100%;
 }
 
+html.no-scroll {
+  overflow-y: hidden;
+  height: 100vh;
+}
+
 *,
 *:before,
 *:after {
@@ -41,6 +46,11 @@ body {
 body.page-board {
   overflow-y: auto;
   height: auto;
+}
+
+body.page-board.no-scroll {
+  overflow-y: hidden;
+  height: 100vh;
 }
 
 body.page-report {
@@ -1231,7 +1241,6 @@ body.page-about .yubi-main {
   margin: 0;
 }
 
-
 .yubi-login-title {
   font-weight: 800;
   font-size: 28px;
@@ -1510,6 +1519,13 @@ body.page-about .yubi-main {
   overflow-y: auto;
   height: 100vh;
   z-index: 10;
+}
+
+.board-container--no-scroll {
+  overflow-y: hidden;
+  min-height: 100vh;
+  padding: 40px 20px 120px;
+  box-sizing: border-box;
 }
 
 .invitation-container {
@@ -1817,7 +1833,6 @@ body.page-about .yubi-main {
   }
 }
 
-
 .yubi-send-button .icon {
   display: inline-block;
   margin-right: 8px;
@@ -2110,7 +2125,7 @@ body.page-about .yubi-main {
 
   .yubi-about-feature {
     flex-direction: column;
-  gap: 30px;
+    gap: 30px;
     margin-bottom: 60px;
   }
 
@@ -2220,6 +2235,9 @@ body.page-about .yubi-main {
 /* 過去の約束検索 */
 .yubi-past-evaluations-header {
   margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .yubi-search-section {
@@ -2236,6 +2254,49 @@ body.page-about .yubi-main {
   color: var(--text-color-brown);
   margin: 0;
   text-align: center;
+}
+
+.yubi-board--past-evaluations {
+  max-width: 920px;
+  margin: 0 auto;
+  width: 100%;
+  gap: 40px;
+  grid-template-columns: 440px 440px;
+  justify-content: center;
+}
+
+.yubi-board--past-evaluations .yubi-column {
+  width: 440px;
+  min-width: 440px;
+}
+
+.yubi-board--past-evaluations .yubi-column__header {
+  width: 440px;
+  height: 48px;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  margin: 0 auto;
+}
+
+.yubi-board--past-evaluations .yubi-column__header span {
+  flex: 1;
+  text-align: center;
+}
+
+.yubi-board--past-evaluations .yubi-column__content {
+  width: 440px;
+  max-height: calc(100vh - 200px);
+  min-height: 491px;
+  margin: 0 auto;
+  overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+  .yubi-board--past-evaluations .yubi-column__content {
+    height: 491px;
+    overflow-y: auto;
+  }
 }
 
 .yubi-search-toggle-button {
@@ -2482,7 +2543,7 @@ body.page-about .yubi-main {
     max-width: 90vw;
     margin-bottom: 20px;
   }
-  
+
   .yubi-score-plate,
   .score-plate {
     margin: 10px 0;
@@ -2586,6 +2647,20 @@ body.page-about .yubi-main {
 
   .yubi-search-apply-button {
     width: 100%;
+  }
+
+  .board-container {
+    padding: 80px 16px 40px;
+  }
+
+  .board-container--no-scroll {
+    overflow-y: auto;
+    height: 100vh;
+    padding-bottom: 40px;
+  }
+
+  .report-fullscreen-container {
+    overflow: auto;
   }
 }
 
