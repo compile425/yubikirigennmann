@@ -2689,6 +2689,19 @@ body.page-about .yubi-main {
     width: 100%;
   }
 
+  /* パートナー招待ページ（レスポンシブ時のレイアウト調整） */
+  .invitation-code,
+  .join-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .invitation-code .yubi-hitokoto-send-button,
+  .join-form .yubi-hitokoto-send-button {
+    width: 100%;
+    margin-top: 8px;
+  }
+
   .board-container {
     padding: 80px 16px 40px;
   }
