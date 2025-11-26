@@ -76,14 +76,9 @@ const PastEvaluationsPage = () => {
     return '過去の約束';
   };
 
-  // 検索ボタンのトグル
+  // 検索ボタンのトグル（ドロップダウンの開閉のみ）
   const toggleSearch = () => {
     setIsSearchOpen(!isSearchOpen);
-  };
-
-  // 検索実行（年月変更時に自動的にuseEffectで再取得される）
-  const handleSearch = () => {
-    setIsSearchOpen(false);
   };
 
   return (
@@ -138,13 +133,6 @@ const PastEvaluationsPage = () => {
                     ))}
                   </select>
                 </div>
-
-                <button
-                  onClick={handleSearch}
-                  className="yubi-button yubi-button--primary yubi-search-apply-button"
-                >
-                  検索
-                </button>
               </div>
             </div>
           )}

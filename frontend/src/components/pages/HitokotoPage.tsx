@@ -53,14 +53,9 @@ const HitokotoPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedYear, selectedMonth]);
 
-  // 検索ボタンのトグル
+  // 検索ボタンのトグル（ドロップダウンの開閉のみ）
   const toggleSearch = () => {
     setIsSearchOpen(!isSearchOpen);
-  };
-
-  // 検索実行
-  const handleSearch = () => {
-    setIsSearchOpen(false);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -178,12 +173,6 @@ const HitokotoPage = () => {
                       ))}
                     </select>
                   </div>
-                  <button
-                    onClick={handleSearch}
-                    className="yubi-button yubi-button--primary yubi-search-apply-button"
-                  >
-                    検索
-                  </button>
                 </div>
               </div>
             )}
