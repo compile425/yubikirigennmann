@@ -61,7 +61,7 @@ const RecordPage = () => {
 
   return (
     <div className="app-wrapper app-wrapper--no-scroll">
-      <Sidebar />
+      <Sidebar onDissolvePartnership={() => setIsDissolveModalOpen(true)} />
       <main className="report-fullscreen-container board-container--no-scroll">
         <div className="top-info">
           <h1 className="page-title">ふたりの記録</h1>

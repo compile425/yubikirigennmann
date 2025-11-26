@@ -6,11 +6,14 @@ import {
 } from '../../lib/api';
 import Sidebar from '../ui/Sidebar';
 import PromiseColumn from '../ui/PromiseColumn';
+import DissolvePartnershipModal from '../modals/DissolvePartnershipModal';
 
 const PastEvaluationsPage = () => {
   const [evaluatedPromises, setEvaluatedPromises] = useState<
     EvaluatedPromise[]
   >([]);
+  const [isDissolveModalOpen, setIsDissolveModalOpen] =
+    useState<boolean>(false);
 
   useEffect(() => {
     document.documentElement.classList.add('no-scroll');
@@ -85,7 +88,7 @@ const PastEvaluationsPage = () => {
 
   return (
     <div className="app-wrapper app-wrapper--no-scroll">
-      <Sidebar />
+      <Sidebar onDissolvePartnership={() => setIsDissolveModalOpen(true)} />
       <main className="board-container board-container--no-scroll">
         {/* 検索ヘッダー */}
         <div className="yubi-past-evaluations-header">
@@ -165,6 +168,11 @@ const PastEvaluationsPage = () => {
           />
         </div>
       </main>
+
+      <DissolvePartnershipModal
+        isOpen={isDissolveModalOpen}
+        onClose={() => setIsDissolveModalOpen(false)}
+      />
     </div>
   );
 };
