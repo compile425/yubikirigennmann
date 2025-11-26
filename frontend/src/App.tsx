@@ -23,6 +23,8 @@ function App() {
       if (token && currentUser) {
         if (path === '/record') {
           document.body.className = 'page-report';
+        } else if (path === '/past-evaluations') {
+          document.body.className = 'page-board no-scroll';
         } else {
           document.body.className = 'page-board';
         }
