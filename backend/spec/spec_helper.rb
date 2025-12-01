@@ -1,6 +1,10 @@
 # SimpleCovの設定
 require 'simplecov'
 SimpleCov.start 'rails' do
+  # ブランチカバレッジを有効化
+  enable_coverage :branch
+  primary_coverage :branch
+
   add_filter '/spec/'
   add_filter '/config/'
   add_filter '/vendor/'
