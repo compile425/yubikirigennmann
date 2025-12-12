@@ -28,7 +28,10 @@ class Promise < ApplicationRecord
     # スコープ：評価済みの約束のみ
     scope :evaluated, -> {
       joins(:promise_evaluation)
-        .includes(:promise_evaluation, :creator)
+        .includes(
+          { promise_evaluation: :evaluator },
+          :creator
+        )
     }
 
     # スコープ：指定された年月で評価された約束

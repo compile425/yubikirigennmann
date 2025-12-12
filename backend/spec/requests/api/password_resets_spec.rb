@@ -110,7 +110,7 @@ RSpec.describe 'Api::PasswordResets', type: :request do
 
       it '422ステータスを返す' do
         put '/api/password-resets', params: params
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it 'エラーメッセージを返す' do
@@ -141,7 +141,7 @@ RSpec.describe 'Api::PasswordResets', type: :request do
 
       it '422ステータスを返す' do
         put '/api/password-resets', params: params
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it 'エラーメッセージを返す' do

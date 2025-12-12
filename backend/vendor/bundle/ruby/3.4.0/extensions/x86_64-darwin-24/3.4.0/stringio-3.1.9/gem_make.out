@@ -1,0 +1,19 @@
+current directory: /Users/yamamotokoki/Desktop/yubikirigennmann/backend/vendor/bundle/ruby/3.4.0/gems/stringio-3.1.9/ext/stringio
+/Users/yamamotokoki/.rbenv/versions/3.4.3/bin/ruby extconf.rb
+checking for rb_io_mode_t in ruby/io.h... no
+creating Makefile
+
+current directory: /Users/yamamotokoki/Desktop/yubikirigennmann/backend/vendor/bundle/ruby/3.4.0/gems/stringio-3.1.9/ext/stringio
+make DESTDIR\= sitearchdir\=./.gem.20251212-25265-vy2qm2 sitelibdir\=./.gem.20251212-25265-vy2qm2 clean
+
+current directory: /Users/yamamotokoki/Desktop/yubikirigennmann/backend/vendor/bundle/ruby/3.4.0/gems/stringio-3.1.9/ext/stringio
+make DESTDIR\= sitearchdir\=./.gem.20251212-25265-vy2qm2 sitelibdir\=./.gem.20251212-25265-vy2qm2
+compiling stringio.c
+linking shared-object stringio.bundle
+
+current directory: /Users/yamamotokoki/Desktop/yubikirigennmann/backend/vendor/bundle/ruby/3.4.0/gems/stringio-3.1.9/ext/stringio
+make DESTDIR\= sitearchdir\=./.gem.20251212-25265-vy2qm2 sitelibdir\=./.gem.20251212-25265-vy2qm2 install
+/usr/bin/install -c -m 0755 stringio.bundle ./.gem.20251212-25265-vy2qm2
+
+current directory: /Users/yamamotokoki/Desktop/yubikirigennmann/backend/vendor/bundle/ruby/3.4.0/gems/stringio-3.1.9/ext/stringio
+make DESTDIR\= sitearchdir\=./.gem.20251212-25265-vy2qm2 sitelibdir\=./.gem.20251212-25265-vy2qm2 clean

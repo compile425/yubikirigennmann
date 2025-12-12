@@ -128,7 +128,7 @@ RSpec.describe 'Api::PromiseEvaluations', type: :request do
 
         it '422ステータスを返す' do
           post "/api/promises/#{promise.id}/promise_evaluations", params: invalid_params, headers: headers
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to have_http_status(:unprocessable_content)
         end
 
         it 'エラーメッセージを返す' do
