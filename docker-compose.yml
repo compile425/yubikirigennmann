@@ -2,7 +2,7 @@ services:
   api:
     build:
       context: ./backend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     volumes:
       - ./backend:/app
       - /app/vendor/bundle
@@ -12,12 +12,12 @@ services:
       db:
         condition: service_healthy
     env_file:
-       - ./backend/.env.development
+      - ./backend/.env.development
     environment:
       DB_HOST: db
       MYSQL_ROOT_PASSWORD: password
       RAILS_ENV: development
-      DISABLE_DATABASE_ENVIRONMENT_CHECK: '1'
+      DISABLE_DATABASE_ENVIRONMENT_CHECK: "1"
     tty: true
     stdin_open: true
 
@@ -40,7 +40,7 @@ services:
     platform: linux/amd64
     environment:
       MYSQL_ROOT_PASSWORD: password
-      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_HOST: "%"
     volumes:
       - db-data-v2:/var/lib/mysql
     ports:
@@ -54,4 +54,3 @@ services:
 
 volumes:
   db-data-v2:
-

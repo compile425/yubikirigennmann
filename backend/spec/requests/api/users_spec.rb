@@ -62,7 +62,7 @@ RSpec.describe 'Api::Users', type: :request do
 
       it '422ステータスを返す' do
         post '/api/register', params: invalid_params
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
   end
@@ -129,7 +129,7 @@ RSpec.describe 'Api::Users', type: :request do
 
       it '422ステータスを返す' do
         get '/api/user_stats', headers: headers_without_partnership
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
   end
