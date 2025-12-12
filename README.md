@@ -83,7 +83,7 @@ https://github.com/user-attachments/assets/30f6e2fc-7bf2-4bcb-9cff-43fe3e514a0b
 | Category           | Technology Stack                                                                                   |
 | :----------------- | :------------------------------------------------------------------------------------------------- |
 | **Frontend**       | TypeScript (`~5.8.3`), React (`^19.1.0`), CSS, Vite                                                |
-| **Backend**        | Ruby (`3.4.5`), Ruby on Rails (`8.1.0`)                                                            |
+| **Backend**        | Ruby (`3.4.5`), Ruby on Rails (`~> 8.1`)                                                            |
 | **Infrastructure** | Amazon Web Services (S3, CloudFront, EC2, RDS, Route 53, ALB, ECR), Sentry, Docker, Docker Compose |
 | **Database**       | MySQL (`8.4`)                                                                                      |
 | **Testing**        | RSpec, ESLint                                                                                      |
